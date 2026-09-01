@@ -1,0 +1,49 @@
+# Secrets — never commit
+.env
+.env.*
+!.env.example
+
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Next.js
+.next/
+out/
+next-env.d.ts
+
+# Build / test output
+dist/
+build/
+coverage/
+playwright-report/
+test-results/
+.turbo/
+
+# Vercel
+.vercel
+
+# Editor / OS
+.DS_Store
+.idea/
+.vscode/*
+!.vscode/extensions.json
+*.log
+
+# TypeScript incremental build cache
+tsconfig.tsbuildinfo
+
+# Agents
+.claude/
+.groq/
+.openai/
+.anthropic/
+.gemini/
+.google/
+.microsoft/
+.azure/
+.aws/
+.gcp/
+.oracle/
+.ibm/
+.alibaba/

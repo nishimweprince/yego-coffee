@@ -4798,3 +4798,150 @@ Do not pad the catalog to justify the architecture. The temptation with a four-S
 
 Yego's advantage is not catalog breadth. It is a single-family, single-origin story with four decades behind it. The site should feel like a **small, deliberate lineup presented beautifully**, not a large catalog presented thinly. Four coffees, each given a full screen, reads as confidence. Four coffees behind six filters reads as an empty store.
 
+
+---
+
+# 94. Phase 1 Build Record — Foundation
+
+Implemented 2026-09-01. Records what was decided at the keyboard, where
+reality diverged from the spec, and what Phase 1 deliberately left open.
+
+## 94.1 Versions actually installed
+
+§3's predicted versions were close. Installed current stable per the
+version policy:
+
+| Layer | §3 predicted | Installed |
+|---|---|---|
+| Next.js | 16.3.3+ | 16.3.4 |
+| React | 19.2 | 19.2.8 |
+| Tailwind | 4.3+ | 4.3.3 |
+| TypeScript | strict | 5.9.3 |
+| pnpm | — | 11.25.0 (via corepack) |
+| Zod | — | 4.5.4 |
+| Vitest | — | 4.1.11 |
+| Font Awesome | — | 7.3.1 |
+
+Node 26.5.1. Turbopack is the default builder in this Next line.
+
+## 94.2 Decisions that extend or amend the plan
+
+**Environment validation is split, not monolithic (amends §30).**
+A single strict schema parsed at boot would have made Phase 1
+impossible to finish before Storefront credentials existed. The schema
+is now two: `core` (parsed at module load, fails fast) and `shopify`
+(parsed lazily on first API use). The app boots, renders and tests
+without credentials; the moment anything touches Shopify it throws with
+an actionable message. It never falls back to mock data — a green build
+against stubbed responses would defeat the §75 exit criterion.
+
+**`Money.currencyCode` widened from the literal `"USD"` (amends §29).**
+Pinning the type to one currency member would make the multi-currency
+path in §81 a type-level rewrite rather than a config change. Formatting
+always uses whatever Shopify returned (§54).
+
+**Raw API types live in `types.api.ts`, not a namespace (amends §29).**
+`@typescript-eslint/no-namespace` rejects the namespace form. Same
+boundary, plain module.
+
+**Dark is a surface context, not a document mode (amends §17.5).**
+Semantic tokens reassign on `[data-surface="soil"]` rather than a global
+`prefers-color-scheme` swap. This storefront needs full-bleed dark
+*sections* inside a light page (§90.01 hero, §90.04 brand statement) far
+more than it needs a user-facing theme toggle, and a global dark mode
+would double the §68 visual-QA matrix for no stated requirement.
+
+**shadcn CLI was not run.** Its `init` overwrites `globals.css` with a
+neutral palette, which would have destroyed the token layer. Primitives
+are hand-written to shadcn's conventions (cva + `cn`), which §17.6
+requires anyway — "shadcn as a primitive source, not the visible brand."
+`components.json` can be added later if CLI-added components are wanted.
+
+## 94.3 Design direction (implements §17, §89)
+
+Recorded so it is not re-litigated each session.
+
+**Palette — "Highland."** Specialty coffee brands design from the
+roasted bean: cream grounds, brown type, terracotta accent. Yego's story
+starts at the other end of the chain, on a Rwandan hillside. The palette
+comes from there instead — volcanic soil, highland mist, terraced green,
+and the gold of the sun on the flag. This is the deliberate risk: a cool,
+green-led palette for a product universally marketed warm. It is
+defensible because Yego's differentiator is origin and family, not
+roast craft, and because it will not be mistaken for any competitor.
+
+```text
+soil     #131C17   near-black, green cast    ground, body text
+terrace  #2C5A43   hillside green            accent on light
+sage     #5A6B5F   muted                     secondary text
+mist     #E8EBE4   highland fog              page ground
+sun      #E0A32E   flag gold                 accent on dark, rare
+cherry   #B23A26   coffee cherry             destructive, limited
+```
+
+**Type.** Fraunces for the editorial voice, wonk axis on — the display
+face should read made by hand, not machined, for a business four decades
+into one family. Archivo for everything structural; its width axis gives
+the label register its condensed, tracked-out form.
+
+**Signature — the contour rule.** Section boundaries are drawn as
+topographic contours rather than a single hairline, because Rwanda is
+the land of a thousand hills and Yego's coffee grows on terraces where
+altitude is a real quality signal. The label slot carries something
+true: a section name, or a real altitude on product pages. It is
+explicitly not a slot for invented sequence numbers (§93.5).
+
+**Contrast, measured in-browser, all AA or better:**
+
+```text
+soil on mist            14.45:1
+terrace on mist          6.58:1
+sage on mist             4.71:1
+cherry on mist           4.94:1
+primary button (light)   7.15:1
+primary button (soil)     8.4:1
+sun on mist              1.85:1   ← fails by design; see rule below
+```
+
+`sun-500` never carries text on a light ground. Fill, rule and focus
+ring only. On soil it reaches 7.83:1 and becomes the accent.
+
+## 94.4 A bug worth remembering
+
+tailwind-merge silently dropped `text-accent-foreground` from every
+sized button, because it classified the custom font size `text-body-m`
+and the custom colour `text-accent-foreground` into the same `text-*`
+group and kept only the last. The result rendered dark green text on a
+dark green fill at 2.2:1 — effectively unreadable, and invisible in code
+review since both classes were present in the source.
+
+Fixed by teaching tailwind-merge the token names in `src/lib/utils.ts`.
+**Any new `--text-*` or semantic colour token must be added there.**
+`src/lib/utils.test.ts` guards the pairing.
+
+This generalises: custom Tailwind tokens and tailwind-merge do not
+discover each other. Assume the same trap for any future custom scale.
+
+## 94.5 Phase 1 exit criteria — status
+
+| §75 criterion | Status |
+|---|---|
+| Environment validation works | Done — fails fast, 8 tests |
+| Design primitives render | Done — `/foundations` |
+| `pnpm build` passes | Done — typecheck, lint, 21 tests, build all green |
+| Product query succeeds | **Blocked** — no Storefront credentials yet |
+| Preview deployment works | **Not started** — needs Vercel account access |
+
+The client and query layer are written and typed against the Storefront
+schema, but **no request has ever been executed**. Treat
+`getProducts()` / `getShopIdentity()` as unverified until a real token
+exists. The first task of Phase 2 is to run them and fix whatever the
+real schema disagrees with.
+
+## 94.6 Still open
+
+None of §92.2's five questions were resolved by this pass — all five
+need the owners, not the code. The bi-monthly cadence (§92.2 #1) remains
+the highest-risk item and still blocks any selling-plan work.
+
+Café phone and hours in §91 remain placeholders and must not ship.
