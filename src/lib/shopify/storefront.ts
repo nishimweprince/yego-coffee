@@ -1,10 +1,18 @@
 import "server-only";
 
 import { storefrontRequest } from "./client";
-import { mapProductToCard } from "./mappers/product";
-import { PRODUCTS_QUERY, SHOP_QUERY } from "./queries/products";
-import type { ApiProductsQuery, ApiShopQuery } from "./types.api";
-import type { ProductCardModel } from "./types";
+import { mapProductToCard, mapProductToDetail } from "./mappers/product";
+import {
+  PRODUCTS_QUERY,
+  PRODUCT_BY_HANDLE_QUERY,
+  SHOP_QUERY,
+} from "./queries/products";
+import type {
+  ApiProductByHandleQuery,
+  ApiProductsQuery,
+  ApiShopQuery,
+} from "./types.api";
+import type { ProductCardModel, ProductDetailModel } from "./types";
 
 /**
  * Typed Storefront reads (plan.md §21.1).
@@ -41,4 +49,17 @@ export async function getShopIdentity(): Promise<ShopIdentity> {
     name: data.shop.name,
     primaryDomainUrl: data.shop.primaryDomain.url,
   };
+}
+
+export async function getProduct(
+  handle: string,
+): Promise<ProductDetailModel | null> {
+  const data = await storefrontRequest<ApiProductByHandleQuery>({
+    operation: "ProductByHandle",
+    query: PRODUCT_BY_HANDLE_QUERY,
+    variables: { handle },
+    tags: [`shopify:product:${handle}`, "shopify:products"],
+  });
+
+  return data.product ? mapProductToDetail(data.product) : null;
 }

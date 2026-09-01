@@ -24,6 +24,7 @@
   --color-terrace-700: #1f4531;
   --color-terrace-600: #2c5a43;
   --color-terrace-500: #3d7357;
+  --color-terrace-400: #457f60;
 
   --color-sage-600: #5a6b5f;
   --color-sage-400: #93a395;
@@ -125,6 +126,9 @@
   --rule: var(--color-sage-400);
   --accent: var(--color-terrace-600);
   --accent-foreground: var(--color-mist-100);
+  --primary: var(--color-terrace-600);
+  --primary-hover: var(--color-terrace-700);
+  --primary-foreground: #ffffff;
   --ring: var(--color-terrace-600);
   --success: var(--color-terrace-600);
   --warning: var(--color-sun-600);
@@ -142,6 +146,12 @@
   --rule: var(--color-sage-600);
   --accent: var(--color-sun-500);
   --accent-foreground: var(--color-soil-900);
+  /* Primary stays green on dark rather than following --accent to gold:
+     white on sun-500 is 1.85:1. Stepped one shade lighter so the fill
+     clears 3:1 against the soil ground (WCAG 1.4.11). */
+  --primary: var(--color-terrace-500);
+  --primary-hover: var(--color-terrace-400);
+  --primary-foreground: #ffffff;
   --ring: var(--color-sun-500);
   --success: var(--color-terrace-500);
   --warning: var(--color-sun-500);
@@ -159,6 +169,9 @@
   --color-rule: var(--rule);
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-foreground: var(--primary-foreground);
   --color-ring: var(--ring);
   --color-success: var(--success);
   --color-warning: var(--warning);
@@ -195,6 +208,24 @@
     font-family: var(--font-display);
     font-variation-settings: "SOFT" 20, "WONK" 1;
     font-weight: 400;
+  }
+
+  /* Tailwind v4's Preflight leaves buttons at the browser default
+     cursor, which makes every control read as non-interactive. One rule
+     here rather than a cursor-pointer class on each element. */
+  button:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]),
+  a[href],
+  label[for],
+  select,
+  summary,
+  input[type="button"]:not(:disabled),
+  input[type="submit"]:not(:disabled),
+  input[type="reset"]:not(:disabled),
+  input[type="checkbox"]:not(:disabled),
+  input[type="radio"]:not(:disabled),
+  input[type="file"]:not(:disabled) {
+    cursor: pointer;
   }
 
   :focus-visible {

@@ -9,7 +9,8 @@
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "verify:shopify": "vitest run src/lib/shopify/live.integration.test.ts"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^7.3.1",
@@ -27,15 +28,18 @@
     "zod": "^4.5.4"
   },
   "devDependencies": {
+    "@shopify/hydrogen-react": "^2026.4.3",
     "@tailwindcss/postcss": "^4",
     "@testing-library/jest-dom": "^7.0.1",
     "@testing-library/react": "^16.3.3",
+    "@testing-library/user-event": "^14.6.6",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@vitejs/plugin-react": "^6.1.1",
     "eslint": "^9",
     "eslint-config-next": "16.3.4",
+    "graphql": "^16.14.2",
     "jsdom": "^30.0.1",
     "tailwindcss": "^4",
     "typescript": "^5",

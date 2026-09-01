@@ -42,3 +42,56 @@ export const PRODUCT_CARD_FRAGMENT = /* GraphQL */ `
     }
   }
 `;
+
+export const PRODUCT_VARIANT_FRAGMENT = /* GraphQL */ `
+  fragment ProductVariantFragment on ProductVariant {
+    id
+    title
+    availableForSale
+    quantityAvailable
+    price {
+      ...MoneyFragment
+    }
+    compareAtPrice {
+      ...MoneyFragment
+    }
+    selectedOptions {
+      name
+      value
+    }
+    image {
+      ...ImageFragment
+    }
+  }
+`;
+
+export const PRODUCT_DETAIL_FRAGMENT = /* GraphQL */ `
+  fragment ProductDetailFragment on Product {
+    ...ProductCardFragment
+    description
+    descriptionHtml
+    options {
+      id
+      name
+      values
+    }
+    images(first: 12) {
+      edges {
+        node {
+          ...ImageFragment
+        }
+      }
+    }
+    variants(first: 100) {
+      edges {
+        node {
+          ...ProductVariantFragment
+        }
+      }
+    }
+    seo {
+      title
+      description
+    }
+  }
+`;

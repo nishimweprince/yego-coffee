@@ -2,9 +2,11 @@
 
 A custom headless storefront for [Yego Coffee](https://yegocoffee.com), replacing the current Shopify theme with a Next.js frontend while keeping Shopify as the commerce backend.
 
-**Status: Phase 1 (Foundation) — substantially complete.** The design system
-and Shopify data layer are standing; the catalogue is not yet connected. Full
-specification in [plan.md](plan.md); build record in [§94](plan.md).
+**Status: Phase 2 (Commerce primitives) — built, unverified.** The design
+system, product and cart layers, and the shop/PDP/cart routes are in place.
+**No Storefront API request has ever executed** — the whole data layer awaits
+credentials. Specification in [plan.md](plan.md); build records in
+[§94](plan.md) and [§95](plan.md).
 
 ---
 
@@ -52,6 +54,7 @@ primitives, with the reasoning attached.
 | `pnpm typecheck` | `tsc --noEmit` |
 | `pnpm lint` | ESLint |
 | `pnpm test` | Vitest |
+| `pnpm verify:shopify` | Live Storefront check (skips without credentials) |
 
 The app boots and renders without Shopify credentials. Anything that touches
 the Storefront API throws with an actionable message rather than falling back
@@ -67,14 +70,19 @@ This validates the hardest commerce boundary before design complexity accumulate
 ## Repository layout
 
 ```text
-plan.md                Full specification (§1–94)
-AGENTS.md              Working rules for anyone (human or agent) in this repo
-src/app/globals.css    Design tokens — colour, type, spacing, motion
-src/app/foundations/   Design system reference page
-src/components/ui/     Primitives (Button, Contour)
-src/lib/env/           Zod environment validation
-src/lib/shopify/       Storefront client, queries, mappers, types
-src/lib/formatting/    Money (Intl.NumberFormat)
+plan.md                    Full specification (§1–95)
+AGENTS.md                  Working rules for anyone (human or agent) here
+src/app/globals.css        Design tokens — colour, type, spacing, motion
+src/app/foundations/       Design system reference page
+src/app/shop/              Product listing
+src/app/products/[handle]/ Product detail
+src/app/cart/              Cart
+src/app/actions/           Cart server actions
+src/components/ui/         Primitives (Button, Contour)
+src/components/commerce/   Product and cart components
+src/lib/env/               Zod environment validation
+src/lib/shopify/           Storefront client, cart, queries, mappers, types
+src/lib/formatting/        Money (Intl.NumberFormat)
 ```
 
 Full planned structure is in [plan.md §26](plan.md).
@@ -103,9 +111,19 @@ all need the owners rather than the code. The two that block real work:
 2. **Subscriptions are currently modeled as duplicate standalone products** (e.g. `dark-roast-monthly-subscription`) rather than native selling plans on a single product. This must be consolidated in Shopify before PDP work begins — see [§92.1](plan.md).
 
 Also outstanding: **no Storefront API request has ever been executed.** The
-client and queries are written and typed, but unverified. First task of Phase 2
-is to run them against a real token and fix whatever the live schema disagrees
-with.
+client, queries, cart mutations and the entire commerce UI are written and
+typed, but nothing has touched a live store.
+
+What *is* verified without credentials: all eight GraphQL operations validate
+against Shopify's real published Storefront schema ([§95.10](plan.md)), and the
+whole PDP → cart → checkout chain is covered by integration tests against mocked
+Shopify responses ([§95.9](plan.md)) — including cart persistence across a
+reload.
+
+What still needs a token: that the credentials work, what Yego's catalogue
+actually contains, and whether checkout totals match. Run `pnpm verify:shopify`
+the moment credentials land — it executes the whole sequence and skips cleanly
+until then. See [§95.5](plan.md).
 
 ## Placeholder data
 

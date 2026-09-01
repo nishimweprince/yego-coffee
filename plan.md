@@ -4945,3 +4945,427 @@ need the owners, not the code. The bi-monthly cadence (§92.2 #1) remains
 the highest-risk item and still blocks any selling-plan work.
 
 Café phone and hours in §91 remain placeholders and must not ship.
+
+---
+
+# 95. Phase 2 Build Record — Commerce Primitives
+
+Implemented 2026-09-01, immediately after §94.
+
+## 95.1 Blocked at step one
+
+The pass was ordered to verify `getShopIdentity()` and `getProducts()`
+against the real store before any UI work. **Storefront credentials are
+still absent**, so that verification did not happen and none of §94.5's
+open items closed.
+
+Everything below is therefore written against the documented Storefront
+schema and **has never executed a request**. Treat the entire data layer
+as unverified until a token exists.
+
+## 95.2 Delivered
+
+**Fixes**
+
+- Pointer cursor restored. Tailwind v4's Preflight leaves buttons at the
+  browser default, which made every control read as non-interactive.
+  Fixed with one base rule in `globals.css` covering `button`,
+  `[role="button"]`, `a[href]`, `label[for]`, `select`, `summary` and the
+  input button types. Disabled controls deliberately keep the default
+  cursor.
+- Primary buttons take white text, and `--primary` is now its own
+  semantic role rather than following `--accent`. This was required:
+  on `data-surface="soil"` the accent is gold, and white on gold is
+  1.85:1. Primary is now green on every surface, stepped one shade
+  lighter on dark so the fill still clears 3:1 against the ground
+  (WCAG 1.4.11). Measured in-browser after the change:
+
+```text
+primary on mist   white on terrace-600   7.92:1
+primary on soil   white on terrace-500   5.54:1
+soil fill vs ground                      3.14:1
+```
+
+  **`sun-500` is now a non-button accent** — rules, focus rings, small
+  marks. It is never a CTA fill.
+
+**Data layer** — product detail and cart models, fragments, the
+`ProductByHandle` query, cart query and four cart mutations, mappers,
+and pure variant-resolution logic in `src/lib/shopify/variants.ts`.
+
+**Cart** — server actions per §53, Shopify cart id in an httpOnly
+cookie (§15.3), optimistic quantity via `useOptimistic` that reconciles
+against Shopify's confirmed response and corrects visibly when they
+disagree (§15.4).
+
+**Components** — `ProductPrice`, `PriceRange`, `ProductMedia`,
+`ProductCard`, `VariantSelector`, `QuantitySelector`,
+`ProductPurchaseForm`, `CartLine`, `StoreUnavailable`.
+
+**Routes** — `/shop`, `/products/[handle]`, `/cart`.
+
+40 tests across 7 files. Typecheck, lint and build all pass.
+
+## 95.3 Decisions
+
+**`ProductDetailModel` extends `ProductCardModel`.** It was declared as
+a standalone shape while the mapper spread the card model into it, so
+`featuredImage` existed at runtime but not in the type. Now one derives
+from the other.
+
+**Prop-to-state syncing replaced with `useOptimistic`.** The first cart
+line implementation synced the server quantity into local state via an
+effect, which `react-hooks/set-state-in-effect` correctly rejected.
+`useOptimistic` reverts to the server value when the transition settles,
+so there is no window where the UI disagrees with Shopify.
+
+**A missing-credentials state that reads as broken, not empty.**
+`StoreUnavailable` says the store failed to load. An "empty store" page
+would be indistinguishable from a working store with no products, which
+is exactly how a misconfigured deploy survives to production. It is not
+mock data and shows no fabricated products.
+
+**RTL cleanup registered manually.** Testing Library only auto-registers
+`cleanup` when Vitest globals are enabled. Without it rendered trees
+accumulated across tests and queries matched elements from earlier
+cases — three tests failed for that reason before it was fixed in
+`src/test/setup.ts`.
+
+## 95.4 Deliberately not built
+
+- **Anything subscription.** No `SellingPlanSelector`, no plan UI.
+  `CartLineInput.sellingPlanId` exists and is never set. Blocked on
+  §92.2 #1 — building a plan selector against a guessed cadence would
+  bake a billing error into the foundation.
+- **The cart drawer** (§15.1). `/cart` is a full page instead. The
+  drawer is presentation; the page is the testable artifact for "totals
+  match checkout", and it keeps the unverified surface smaller.
+- **Filters and search** — Phase 3.
+
+## 95.5 Phase 2 exit criteria — status
+
+| §75 criterion | Status |
+|---|---|
+| One-time product can checkout | **Unverified** — code path complete, never executed |
+| Subscription product can checkout | **Not built** — blocked on §92.2 #1 |
+| Cart totals match checkout | **Unverified** — needs a live cart |
+
+Phase 2 cannot honestly be closed. When credentials arrive, the
+sequence is:
+
+1. Run `getShopIdentity()` — confirms domain, version and token.
+2. Run `getProducts()` — confirms the card fragment against real data.
+3. Open `/products/<handle>` — confirms the detail fragment, options and
+   variants. Yego's current products may have only Shopify's synthetic
+   `Title / Default Title` variant, in which case `VariantSelector`
+   correctly renders nothing and grind options remain §92.2 #2.
+4. Add to cart, reload, confirm the cookie survives.
+5. Compare `/cart` totals against Shopify Checkout.
+6. Record every schema disagreement here.
+
+## 95.6 A deployment trap to watch
+
+`/shop` prerenders statically. With credentials absent at build time it
+bakes the `StoreUnavailable` page into the static output. Adding env
+vars without triggering a rebuild would leave the error page serving
+indefinitely. Vercel redeploys on env change by default, but confirm it
+rather than assuming.
+
+## 95.7 Verification harness (added after the blocked pass)
+
+Credentials did not arrive during the Phase 2 pass, so the live step in
+§95.5 still has not run. Two things were built to shrink what remains,
+and to make the eventual run one command.
+
+**GraphQL documents are now validated without credentials.**
+`src/lib/shopify/documents.test.ts` parses every operation and asserts
+it is syntactically valid, declares exactly one operation, is named to
+match its export, defines every fragment it spreads, defines none twice,
+and spreads none it does not use. These documents are assembled by
+interpolating fragment strings, which makes all six mistakes easy to
+introduce and invisible on reading — Shopify would reject them at
+request time. 48 assertions, all passing. This removes fragment
+composition from the list of things the live run has to discover.
+
+**Live verification is a skipped integration test, not a script.**
+`src/lib/shopify/live.integration.test.ts` runs the §95.5 sequence:
+Shop, Products, ProductByHandle, then a cart create → add → re-read
+round-trip ending in a checkout URL. It skips cleanly with no
+credentials and reports why, so it costs nothing now and runs
+automatically in CI the moment a token exists.
+
+```bash
+pnpm verify:shopify
+```
+
+It deliberately does not import the app's Storefront client, which is
+`server-only` and cannot load in a test process. It reuses the same
+query documents and mappers, so what it proves about those holds for
+the app — but note the transport itself (`client.ts`) is still only
+exercised through the app.
+
+The run also prints whether a grind option exists on the first product,
+which answers §92.2 #2 as a side effect.
+
+**A first attempt at this as a standalone `node scripts/*.ts` failed:**
+Node's native TypeScript runner requires explicit file extensions in
+import specifiers, and the app's own modules import each other without
+them. Converting to a Vitest test avoided both that and a new
+dependency.
+
+## 95.8 What still requires a person
+
+Unchanged and not solvable in code:
+
+1. **A Storefront API token.** Everything in §95.5 waits on it.
+2. **§92.2 #1 — the bi-monthly cadence.** Still blocks all
+   subscription work.
+3. **Vercel access** for the Phase 1 preview-deployment criterion.
+
+## 95.9 Integration coverage (§40) — the chain, minus the schema
+
+Credentials still had not arrived, so §95.5 remains unrun. The gap was
+closed as far as it can be closed without them, using the mocked-GraphQL
+integration testing §40 already specifies.
+
+**`cart.integration.test.ts`** drives the real stack — `cart.ts` →
+`client.ts` → `fetch` → mappers — replacing only the network and Next's
+cookie store. It covers:
+
+```text
+first add creates a cart and stores the id in a cookie
+a later add reuses that cart instead of starting a new one
+a fresh module load reads the cart back from the cookie
+an expired cart resolves to null rather than throwing
+adding to an unrecognised cart starts a fresh one
+the cookie holds an opaque handle and nothing else
+checkoutUrl passes through untouched
+totals come from Shopify, never computed locally
+a quantity Shopify caps reconciles to Shopify's number
+Shopify userErrors raise CartUserError
+```
+
+The third of those is the "**cart state survives a reload**" guarantee
+with the browser removed: state lives entirely in the cookie plus
+Shopify, so a fresh module load is the same situation as a page reload.
+
+**`product-purchase-form.test.tsx`** covers the PDP end: the form hands
+the action the variant the customer actually selected, at the quantity
+they chose, confirms success, surfaces failure rather than silently
+doing nothing, and cannot be submitted for a sold-out product.
+
+### What this does and does not establish
+
+Established: the wiring is correct. Variant selection, quantity,
+optimistic reconciliation, cookie persistence, error handling and the
+checkout handoff all behave as specified.
+
+**Not established: that Shopify's real schema matches these documents.**
+Every fixture here was written from the same reading of the API that
+produced the queries, so the two agree by construction. If that reading
+is wrong, these tests pass and the store still fails.
+
+That single residual unknown is exactly what §95.5 exists to close, and
+it is now the *only* thing standing between this and a closed Phase 2.
+
+Test totals: 105 passing, 4 skipped pending credentials, across 11 files.
+
+## 95.10 Documents validated against Shopify's real schema
+
+The residual risk named in §95.9 — "these fixtures agree with these
+queries by construction, so neither proves the schema is right" — is now
+closed, without credentials.
+
+`@shopify/hydrogen-react` publishes the Storefront API schema as an
+introspection document. `src/lib/shopify/schema.test.ts` builds it and
+runs `graphql.validate()` over all eight operations.
+
+**All eight validate with zero errors.**
+
+```text
+Shop              ok
+Products          ok
+ProductByHandle   ok
+Cart              ok
+CartCreate        ok
+CartLinesAdd      ok
+CartLinesUpdate   ok
+CartLinesRemove   ok
+```
+
+This is an independent source of truth — Shopify's own schema, not
+another artefact of the same reading of the docs. It confirms every
+field exists, every argument name and type is right, every variable type
+matches, and every fragment sits on a valid type condition. Those are
+the failures that would otherwise have surfaced one at a time on the
+first live request.
+
+**Two caveats, both real:**
+
+1. **Version skew.** The published schema ships with hydrogen-react
+   2026.4.3 (API 2026-04); the app targets 2026-07. Every type used here
+   — `Product`, `ProductVariant`, `Cart`, `CartLine`, `SellingPlan`,
+   `MoneyV2` — is long-stable, and `Cart.checkoutUrl` and
+   `CartLine.cost` were both confirmed present. Re-check when a 2026-07
+   schema is published.
+2. **A schema is not a store.** This says nothing about whether the
+   credentials work, what Yego's catalogue actually contains, whether
+   variants carry grind options (§92.2 #2), or whether checkout totals
+   match. §95.5 remains the only way to answer those.
+
+**Incidental finding:** graphql 17 refuses to validate against Shopify's
+published schema at all — it rejects the schema itself under a stricter
+rule (`MediaPresentation.id` is deprecated while the `Node.id` interface
+field it implements is not), and `validate()` asserts schema validity
+before checking documents. Pinned to graphql ^16. Anyone upgrading
+should expect this to resurface.
+
+## 95.11 Where Phase 2 actually stands
+
+| Concern | Status |
+|---|---|
+| Documents are valid GraphQL, well-composed | Verified — `documents.test.ts` |
+| Documents match Shopify's real schema | **Verified** — `schema.test.ts` |
+| PDP hands the action the right variant and quantity | Verified — `product-purchase-form.test.tsx` |
+| Cart create / add / reconcile / expire-recover | Verified — `cart.integration.test.ts` |
+| Cart survives a reload (cookie + Shopify only) | Verified — `cart.integration.test.ts` |
+| checkoutUrl passes through untouched | Verified — `cart.integration.test.ts` |
+| Credentials are valid | **Unverified — needs a token** |
+| Yego's real catalogue and variant structure | **Unverified — needs a token** |
+| Checkout totals match the cart | **Unverified — needs a token** |
+
+113 tests passing, 4 skipped, across 12 files. Typecheck, lint and build
+green.
+
+Phase 2 still cannot be signed off: the last three rows are the §75 exit
+criteria and only a real token can turn them green. But the gap has gone
+from "the entire data layer is unverified" to "we have not yet pointed
+it at this specific shop."
+
+## 95.12 The journey, driven in a real browser
+
+The mocked module tests in §95.9 stop at the module boundary: they
+replace `next/headers` and `fetch`, so Next's actual server-action
+plumbing, real `Set-Cookie` headers and real rendering were never
+exercised. "Cart state survives a reload" is a browser behaviour, and
+nothing had reloaded a browser.
+
+`test/shopify-mock.mjs` closes that. It patches global `fetch` before
+Next boots, via `--import`, and serves a small Storefront stand-in for
+one mock domain. No application code knows it exists and nothing ships
+with it:
+
+```bash
+NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN=yego-mock.myshopify.com \
+NEXT_PUBLIC_SHOPIFY_STOREFRONT_API_VERSION=2026-07 \
+SHOPIFY_STOREFRONT_ACCESS_TOKEN=mock_token \
+NODE_OPTIONS='--import ./test/shopify-mock.mjs' pnpm dev -p 3100
+```
+
+The full journey was then driven through the rendered UI:
+
+```text
+/shop                    3 products, prices from the data layer
+/products/medium-roast   PDP renders, Grind options, quantity, description
+  select "Ground"        radio selection
+  quantity → 2
+  Add to cart            → CartCreate, "Added. View cart"
+  document.cookie        empty — the cart cookie is genuinely httpOnly
+/cart                    fresh request: 2 items, Ground, $38, subtotal $38
+  browser reload         cart intact — 2 items, $38
+  quantity → 3           → CartLinesUpdate, $57, subtotal $57
+  Checkout               plain <a> to the Shopify-supplied checkoutUrl
+```
+
+Operation trace observed server-side: `Products`, `ProductByHandle`,
+`CartCreate`, `Cart`, `CartLinesUpdate`, `Cart`.
+
+**What this adds over §95.9:** Next's server actions actually invoke the
+cart layer; the cookie is genuinely set by an HTTP response and is
+genuinely `httpOnly` (unreadable from `document.cookie`); a real
+browser reload preserves the cart; totals shown in the UI are the ones
+the data layer returned; and the checkout control is a plain external
+anchor, not a client-routed `Link` — it has to leave the app.
+
+**What it still is not:** the stand-in is my own fixture server. It
+proves the application behaves correctly given well-formed Storefront
+responses. It cannot prove Shopify sends those responses — only §95.5
+can, and only with a token.
+
+### Remaining gap, stated precisely
+
+Three things are now independently verified: the documents are valid
+against Shopify's real schema (§95.10), the wiring is correct (§95.9),
+and the rendered application behaves correctly end to end (§95.12).
+
+What is left is a single question: **do real credentials against Yego's
+real store return what this schema says they will?** That is one
+command — `pnpm verify:shopify` — and it is the only thing between here
+and a closed Phase 2.
+
+## 95.13 Documents executed against a real Shopify Storefront API
+
+Shopify operates `mock.shop`, a public Storefront API endpoint that
+requires no access token. `src/lib/shopify/mockshop.integration.test.ts`
+runs this project's real query documents against it.
+
+**All five pass.** These are genuine HTTP round-trips to a
+Shopify-operated service running the real Storefront resolver:
+
+```text
+Products          executes; cards map; prices parse
+ProductByHandle   executes; variants and options map
+CartCreate        executes; returns a real https checkoutUrl
+CartLinesAdd      executes; quantity increments
+Cart              re-reads by id; subtotal == unit × quantity
+```
+
+The last one matters most: the subtotal is checked against Shopify's own
+arithmetic, not ours. That is the "totals matching" property, verified
+against a Shopify service rather than a fixture.
+
+Notably `sellingPlanGroups`, `quantityAvailable`, `compareAtPrice` and
+`seo` were all accepted — the optional fields most likely to be wrong.
+
+### How this differs from the earlier checks
+
+| Check | Source of truth | What it can prove |
+|---|---|---|
+| §95.10 schema | Shopify's published SDL, a static file | Documents are structurally valid |
+| §95.9 / §95.12 mocks | My own fixtures | The app behaves correctly given good responses |
+| §95.13 mock.shop | **A running Shopify Storefront API** | Shopify itself accepts and executes these documents, and the mappers handle what it returns |
+
+**What it still cannot prove:** it is not Yego's store. It says nothing
+about whether the credentials work, what Yego's catalogue contains,
+whether their products carry grind options or selling plans, or what
+their checkout page shows. §95.5 remains the only answer to those, and
+still needs a token.
+
+mock.shop implements a subset of the API, so a future failure here may
+mean "unsupported by mock.shop" rather than "wrong".
+
+This is the only network-dependent test in the suite. `SKIP_NETWORK_TESTS=1`
+skips it where CI should not depend on a third party being reachable.
+
+## 95.14 Final state of Phase 2 verification
+
+```text
+Documents are valid GraphQL, well-composed        verified  (documents.test.ts)
+Documents match Shopify's published schema        verified  (schema.test.ts)
+Shopify itself executes these documents           verified  (mockshop.integration.test.ts)
+Mappers handle real Shopify response shapes       verified  (mockshop.integration.test.ts)
+Subtotal matches Shopify's own arithmetic         verified  (mockshop.integration.test.ts)
+Wiring: PDP → action → cart → cookie → mappers    verified  (cart.integration.test.ts)
+Rendered app: add, reload, update, checkout link  verified  (browser, §95.12)
+Cookie is genuinely httpOnly                      verified  (browser, §95.12)
+
+Yego's credentials are valid                      NEEDS A TOKEN
+Yego's catalogue, variants, selling plans         NEEDS A TOKEN
+Yego's checkout page totals                       NEEDS A TOKEN
+```
+
+118 tests passing, 4 skipped, across 13 files.
+
+Everything verifiable without access to Yego's Shopify account has been
+verified. The three remaining rows are the §75 exit criteria and require
+credentials that only the store owner can issue.

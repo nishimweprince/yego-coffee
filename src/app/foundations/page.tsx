@@ -46,10 +46,7 @@ export default function FoundationsPage() {
 
   return (
     <main className="px-page-x pb-section-lg">
-      {/* ---------------------------------------------------------
-          Thesis. The one thing a reader should take away before
-          they scroll into swatches.
-         --------------------------------------------------------- */}
+      {/* The thesis. What a reader should take away before the swatches. */}
       <header className="mx-auto max-w-5xl pt-section-md">
         <p className="label text-muted-foreground">Yego Coffee · Design foundations</p>
         <h1 className="mt-stack-lg text-display-l font-display max-w-[16ch]">
@@ -65,7 +62,6 @@ export default function FoundationsPage() {
         </p>
       </header>
 
-      {/* --------------------------- COLOUR --------------------------- */}
       <section className="mx-auto mt-section-md max-w-5xl">
         <Contour label="Colour" />
         <div className="mt-stack-lg grid grid-cols-2 gap-px bg-border sm:grid-cols-3 lg:grid-cols-4">
@@ -91,7 +87,6 @@ export default function FoundationsPage() {
         </p>
       </section>
 
-      {/* ---------------------------- TYPE ---------------------------- */}
       <section className="mx-auto mt-section-md max-w-5xl">
         <Contour label="Type" />
         <p className="mt-stack-lg max-w-[58ch] text-body-m text-muted-foreground">
@@ -129,7 +124,6 @@ export default function FoundationsPage() {
         </div>
       </section>
 
-      {/* --------------------------- SURFACE -------------------------- */}
       <section className="mx-auto mt-section-md max-w-5xl">
         <Contour label="Surface" />
         <p className="mt-stack-lg max-w-[58ch] text-body-m text-muted-foreground">
@@ -165,7 +159,6 @@ export default function FoundationsPage() {
         </div>
       </section>
 
-      {/* -------------------------- PRIMITIVES ------------------------ */}
       <section className="mx-auto mt-section-md max-w-5xl">
         <Contour label="Primitives" />
 
@@ -201,7 +194,6 @@ export default function FoundationsPage() {
         </div>
       </section>
 
-      {/* --------------------------- STATUS --------------------------- */}
       <section className="mx-auto mt-section-md max-w-5xl">
         <Contour label="System" />
         <dl className="mt-stack-lg grid gap-px bg-border sm:grid-cols-3">

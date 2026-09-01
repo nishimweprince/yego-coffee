@@ -35,3 +35,62 @@ export type ProductCardModel = {
   /** True when at least one variant carries a selling plan (§10.1). */
   subscriptionAvailable: boolean;
 };
+
+export type ProductOptionModel = {
+  id: string;
+  name: string;
+  values: string[];
+};
+
+export type SelectedOption = {
+  name: string;
+  value: string;
+};
+
+export type ProductVariantModel = {
+  id: string;
+  title: string;
+  availableForSale: boolean;
+  /** null when Shopify does not track inventory for this variant. */
+  quantityAvailable: number | null;
+  price: Money;
+  compareAtPrice: Money | null;
+  selectedOptions: SelectedOption[];
+  image: ShopifyImage | null;
+};
+
+/** Extends the card model — the mapper builds detail on top of card. */
+export type ProductDetailModel = ProductCardModel & {
+  description: string;
+  descriptionHtml: string;
+  media: ShopifyImage[];
+  options: ProductOptionModel[];
+  variants: ProductVariantModel[];
+  seoTitle: string | null;
+  seoDescription: string | null;
+};
+
+export type CartLineModel = {
+  id: string;
+  quantity: number;
+  merchandiseId: string;
+  productTitle: string;
+  productHandle: string;
+  variantTitle: string;
+  image: ShopifyImage | null;
+  unitPrice: Money;
+  lineTotal: Money;
+  /** Present only on subscription lines. Phase 2 never sets one. */
+  sellingPlanName: string | null;
+  availableForSale: boolean;
+};
+
+export type CartModel = {
+  id: string;
+  checkoutUrl: string;
+  totalQuantity: number;
+  subtotal: Money;
+  /** Shopify's total. Excludes tax and shipping until checkout (§15.2). */
+  total: Money;
+  lines: CartLineModel[];
+};

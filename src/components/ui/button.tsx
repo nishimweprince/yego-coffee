@@ -24,8 +24,10 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
+        /* Green on every surface. Following --accent would turn this
+           gold on dark, where white text measures 1.85:1. */
         primary:
-          "bg-accent text-accent-foreground rounded-sm hover:bg-terrace-700",
+          "bg-primary text-primary-foreground rounded-sm hover:bg-primary-hover",
         secondary:
           "border border-foreground/25 text-foreground rounded-sm hover:border-foreground/60 hover:bg-foreground/[0.04]",
         ghost: "text-foreground rounded-sm hover:bg-foreground/[0.06]",

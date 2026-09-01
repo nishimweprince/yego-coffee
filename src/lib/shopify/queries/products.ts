@@ -2,6 +2,8 @@ import {
   IMAGE_FRAGMENT,
   MONEY_FRAGMENT,
   PRODUCT_CARD_FRAGMENT,
+  PRODUCT_DETAIL_FRAGMENT,
+  PRODUCT_VARIANT_FRAGMENT,
 } from "../fragments/product";
 
 /** Named operations (plan.md §52). */
@@ -34,4 +36,17 @@ export const SHOP_QUERY = /* GraphQL */ `
       }
     }
   }
+`;
+
+export const PRODUCT_BY_HANDLE_QUERY = /* GraphQL */ `
+  query ProductByHandle($handle: String!) {
+    product(handle: $handle) {
+      ...ProductDetailFragment
+    }
+  }
+  ${PRODUCT_DETAIL_FRAGMENT}
+  ${PRODUCT_CARD_FRAGMENT}
+  ${PRODUCT_VARIANT_FRAGMENT}
+  ${IMAGE_FRAGMENT}
+  ${MONEY_FRAGMENT}
 `;
