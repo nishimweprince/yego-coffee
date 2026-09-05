@@ -89,7 +89,7 @@ describe.skipIf(!configured)("Storefront API — live", () => {
     for (const c of cards) {
       console.log(
         `  ${c.handle.padEnd(40)} ${c.minPrice.amount} ${c.minPrice.currencyCode}` +
-          `${c.subscriptionAvailable ? "  [selling plan]" : ""}` +
+          `${c.hasSellingPlanGroup ? "  [selling plan]" : ""}` +
           `${c.availableForSale ? "" : "  [sold out]"}`,
       );
     }

@@ -1,11 +1,16 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ProductMedia } from "@/components/commerce/product-media";
 import { ProductPurchaseForm } from "@/components/commerce/product-purchase-form";
 import { StoreUnavailable } from "@/components/commerce/store-unavailable";
+import { ProductFacts } from "@/components/product/product-facts";
+import { RelatedProducts } from "@/components/product/related-products";
+import { SubscriptionOptions } from "@/components/product/subscription-options";
 import { Contour } from "@/components/ui/contour";
+import { COLLECTION_HANDLES } from "@/lib/catalog/collections";
 import { hasShopifyCredentials } from "@/lib/env";
-import { getProduct } from "@/lib/shopify/storefront";
+import { getCollection, getProduct } from "@/lib/shopify/storefront";
 
 export async function generateMetadata({
   params,
@@ -17,6 +22,9 @@ export async function generateMetadata({
   if (!product) return { title: "Not found" };
 
   return {
+    // Shopify's SEO fields are empty across this catalogue (§96.4), so
+    // these fall back to the product's own real title and description
+    // rather than to boilerplate.
     title: product.seoTitle ?? product.title,
     description: product.seoDescription ?? product.description.slice(0, 160),
   };
@@ -37,53 +45,100 @@ export default async function ProductPage({
   const product = await getProduct(handle);
   if (!product) notFound();
 
+  const coffee = await getCollection(COLLECTION_HANDLES.coffee);
+  const related = (coffee?.products ?? []).filter((p) => p.handle !== handle);
+
   const hero = product.media[0] ?? product.featuredImage;
+
+  // Every distinct subscription offered across this product's variants.
+  // Which apply to the selected variant is the purchase form's job; this
+  // is the product-level summary (§10.3).
+  const subscriptions = Object.values(
+    Object.fromEntries(
+      product.variants
+        .flatMap((v) => v.subscriptionOptions)
+        .map((option) => [option.sellingPlanId, option]),
+    ),
+  );
 
   return (
     <main className="px-page-x py-section-md">
-      <div className="mx-auto grid max-w-6xl gap-section-sm lg:grid-cols-2 lg:gap-16">
-        <div className="space-y-2">
-          <ProductMedia
-            image={hero}
-            title={product.title}
-            priority
-            sizes="(min-width: 1024px) 50vw, 100vw"
-            className="bg-surface-elevated"
-          />
-          {product.media.length > 1 ? (
-            <div className="grid grid-cols-4 gap-2">
-              {product.media.slice(1, 5).map((image) => (
-                <ProductMedia
-                  key={image.url}
-                  image={image}
-                  title={product.title}
-                  sizes="120px"
-                  className="bg-surface-elevated"
-                />
-              ))}
-            </div>
-          ) : null}
-        </div>
+      <div className="mx-auto max-w-6xl">
+        <nav aria-label="Breadcrumb">
+          <Link
+            href="/shop"
+            className="label text-muted-foreground hover:text-foreground"
+          >
+            Shop
+          </Link>
+        </nav>
 
-        <div className="lg:pt-8">
-          <h1 className="text-h1">{product.title}</h1>
-
-          <div className="mt-stack-lg">
-            <ProductPurchaseForm product={product} />
+        <div className="mt-stack-lg grid gap-section-sm lg:grid-cols-2 lg:gap-16">
+          <div className="space-y-2">
+            <ProductMedia
+              image={hero}
+              title={product.title}
+              priority
+              sizes="(min-width: 1024px) 50vw, 100vw"
+              className="bg-surface-elevated"
+            />
+            {product.media.length > 1 ? (
+              <div className="grid grid-cols-4 gap-2">
+                {product.media.slice(1, 5).map((image) => (
+                  <ProductMedia
+                    key={image.url}
+                    image={image}
+                    title={product.title}
+                    sizes="120px"
+                    className="bg-surface-elevated"
+                  />
+                ))}
+              </div>
+            ) : null}
           </div>
 
-          {product.descriptionHtml ? (
-            <>
-              <Contour label="Details" className="mt-section-sm" />
-              {/* Shopify's product description is authored by the store
-                  owner in the admin, not by site visitors (§39). */}
-              <div
-                className="mt-stack-lg space-y-stack-md text-body-m text-muted-foreground [&_a]:underline [&_strong]:text-foreground"
-                dangerouslySetInnerHTML={{ __html: product.descriptionHtml }}
-              />
-            </>
-          ) : null}
+          <div>
+            <h1 className="text-h1">{product.title}</h1>
+
+            <div className="mt-stack-lg">
+              <ProductPurchaseForm product={product} />
+            </div>
+
+            {product.descriptionHtml ? (
+              <>
+                <Contour label="Details" className="mt-section-sm" />
+                {/* Authored by the store owner in Shopify admin, not by
+                    site visitors (§39). Shopify's rich-text editor
+                    leaves <meta> fragments inline (§96.4); they render
+                    as nothing, which is the correct outcome. */}
+                <div
+                  className="mt-stack-lg space-y-stack-md text-body-m text-muted-foreground [&_a]:underline [&_strong]:text-foreground"
+                  dangerouslySetInnerHTML={{ __html: product.descriptionHtml }}
+                />
+              </>
+            ) : null}
+
+            <Contour label="Specification" className="mt-section-sm" />
+            <div className="mt-stack-lg">
+              <ProductFacts product={product} />
+            </div>
+
+            {subscriptions.length > 0 ? (
+              <>
+                <Contour label="Subscription" className="mt-section-sm" />
+                <div className="mt-stack-lg">
+                  <SubscriptionOptions options={subscriptions} />
+                  <p className="mt-stack-md text-body-s text-muted-foreground">
+                    Delivered on the schedule above. Prices are the same
+                    as a one-time order.
+                  </p>
+                </div>
+              </>
+            ) : null}
+          </div>
         </div>
+
+        <RelatedProducts products={related} />
       </div>
     </main>
   );

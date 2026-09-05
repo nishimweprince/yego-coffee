@@ -32,8 +32,24 @@ export type ProductCardModel = {
   minPrice: Money;
   maxPrice: Money;
   availableForSale: boolean;
-  /** True when at least one variant carries a selling plan (§10.1). */
-  subscriptionAvailable: boolean;
+  /**
+   * Shopify's product tags. Yego's store has no metafields (§96.4), so
+   * this is the only structured signal about a coffee — roast lives
+   * here as `light` / `medium` / `dark`.
+   */
+  tags: string[];
+  productType: string;
+  /**
+   * Option names and values. On the card as well as the detail model
+   * because roast lives here for the 5 lb Bag (§96.4).
+   */
+  options: ProductOptionModel[];
+  /**
+   * The product carries a selling plan group. NOT "you can subscribe to
+   * this variant" — Gatare's group covers only its 5 lb variant (§96.6).
+   * Per-variant truth is `ProductVariantModel.subscriptionOptions`.
+   */
+  hasSellingPlanGroup: boolean;
 };
 
 export type ProductOptionModel = {
@@ -47,6 +63,32 @@ export type SelectedOption = {
   value: string;
 };
 
+/**
+ * A subscription a customer can actually buy: this variant, this plan
+ * (§29). `frequencyLabel` is generated from the plan's recurring
+ * delivery policy and never from `sellingPlan.name` — this store has a
+ * plan named "Weekly membership" that bills every 60 days (§96.3).
+ */
+export type SubscriptionOptionModel = {
+  sellingPlanId: string;
+  /** Shopify's own plan name. Display only, never a source of cadence. */
+  name: string;
+  description: string | null;
+  /** Derived from deliveryPolicy, e.g. "Every 2 weeks". */
+  frequencyLabel: string;
+  interval: "DAY" | "WEEK" | "MONTH" | "YEAR" | null;
+  intervalCount: number | null;
+  /** Price on the plan, from Shopify's allocation (§10.2). */
+  price: Money;
+  compareAtPrice: Money | null;
+  /**
+   * Null when the plan carries no adjustment. Every plan in Yego's
+   * store is currently 0% (§96.5), so this is null everywhere and no
+   * savings claim may be rendered.
+   */
+  savingsPercentage: number | null;
+};
+
 export type ProductVariantModel = {
   id: string;
   title: string;
@@ -57,6 +99,8 @@ export type ProductVariantModel = {
   compareAtPrice: Money | null;
   selectedOptions: SelectedOption[];
   image: ShopifyImage | null;
+  /** Empty when this variant cannot be subscribed to (§96.6). */
+  subscriptionOptions: SubscriptionOptionModel[];
 };
 
 /** Extends the card model — the mapper builds detail on top of card. */
@@ -64,7 +108,6 @@ export type ProductDetailModel = ProductCardModel & {
   description: string;
   descriptionHtml: string;
   media: ShopifyImage[];
-  options: ProductOptionModel[];
   variants: ProductVariantModel[];
   seoTitle: string | null;
   seoDescription: string | null;
@@ -93,4 +136,29 @@ export type CartModel = {
   /** Shopify's total. Excludes tax and shipping until checkout (§15.2). */
   total: Money;
   lines: CartLineModel[];
+};
+
+export type CollectionModel = {
+  id: string;
+  handle: string;
+  title: string;
+  description: string;
+  image: ShopifyImage | null;
+  products: ProductCardModel[];
+};
+
+export type SearchSuggestion = {
+  text: string;
+};
+
+export type PredictiveSearchModel = {
+  products: ProductCardModel[];
+  suggestions: SearchSuggestion[];
+};
+
+export type SearchResultsModel = {
+  products: ProductCardModel[];
+  totalCount: number;
+  hasNextPage: boolean;
+  endCursor: string | null;
 };

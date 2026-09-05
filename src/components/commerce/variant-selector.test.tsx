@@ -17,6 +17,7 @@ function variant(
     compareAtPrice: null,
     selectedOptions: options.map(([name, value]) => ({ name, value })),
     image: null,
+    subscriptionOptions: [],
   };
 }
 

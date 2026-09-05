@@ -3,6 +3,7 @@ import {
   defaultVariant,
   findVariant,
   isOptionValueAvailable,
+  purchasableQuantity,
   selectionFromVariant,
 } from "./variants";
 import type { ProductVariantModel } from "./types";
@@ -21,6 +22,7 @@ function variant(
     compareAtPrice: null,
     selectedOptions: options.map(([name, value]) => ({ name, value })),
     image: null,
+    subscriptionOptions: [],
   };
 }
 
@@ -84,5 +86,43 @@ describe("selectionFromVariant", () => {
   it("round-trips through findVariant", () => {
     const selection = selectionFromVariant(variants[2]);
     expect(findVariant(variants, selection)?.id).toBe("v3");
+  });
+});
+
+/**
+ * Yego's store continues selling when stock runs out, so Shopify
+ * returns negative counts on variants that are genuinely purchasable
+ * (§96.4). Reading that number literally clamped the stepper to a
+ * negative maximum.
+ */
+describe("purchasableQuantity", () => {
+  it("treats a negative count on a sellable variant as untracked", () => {
+    expect(
+      purchasableQuantity({ availableForSale: true, quantityAvailable: -391 }),
+    ).toBe(99);
+  });
+
+  it("treats zero on a sellable variant as untracked", () => {
+    expect(
+      purchasableQuantity({ availableForSale: true, quantityAvailable: 0 }),
+    ).toBe(99);
+  });
+
+  it("treats an absent count as untracked", () => {
+    expect(
+      purchasableQuantity({ availableForSale: true, quantityAvailable: null }),
+    ).toBe(99);
+  });
+
+  it("respects a real tracked count", () => {
+    expect(
+      purchasableQuantity({ availableForSale: true, quantityAvailable: 3 }),
+    ).toBe(3);
+  });
+
+  it("offers nothing for a variant that is not for sale", () => {
+    expect(
+      purchasableQuantity({ availableForSale: false, quantityAvailable: 10 }),
+    ).toBe(0);
   });
 });

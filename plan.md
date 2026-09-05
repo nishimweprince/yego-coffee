@@ -5662,3 +5662,163 @@ policy, and creates a subscription line. 122 tests passing, 1 skipped.
    ship.
 6. **Vercel access** — Phase 1's preview-deployment criterion is still
    the only Phase 1 row open.
+
+---
+
+# 97. Phase 3 Build Record — Core Shop
+
+Implemented 2026-09-05, immediately after §96. First phase built with
+the real catalogue visible, which changed several decisions.
+
+## 97.1 Delivered
+
+**Data layer** — collection and search queries, their mappers, and the
+per-variant subscription model §96.6 said was missing. `getCollection`,
+`getCollections`, `getPredictiveSearch`, `getSearchResults`, all with
+cache tags and a 15-minute revalidation ceiling (§22).
+
+**Routes** — `/shop`, `/shop/coffee`, `/shop/merch`,
+`/collections/[handle]`, `/search`, `/api/search`.
+
+**Components** — `SiteHeader`, `SiteFooter`, `SearchTrigger`,
+`SearchPanel`, `RoastFilter`, `ProductGrid`, `ProductFacts`,
+`SubscriptionOptions`, `RelatedProducts`.
+
+**Fixes found by pointing the UI at real data** — three, below.
+
+163 tests passing across 17 files. Typecheck, lint and build green.
+
+## 97.2 The shop is scoped by Shopify's collections
+
+`/shop` read every published product and rendered "13 COFFEES" — the
+three coffees, the 5 lb Bag, a mug, and eight duplicate subscription
+products (§92.1). The same three coffees appeared four times each.
+
+The fix is to scope listings to the store's own collections:
+`roasted-coffee` holds exactly the real coffees, `merch` the mug, and
+`subscriptions` the duplicates. Nothing is hardcoded to a handle, so
+adding a coffee in Shopify makes it appear here, and when §92.1's
+consolidation empties the `subscriptions` collection this code needs no
+change.
+
+Search needed the same treatment for a different reason: a customer
+searching "dark" got eight results, four of them variations on "Dark
+Roast - Monthly Subscription". The exclusion rule is deliberately
+narrow — hide a product only when it is in `subscriptions` **and** in
+neither canonical collection — so that a consolidated coffee carrying
+selling plans stays visible, and a product in no collection at all is
+never hidden by accident. `duplicates.test.ts` pins both cases.
+
+Shopify's own `totalCount` is replaced with the post-filter count.
+Reporting "8 results" above a list of three reads as a bug.
+
+## 97.3 Three bugs the real catalogue exposed
+
+**The stepper's maximum was negative.** `max` was
+`variant.quantityAvailable ?? 99`. Yego sells past zero, so Shopify
+returns −391 for Medium Roast while `availableForSale` is true (§96.4).
+`Math.min(-391, …)` clamps every quantity below the minimum. The mock
+fixtures all used positive counts or null, so nothing caught it.
+
+`purchasableQuantity()` now treats a non-positive count on a sellable
+variant as "not usefully tracked" rather than "none left" — availability
+is `availableForSale`'s question and is asked separately. Five tests.
+
+**The roast filter hid a product that matched it.** `?roast=light`
+returned Gatare alone. The 5 lb Bag sells a Light roast, but holds its
+roasts as *option values* rather than tags, and the card fragment did
+not fetch options — so the listing could not see them. Options moved up
+to `ProductCardFragment`, and `ProductDetailModel` now inherits them
+from the card model rather than declaring its own. `?roast=light`
+returns two of four, correctly.
+
+The general shape of this: **a facet is only as good as the fields the
+listing query fetches.** Deriving roast from tags looked complete when
+tested against three coffees that happen to carry tags.
+
+**`ProductByHandle` spread a fragment it did not define.** Adding
+`SellingPlanAllocationFragment` to the variant fragment broke the
+query, because the operation interpolates fragment strings by hand.
+`documents.test.ts` (§95.7) caught it before a request was made — the
+first time that test has earned its keep, and exactly the failure it
+was written for.
+
+## 97.4 What was deliberately not built, and why
+
+**§13's product storytelling sections.** Origin, producer, process,
+variety, altitude, roasting intent, brew guidance — and §17's tactile
+Body / Acidity / Sweetness scales. **None of this data exists** (§96.4:
+no metafields at all). §71 and §93.5 are explicit that the answer to
+missing product data is to omit it, not to write it. A sweetness scale
+rendered at a plausible three-fifths is a fabricated tasting note with a
+graphic around it, and a customer cannot tell it from a measurement.
+
+`ProductFacts` renders only what has a source: roast, sizes, grinds.
+The §13 sections arrive when §5.1's metafields are populated in the
+admin. That is now the single highest-value thing an owner could do for
+this storefront.
+
+**§10.3's Subscribe / Buy once toggle.** The real coffees carry no
+selling plans, and the one plan that exists adjusts price by 0%
+(§96.5). A "Subscribe & save" control that saves nothing is a false
+claim. The PDP states the subscriptions that exist, at Shopify's price,
+with cadence from the delivery policy — and says plainly that the price
+is the same as a one-time order. The toggle is Phase 5 work, after
+§92.1.
+
+**A format filter** (12 oz / 5 lb). §93.3 asks for it, but the 5 lb Bag
+has no Size option at all, so a third of the catalogue could only be
+placed by parsing its title. A filter that silently misfiles a product
+is worse than no filter.
+
+**A cart count in the header.** Reading the cart cookie in the header
+would make every page dynamic, including the cached catalogue, to
+render one number. It belongs with the cart drawer (§15.1).
+
+**Pagination on search.** `hasNextPage` and `endCursor` are mapped and
+returned; nothing pages yet, because the whole catalogue is thirteen
+products and a "Load more" that never appears is untested code.
+
+## 97.5 A decision worth recording
+
+**Navigation links only to destinations that exist.** §6's IA lists
+Subscriptions, Find Your Coffee, Our Story, Café and Journal. Those
+routes arrive in Phases 4–7. `src/content/navigation.ts` holds the
+links that resolve today and gains each item as its phase lands — a
+menu that 404s costs more trust than a short menu.
+
+## 97.6 Phase 3 exit criteria — §75
+
+| Criterion | Status |
+|---|---|
+| Complete catalogue journey works | **Verified** — below |
+
+Driven in a browser against Yego's live store:
+
+```text
+/shop                      4 coffees + merch, not 13 products
+  filter Light             -> /shop?roast=light, 2 of 4 (Gatare + 5 lb Bag)
+/shop/coffee, /shop/merch  200; /shop/nonsense 404
+/collections/roasted-coffee 200; /collections/nope 404
+"/" opens predictive search, debounced, live Shopify results
+  "gatare"                 -> Gatare $25.00 + two query suggestions
+/search?q=dark             3 results, duplicates excluded (was 8)
+/search?q=zzzzz            empty state that says what to do next
+/products/light-roast      breadcrumb, media, variants, description,
+                           specification, subscription, related coffees
+  subscription block       "Every 60 days — $150.00"
+```
+
+That last line is the §96.3 lesson holding in the UI: the plan is named
+"Weekly membership" in Shopify, and the page describes it by the
+interval it actually bills on.
+
+## 97.7 Still open
+
+Unchanged from §96.10, plus:
+
+- **§92.2 #6** — Light Roast and Gatare are one product. §90.02 and
+  §90.03 both assume four coffees and name them separately. **This
+  blocks Phase 4's homepage**, which is the next phase.
+- Product metafields (§5.1) remain empty, which caps how much of §13
+  and §9.4 can ever be honest.

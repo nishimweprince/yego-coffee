@@ -11,6 +11,7 @@ import { addToCartAction } from "@/app/actions/cart";
 import {
   defaultVariant,
   findVariant,
+  purchasableQuantity,
   selectionFromVariant,
 } from "@/lib/shopify/variants";
 import type { ProductDetailModel } from "@/lib/shopify/types";
@@ -34,9 +35,10 @@ export function ProductPurchaseForm({
   const variant = findVariant(product.variants, selection) ?? initial;
   const sellable = Boolean(variant?.availableForSale);
 
-  // Shopify caps at whatever it is tracking; untracked variants get a
-  // sane ceiling rather than an unbounded stepper.
-  const max = variant?.quantityAvailable ?? 99;
+  // Shopify caps at whatever it is meaningfully tracking. Yego's store
+  // sells past zero and reports negative counts, so this is not a plain
+  // read of quantityAvailable — see purchasableQuantity.
+  const max = variant ? purchasableQuantity(variant) : 0;
 
   function handleSelect(optionName: string, value: string) {
     setAdded(false);

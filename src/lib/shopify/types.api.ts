@@ -23,6 +23,9 @@ export type ApiProduct = {
   handle: string;
   title: string;
   availableForSale: boolean;
+  tags: string[];
+  productType: string;
+  options: Array<{ id: string; name: string; values: string[] }>;
   featuredImage: ApiImage | null;
   priceRange: {
     minVariantPrice: ApiMoneyV2;
@@ -51,6 +54,26 @@ export type ApiSelectedOption = {
   value: string;
 };
 
+/** Shopify's recurring policy; empty object on non-recurring plans. */
+export type ApiSellingPlanDeliveryPolicy = {
+  interval?: "DAY" | "WEEK" | "MONTH" | "YEAR";
+  intervalCount?: number;
+};
+
+export type ApiSellingPlanAllocation = {
+  priceAdjustments: Array<{
+    price: ApiMoneyV2;
+    compareAtPrice: ApiMoneyV2 | null;
+  }>;
+  sellingPlan: {
+    id: string;
+    name: string;
+    description: string | null;
+    recurringDeliveries: boolean;
+    deliveryPolicy: ApiSellingPlanDeliveryPolicy | null;
+  };
+};
+
 export type ApiVariant = {
   id: string;
   title: string;
@@ -60,12 +83,14 @@ export type ApiVariant = {
   compareAtPrice: ApiMoneyV2 | null;
   selectedOptions: ApiSelectedOption[];
   image: ApiImage | null;
+  sellingPlanAllocations?: {
+    nodes: ApiSellingPlanAllocation[];
+  };
 };
 
 export type ApiProductDetail = ApiProduct & {
   description: string;
   descriptionHtml: string;
-  options: Array<{ id: string; name: string; values: string[] }>;
   images: { edges: Array<{ node: ApiImage }> };
   variants: { edges: Array<{ node: ApiVariant }> };
   seo: { title: string | null; description: string | null } | null;
@@ -120,3 +145,38 @@ export type ApiCartCreate = { cartCreate: ApiCartMutationPayload };
 export type ApiCartLinesAdd = { cartLinesAdd: ApiCartMutationPayload };
 export type ApiCartLinesUpdate = { cartLinesUpdate: ApiCartMutationPayload };
 export type ApiCartLinesRemove = { cartLinesRemove: ApiCartMutationPayload };
+
+export type ApiCollection = {
+  id: string;
+  handle: string;
+  title: string;
+  description: string;
+  image: ApiImage | null;
+};
+
+export type ApiCollectionByHandleQuery = {
+  collection:
+    | (ApiCollection & {
+        products: { edges: Array<{ node: ApiProduct }> };
+      })
+    | null;
+};
+
+export type ApiCollectionsQuery = {
+  collections: { edges: Array<{ node: ApiCollection }> };
+};
+
+export type ApiPredictiveSearchQuery = {
+  predictiveSearch: {
+    products: ApiProduct[];
+    queries: Array<{ text: string; styledText: string }>;
+  } | null;
+};
+
+export type ApiSearchQuery = {
+  search: {
+    totalCount: number;
+    pageInfo: { hasNextPage: boolean; endCursor: string | null };
+    edges: Array<{ node: ApiProduct | Record<string, never> }>;
+  };
+};
