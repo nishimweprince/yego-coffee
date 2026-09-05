@@ -9,6 +9,8 @@ import { RelatedProducts } from "@/components/product/related-products";
 import { SubscriptionOptions } from "@/components/product/subscription-options";
 import { Contour } from "@/components/ui/contour";
 import { COLLECTION_HANDLES } from "@/lib/catalog/collections";
+import { env } from "@/lib/env";
+import { breadcrumbJsonLd, productJsonLd } from "@/lib/seo/structured-data";
 import { hasShopifyCredentials } from "@/lib/env";
 import { getCollection, getProduct } from "@/lib/shopify/storefront";
 
@@ -27,6 +29,14 @@ export async function generateMetadata({
     // rather than to boilerplate.
     title: product.seoTitle ?? product.title,
     description: product.seoDescription ?? product.description.slice(0, 160),
+    alternates: { canonical: `/products/${product.handle}` },
+    openGraph: {
+      type: "website",
+      title: product.title,
+      description: product.description.slice(0, 200) || undefined,
+      url: `/products/${product.handle}`,
+      images: product.featuredImage ? [product.featuredImage.url] : undefined,
+    },
   };
 }
 
@@ -61,8 +71,34 @@ export default async function ProductPage({
     ),
   );
 
+  const base = env.NEXT_PUBLIC_SITE_URL.replace(/\/$/, "");
+
   return (
     <main className="px-page-x py-section-md">
+      {/* §34: product and breadcrumb structured data, entirely from
+          Shopify's own catalogue values. */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            productJsonLd(product, `${base}/products/${product.handle}`),
+          ),
+        }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            breadcrumbJsonLd([
+              { name: "Shop", url: `${base}/shop` },
+              {
+                name: product.title,
+                url: `${base}/products/${product.handle}`,
+              },
+            ]),
+          ),
+        }}
+      />
       <div className="mx-auto max-w-6xl">
         <nav aria-label="Breadcrumb">
           <Link

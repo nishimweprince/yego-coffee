@@ -6225,3 +6225,141 @@ Shop, Merch, Our Story, Journal, Policies and Search.
   and hours, and Vercel access.
 - Product metafields (§5.1) — still the highest-value thing an owner
   could add, and still what caps §13 and §9.4.
+
+---
+
+# 101. Phase 8 Build Record — Analytics, SEO, Consent
+
+Implemented 2026-09-05. Built with **no analytics keys in existence**,
+which shaped the architecture rather than blocking it.
+
+## 101.1 Delivered
+
+```text
+src/lib/analytics/   events.ts (§31.1 taxonomy), consent.ts,
+                     analytics.ts (the façade), use-consent.ts
+src/lib/seo/         structured-data.ts, redirects.ts (§43's sheet)
+src/app/             sitemap.ts, robots.ts
+components/analytics AnalyticsRoot, ConsentBanner, AnalyticsProvider
+next.config.ts       §39 security headers, §43 Phase 2 redirects
+```
+
+Env contract extended with optional analytics keys, the Customer
+Account variables Phase 6 will need, and the webhook secret (§23).
+
+264 tests. Typecheck, lint, build green.
+
+## 101.2 The event layer ships before the keys do
+
+Components call `track({ name: "quiz_completed", questions: 3 })` and
+know nothing about GA4 or PostHog. The façade holds the consent gate,
+strips §33's forbidden fields once, and no-ops when nothing is
+registered — so the taxonomy is written, typed and tested now, and
+adding a provider later is registering a sink.
+
+This is §94.2's split-validation principle applied to measurement: a
+missing analytics key must never stop a storefront serving coffee, so
+`getAnalyticsEnv()` never throws on absence. It does throw on a
+*malformed* key, which is a typo worth surfacing.
+
+The event union is deliberately narrow. §33 forbids sending addresses,
+payment data, auth tokens or unnecessary customer identifiers, and the
+cheapest way to honour that is for the payload types to have nowhere
+to put them. `stripSensitive` is the runtime backstop for the day
+someone widens one anyway.
+
+**Instrumented so far:** search (opened, submitted, no-results,
+predictive click), filters, add-to-cart, and the whole quiz
+(started with prefill flag, answered, back, completed, recommendation
+changed, subscription started).
+
+## 101.3 Consent is a gate, not a banner
+
+The distinction matters and is where most implementations quietly
+fail: `strategy="afterInteractive"` still *loads* the vendor script.
+Here the `<Script>` tags are not rendered at all until consent is
+granted, so a visitor who declines never downloads a Google SDK.
+Verified in the browser:
+
+```text
+no key configured        no banner at all — asking to collect nothing
+                         is theatre
+key configured, no answer banner shown, googletagmanager script ABSENT
+"Allow" clicked          banner gone, script present, decision stored
+```
+
+**Global Privacy Control is honoured as an answer, in one direction.**
+A browser sending GPC is treated as having declined, and is never
+shown the banner — asking again would be asking someone to repeat
+themselves until they say yes. GPC can deny; it can never grant.
+
+Both buttons carry equal visual weight. A faint "Decline" beside a
+prominent "Accept" is a dark pattern, and §33's "least-data
+collection" is not served by making refusal harder than agreement.
+
+**A React lesson, again.** Reading consent in an effect and calling
+`setState` tripped `react-hooks/set-state-in-effect` — the third time
+this rule has caught something in this project (§95.3, §97.3). It was
+right again: consent genuinely is external state, living in
+`localStorage` and in a browser signal, shared across components and
+tabs. `useSyncExternalStore` is the primitive for exactly that, and it
+gives correct SSR behaviour for free — the server cannot know the
+answer and must assume "unset".
+
+## 101.4 SEO
+
+`metadataBase` is set, without which Next emits relative Open Graph
+URLs that crawlers discard silently. Canonicals and OG on the product
+and article routes; `Product`, `BreadcrumbList` and `Article` JSON-LD
+built entirely from Shopify's values.
+
+The sitemap is generated from the store, not from a list: 29 URLs
+today, and a coffee added in Shopify appears without a code change.
+The duplicate subscription products **are** included — they are real,
+purchasable URLs, and hiding them from search would hide pages
+customers can buy from.
+
+`robots.ts` disallows everything on a non-production deployment. A
+staging copy of a storefront competing with the real one in search is
+a migration hazard §43 would otherwise inherit.
+
+## 101.5 The redirect sheet, and what is deliberately not in it
+
+§43 Phase 2 asks for a sheet of old URL → new URL → status → reason.
+It is code (`src/lib/seo/redirects.ts`), so it is reviewable, testable
+and actually executed. Verified live: `/collections/all` → `/shop`,
+`/pages/who-are-we` → `/about`, `/blogs/news/:slug` → `/journal/:slug`,
+all 308.
+
+**The `*-subscription` and `*-drop` products are not redirected**,
+though §92.1 proposes exactly that. They remain separately purchasable
+products with their own prices; redirecting a live product URL to a
+different product loses both the sale and the customer's place. That
+redirect belongs *with* §92.1's consolidation — at which point
+§92.1's own query-param form (`/products/dark-roast?plan=monthly`)
+becomes meaningful. A test pins this, so it is not "added for
+completeness" by someone later.
+
+## 101.6 Security headers, and the one that is missing
+
+`X-Content-Type-Options`, `Referrer-Policy`, `X-Frame-Options`,
+`Permissions-Policy` and HSTS are set and verified on the wire.
+
+**No Content-Security-Policy.** This app inlines JSON-LD and the GA4
+bootstrap, so a real CSP needs nonces threaded through both, and a
+policy loose enough to allow `unsafe-inline` would announce protection
+it does not provide. §39 gets its CSP in Phase 9, with nonces.
+
+## 101.7 Deliberately not built
+
+- **PostHog.** Its SDK is a dependency this project does not have and
+  no key exists to test against. The sink interface is the seam; §31's
+  product analytics is a follow-up, not a rewrite.
+- **Meta Pixel** (§31, "if required"). Not required, and §33 asks for
+  advertising controls before advertising trackers.
+- **A/B testing** (§32). Every experiment there needs a measurement
+  baseline that does not exist yet; running experiments before the
+  events are flowing produces confident nonsense.
+- **Shopify webhooks** (§23). The secret is in the env contract, but
+  the handler needs a webhook registered against a public URL — which
+  needs the Vercel access that is still outstanding (§96.10).

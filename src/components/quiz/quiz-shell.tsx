@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Contour } from "@/components/ui/contour";
 import { buttonVariants } from "@/components/ui/button";
 import { QuizResult } from "./quiz-result";
@@ -12,6 +12,7 @@ import {
   type QuizDraft,
 } from "@/lib/quiz/schema";
 import { cn } from "@/lib/utils";
+import { track } from "@/lib/analytics/analytics";
 import type { ProductDetailModel } from "@/lib/shopify/types";
 
 /**
@@ -53,6 +54,13 @@ export function QuizShell({
   const [index, setIndex] = useState(prefill ? 1 : 0);
   const [done, setDone] = useState(false);
 
+  const started = useRef(false);
+  useEffect(() => {
+    if (started.current) return;
+    started.current = true;
+    track({ name: "quiz_started", prefilled: prefill !== null });
+  }, [prefill]);
+
   // Grind is only asked when Shopify actually sells one (§93.2 Q04).
   const grindOffered = useMemo(
     () =>
@@ -65,6 +73,7 @@ export function QuizShell({
   );
 
   function set<K extends keyof QuizDraft>(key: K, value: QuizDraft[K]) {
+    track({ name: "quiz_answered", step: String(key), answer: String(value) });
     setAnswers((prev) => ({ ...prev, [key]: value }));
   }
 
@@ -171,6 +180,7 @@ export function QuizShell({
   function advance() {
     setIndex((current) => {
       if (current + 1 >= steps.length) {
+        track({ name: "quiz_completed", questions: steps.length });
         setDone(true);
         return current;
       }
@@ -179,6 +189,7 @@ export function QuizShell({
   }
 
   function finish() {
+    track({ name: "quiz_completed", questions: steps.length });
     setDone(true);
   }
 
@@ -219,7 +230,10 @@ export function QuizShell({
       {index > 0 ? (
         <button
           type="button"
-          onClick={() => setIndex((c) => Math.max(0, c - 1))}
+          onClick={() => {
+            track({ name: "quiz_back_clicked", step: step.id });
+            setIndex((c) => Math.max(0, c - 1));
+          }}
           className="mt-section-sm text-body-m text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
         >
           ← Back

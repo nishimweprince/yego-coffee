@@ -3,7 +3,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { Contour } from "@/components/ui/contour";
-import { hasShopifyCredentials } from "@/lib/env";
+import { env, hasShopifyCredentials } from "@/lib/env";
+import { articleJsonLd } from "@/lib/seo/structured-data";
 import { getArticle } from "@/lib/shopify/storefront";
 
 export async function generateMetadata({
@@ -17,6 +18,15 @@ export async function generateMetadata({
   return {
     title: article.seoTitle ?? article.title,
     description: article.seoDescription ?? article.excerpt ?? undefined,
+    alternates: { canonical: `/journal/${article.handle}` },
+    openGraph: {
+      type: "article",
+      title: article.title,
+      description: article.excerpt ?? undefined,
+      url: `/journal/${article.handle}`,
+      images: article.image ? [article.image.url] : undefined,
+      publishedTime: article.publishedAt,
+    },
   };
 }
 
@@ -29,8 +39,18 @@ export default async function ArticlePage({
   const article = await getArticle(slug);
   if (!article) notFound();
 
+  const base = env.NEXT_PUBLIC_SITE_URL.replace(/\/$/, "");
+
   return (
     <main className="px-page-x py-section-md">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            articleJsonLd(article, `${base}/journal/${article.handle}`),
+          ),
+        }}
+      />
       <article className="mx-auto max-w-3xl">
         <nav aria-label="Breadcrumb">
           <Link

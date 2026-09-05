@@ -3,6 +3,7 @@
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { roastParamValue, type Roast } from "@/lib/catalog/facets";
+import { track } from "@/lib/analytics/analytics";
 
 /**
  * Roast filter (plan.md §12.2, §93.3).
@@ -28,6 +29,7 @@ export function RoastFilter({
   if (options.length < 2) return null;
 
   function toggle(value: Roast) {
+    track({ name: "search_filter_applied", filter: "roast", value });
     const next = selected.includes(value)
       ? selected.filter((r) => r !== value)
       : [...selected, value];

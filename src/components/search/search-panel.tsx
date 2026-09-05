@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { formatMoney } from "@/lib/formatting/money";
+import { track } from "@/lib/analytics/analytics";
 import type { PredictiveSearchModel } from "@/lib/shopify/types";
 
 const EMPTY: PredictiveSearchModel = { products: [], suggestions: [] };
@@ -27,6 +28,7 @@ export function SearchPanel({ onClose }: { onClose: () => void }) {
   const router = useRouter();
 
   useEffect(() => {
+    track({ name: "search_opened" });
     inputRef.current?.focus();
     const previouslyFocused = document.activeElement as HTMLElement | null;
     return () => previouslyFocused?.focus?.();
@@ -58,7 +60,11 @@ export function SearchPanel({ onClose }: { onClose: () => void }) {
           `/api/search?q=${encodeURIComponent(term)}`,
           { signal: controller.signal },
         );
-        setResults((await response.json()) as PredictiveSearchModel);
+        const next = (await response.json()) as PredictiveSearchModel;
+        setResults(next);
+        if (next.products.length === 0) {
+          track({ name: "search_no_results", query: term });
+        }
       } catch {
         // Aborted or failed: keep whatever is on screen rather than
         // flashing an empty state mid-typing.
@@ -81,6 +87,7 @@ export function SearchPanel({ onClose }: { onClose: () => void }) {
     (term: string) => {
       const trimmed = term.trim();
       if (!trimmed) return;
+      track({ name: "search_query_submitted", query: trimmed });
       onClose();
       router.push(`/search?q=${encodeURIComponent(trimmed)}`);
     },
@@ -125,7 +132,13 @@ export function SearchPanel({ onClose }: { onClose: () => void }) {
                 <li key={product.id}>
                   <Link
                     href={`/products/${product.handle}`}
-                    onClick={onClose}
+                    onClick={() => {
+                      track({
+                        name: "predictive_result_clicked",
+                        handle: product.handle,
+                      });
+                      onClose();
+                    }}
                     className="flex items-center gap-stack-md px-stack-md py-stack-sm transition-colors hover:bg-muted"
                   >
                     <span className="relative block h-12 w-12 shrink-0 overflow-hidden bg-muted">

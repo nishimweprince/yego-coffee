@@ -8,6 +8,7 @@ import { ProductPrice } from "./product-price";
 import { QuantitySelector } from "./quantity-selector";
 import { VariantSelector } from "./variant-selector";
 import { addToCartAction } from "@/app/actions/cart";
+import { track } from "@/lib/analytics/analytics";
 import {
   defaultVariant,
   findVariant,
@@ -52,6 +53,11 @@ export function ProductPurchaseForm({
     startTransition(async () => {
       const result = await addToCartAction(variant.id, quantity);
       if (result.ok) {
+        track({
+          name: "cart_item_added",
+          handle: product.handle,
+          quantity,
+        });
         setAdded(true);
         // Refresh so any server-rendered cart count reflects the change.
         router.refresh();

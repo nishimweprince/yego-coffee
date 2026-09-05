@@ -5,6 +5,8 @@ import "@fortawesome/fontawesome-svg-core/styles.css";
 import "./globals.css";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/components/layout/site-header";
+import { AnalyticsRoot } from "@/components/analytics/analytics-root";
+import { env, getAnalyticsEnv } from "@/lib/env";
 
 // Font Awesome ships its own <style> injection, which races Next's CSS
 // and flashes oversized icons on first paint. We import the stylesheet
@@ -25,16 +27,34 @@ const archivo = Archivo({
   axes: ["wdth"],
 });
 
+/**
+ * `metadataBase` makes every relative canonical and Open Graph URL in
+ * the app absolute (§34). Without it Next emits relative OG URLs,
+ * which most crawlers discard silently.
+ */
 export const metadata: Metadata = {
+  metadataBase: new URL(env.NEXT_PUBLIC_SITE_URL),
   title: {
     default: "Yego Coffee",
     template: "%s · Yego Coffee",
   },
   description:
     "Family-owned Rwandan coffee, roasted in Somerville, Massachusetts.",
+  alternates: { canonical: "/" },
+  openGraph: {
+    type: "website",
+    siteName: "Yego Coffee",
+    locale: "en_US",
+    title: "Yego Coffee",
+    description:
+      "Family-owned Rwandan coffee, roasted in Somerville, Massachusetts.",
+  },
+  twitter: { card: "summary_large_image" },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
+  const analytics = getAnalyticsEnv();
+
   return (
     <html
       lang="en"
@@ -45,6 +65,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <SiteHeader />
         {children}
         <SiteFooter />
+        <AnalyticsRoot
+          gaMeasurementId={analytics.NEXT_PUBLIC_GA_MEASUREMENT_ID}
+        />
       </body>
     </html>
   );

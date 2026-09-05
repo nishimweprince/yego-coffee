@@ -13,6 +13,12 @@ import { z } from "zod";
  *             lazily on first use so brand pages, the design system,
  *             and the test suite all run without credentials.
  *
+ *   analytics — entirely optional. A missing GA4 or PostHog key must
+ *             never stop the site booting: measurement is not the
+ *             product, and a storefront that refuses to serve coffee
+ *             because an analytics key is absent has its priorities
+ *             backwards. A malformed key is still reported.
+ *
  * The split is what lets Phase 1 finish before Storefront API keys
  * exist, without weakening the fail-fast guarantee where it counts.
  */
@@ -38,7 +44,21 @@ const shopifySchema = z.object({
   SHOPIFY_STOREFRONT_ACCESS_TOKEN: z.string().min(1),
 });
 
+/**
+ * Analytics is opt-in by absence: every field is optional, and the
+ * providers simply do not load when their key is missing (§31).
+ */
+const analyticsSchema = z.object({
+  NEXT_PUBLIC_GA_MEASUREMENT_ID: z
+    .string()
+    .regex(/^G-[A-Z0-9]+$/, { message: "must look like G-XXXXXXX" })
+    .optional(),
+  NEXT_PUBLIC_POSTHOG_KEY: z.string().min(1).optional(),
+  NEXT_PUBLIC_POSTHOG_HOST: z.string().url().optional(),
+});
+
 export type CoreEnv = z.infer<typeof coreSchema>;
+export type AnalyticsEnv = z.infer<typeof analyticsSchema>;
 export type ShopifyEnv = z.infer<typeof shopifySchema>;
 
 function format(issues: z.ZodIssue[]): string {
@@ -94,4 +114,26 @@ export function hasShopifyCredentials(): boolean {
 /** Test seam. */
 export function resetShopifyEnvCache(): void {
   shopifyEnv = null;
+}
+
+/**
+ * Analytics configuration, or an empty object.
+ *
+ * Never throws on absence — only on a value that is present and
+ * malformed, which is a typo worth surfacing rather than a
+ * configuration choice.
+ */
+export function getAnalyticsEnv(): AnalyticsEnv {
+  const result = analyticsSchema.safeParse({
+    NEXT_PUBLIC_GA_MEASUREMENT_ID: process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID,
+    NEXT_PUBLIC_POSTHOG_KEY: process.env.NEXT_PUBLIC_POSTHOG_KEY,
+    NEXT_PUBLIC_POSTHOG_HOST: process.env.NEXT_PUBLIC_POSTHOG_HOST,
+  });
+
+  if (!result.success) {
+    throw new Error(
+      `Invalid analytics configuration:\n${format(result.error.issues)}`,
+    );
+  }
+  return result.data;
 }

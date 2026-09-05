@@ -14,6 +14,7 @@ import { purchasableQuantity } from "@/lib/shopify/variants";
 import type { QuizAnswers } from "@/lib/quiz/schema";
 import type { QuizRecommendation } from "@/lib/quiz/recommendation";
 import { cn } from "@/lib/utils";
+import { track } from "@/lib/analytics/analytics";
 
 /**
  * The result (plan.md §9.6).
@@ -87,6 +88,15 @@ export function QuizResult({
         : await addToCartAction(variant.id, quantity);
 
       if (result.ok) {
+        track(
+          subscription
+            ? { name: "quiz_subscription_started", handle: product.handle }
+            : {
+                name: "cart_item_added",
+                handle: product.handle,
+                quantity,
+              },
+        );
         setAdded(true);
         router.refresh();
       } else {
@@ -234,7 +244,13 @@ export function QuizResult({
               key={cups}
               type="button"
               aria-pressed={answers.cupsPerDay === cups}
-              onClick={() => onChange({ ...answers, cupsPerDay: cups })}
+              onClick={() => {
+                track({
+                  name: "quiz_recommendation_changed",
+                  cupsPerDay: cups,
+                });
+                onChange({ ...answers, cupsPerDay: cups });
+              }}
               className={cn(
                 "min-h-11 border px-4 text-body-s transition-colors",
                 answers.cupsPerDay === cups
