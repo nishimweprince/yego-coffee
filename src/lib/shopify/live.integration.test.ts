@@ -114,10 +114,16 @@ describe.skipIf(!configured)("Storefront API — live", () => {
         `options [${optionNames.join(", ") || "none"}], ` +
         `${detail.media.length} image(s)`,
     );
-    // Answers §92.2 #2 — whether grind options exist at all.
+    // Answers §92.2 #2 — whether grind options exist at all. The
+    // question is what the option *means*, not what it is called: Yego
+    // names it "Type" and carries Whole Bean / Ground in its values, so
+    // matching on the option name alone reported a false negative.
+    const grind = detail.options.find((o) =>
+      o.values.some((v) => /ground|whole\s*bean/i.test(v)),
+    );
     console.log(
-      optionNames.some((n) => n.toLowerCase() === "grind")
-        ? "  §92.2 #2: grind options EXIST"
+      grind
+        ? `  §92.2 #2: grind EXISTS as option "${grind.name}" [${grind.values.join(", ")}]`
         : "  §92.2 #2: no grind option on this product",
     );
 
@@ -158,6 +164,166 @@ describe.skipIf(!configured)("Storefront API — live", () => {
     console.log(
       `\n  Open and confirm the total matches ` +
         `${persisted.subtotal.amount} ${persisted.subtotal.currencyCode}:\n  ${persisted.checkoutUrl}\n`,
+    );
+  });
+
+  /**
+   * §75 Phase 2's second exit criterion: a subscription line reaches
+   * checkout. It also reads each plan's own delivery policy, which is
+   * what settles §92.2 #1 — the cadence comes from Shopify's structured
+   * interval, never from the plan's display name. Those disagree in this
+   * store, and the name is the one that is wrong.
+   *
+   * Availability is read from `sellingPlanAllocations` on the variant,
+   * not from the product's plan groups. A product can carry a group that
+   * applies to only some of its variants: the first attempt at this test
+   * paired Gatare's 12 oz variant with a plan scoped to its 5 lb variant
+   * and Shopify answered "Cannot apply selling plan to variant". The
+   * allocation is the only per-variant truth, and it carries the price.
+   */
+  it("adds a selling-plan line and reports each plan's real cadence", async () => {
+    const data = await request<{
+      products: {
+        nodes: Array<{
+          handle: string;
+          variants: {
+            nodes: Array<{
+              id: string;
+              title: string;
+              availableForSale: boolean;
+              price: { amount: string };
+              sellingPlanAllocations: {
+                nodes: Array<{
+                  priceAdjustments: Array<{ price: { amount: string } }>;
+                  sellingPlan: {
+                    id: string;
+                    name: string;
+                    deliveryPolicy: {
+                      interval?: string;
+                      intervalCount?: number;
+                    } | null;
+                  };
+                }>;
+              };
+            }>;
+          };
+        }>;
+      };
+    }>(/* GraphQL */ `
+      query LiveSellingPlans {
+        products(first: 30) {
+          nodes {
+            handle
+            variants(first: 20) {
+              nodes {
+                id
+                title
+                availableForSale
+                price {
+                  amount
+                }
+                sellingPlanAllocations(first: 10) {
+                  nodes {
+                    priceAdjustments {
+                      price {
+                        amount
+                      }
+                    }
+                    sellingPlan {
+                      id
+                      name
+                      deliveryPolicy {
+                        ... on SellingPlanRecurringDeliveryPolicy {
+                          interval
+                          intervalCount
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    `);
+
+    type Pair = {
+      handle: string;
+      variantId: string;
+      variantTitle: string;
+      planId: string;
+      planName: string;
+      cadence: string;
+      oneTime: string;
+      onPlan: string;
+      available: boolean;
+    };
+
+    const pairs: Pair[] = [];
+    for (const p of data.products.nodes)
+      for (const v of p.variants.nodes)
+        for (const a of v.sellingPlanAllocations.nodes) {
+          const policy = a.sellingPlan.deliveryPolicy;
+          pairs.push({
+            handle: p.handle,
+            variantId: v.id,
+            variantTitle: v.title,
+            planId: a.sellingPlan.id,
+            planName: a.sellingPlan.name,
+            cadence: policy?.interval
+              ? `every ${policy.intervalCount} ${policy.interval.toLowerCase()}(s)`
+              : "NO RECURRING DELIVERY POLICY",
+            oneTime: v.price.amount,
+            onPlan: a.priceAdjustments[0]?.price.amount ?? v.price.amount,
+            available: v.availableForSale,
+          });
+        }
+
+    expect(pairs.length).toBeGreaterThan(0);
+
+    for (const p of pairs) {
+      const saves = p.onPlan === p.oneTime ? "no plan discount" : `${p.oneTime} -> ${p.onPlan}`;
+      const mismatch =
+        /week/i.test(p.planName) && !/week/i.test(p.cadence)
+          ? "  <-- PLAN NAME DISAGREES WITH ITS OWN POLICY"
+          : "";
+      console.log(
+        `  ${p.handle.padEnd(36)} ${p.variantTitle.padEnd(22)} "${p.planName}" ${p.cadence}  ${saves}${mismatch}`,
+      );
+    }
+
+    // Every plan must state a cadence. One that does not cannot be
+    // presented honestly and must never reach a customer.
+    for (const p of pairs) expect(p.cadence).not.toBe("NO RECURRING DELIVERY POLICY");
+
+    const usable = pairs.find((p) => p.available);
+    expect(usable).toBeTruthy();
+
+    const created = await request<{
+      cartCreate: {
+        cart: ApiCart | null;
+        userErrors: Array<{ message: string }>;
+      };
+    }>(CART_CREATE_MUTATION, {
+      lines: [
+        {
+          merchandiseId: usable!.variantId,
+          quantity: 1,
+          sellingPlanId: usable!.planId,
+        },
+      ],
+    });
+    expect(created.cartCreate.userErrors).toEqual([]);
+
+    const cart = mapCart(created.cartCreate.cart as ApiCart);
+    expect(cart.lines[0].sellingPlanName).toBeTruthy();
+    expect(cart.checkoutUrl).toMatch(/^https:\/\//);
+
+    console.log(
+      `\n  Subscription line: ${usable!.handle} ${usable!.variantTitle} on ` +
+        `"${cart.lines[0].sellingPlanName}" (${usable!.cadence})` +
+        ` — ${cart.subtotal.amount} ${cart.subtotal.currencyCode}\n  ${cart.checkoutUrl}\n`,
     );
   });
 });

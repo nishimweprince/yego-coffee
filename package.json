@@ -43,6 +43,7 @@
     "jsdom": "^30.0.1",
     "tailwindcss": "^4",
     "typescript": "^5",
+    "vite": "^8.2.2",
     "vitest": "^4.1.11"
   },
   "packageManager": "pnpm@11.25.0"

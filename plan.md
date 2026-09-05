@@ -5369,3 +5369,296 @@ Yego's checkout page totals                       NEEDS A TOKEN
 Everything verifiable without access to Yego's Shopify account has been
 verified. The three remaining rows are the §75 exit criteria and require
 credentials that only the store owner can issue.
+
+---
+
+# 96. Phase 2 Closure — the store, as it actually is
+
+Credentials arrived 2026-09-05. Every row that §95.14 marked
+"NEEDS A TOKEN" is now answered, and four of §92.2's five questions are
+resolved from the store's own structured data rather than from anybody's
+reading of a product title.
+
+## 96.1 The harness would have skipped forever
+
+`pnpm verify:shopify` reported green with the credentials in place and
+ran nothing. Vitest does not load `.env.local` into `process.env` — Vite
+exposes prefixed variables through `import.meta.env` only — so the
+harness §95.7 built to run "automatically the moment a token exists"
+read three empty strings and skipped itself, exactly as designed to when
+unconfigured. A skipped suite and a passing suite are the same colour in
+the summary line.
+
+Fixed in `vitest.config.ts` with `loadEnv(mode, cwd, "")` assigned into
+`process.env`. `loadEnv` comes from `vite`, which is now a direct
+devDependency; `vitest/config` does not re-export it.
+
+The general form of this: **a test that skips itself when
+misconfigured must be checked for whether it can see the
+configuration.** §95.7 chose a skipping test over a script so it would
+cost nothing until a token existed. That was right, but the skip
+condition and the environment loading were never verified together.
+
+## 96.2 Credentials, and the shop they reach
+
+```text
+shop            Yego Coffee 2.0
+primary domain  https://yegocoffee.com
+endpoint        yego-coffee-2-0.myshopify.com/api/2026-07/graphql.json
+```
+
+API version 2026-07 is accepted. **No schema disagreements.** All eight
+operations executed against the real Storefront API exactly as written —
+§95.10's validation against the published SDL held, including the
+version-skew caveat it flagged.
+
+## 96.3 §92.2, answered
+
+**#1 — cadence. RESOLVED.** Read from each plan's own
+`SellingPlanRecurringDeliveryPolicy`:
+
+```text
+"Monthly subscription"     MONTH / 1    every month
+"Bi-Monthly subscription"  WEEK  / 2    every two weeks
+"Weekly membership"        DAY   / 60   every 60 days
+```
+
+§90.07's assumption — bi-monthly means every two weeks — was correct.
+The plan's own option value reads "Deliver: Twice Monthly" and its
+description "Twice Monthly Subscription", both consistent with WEEK/2.
+
+**This unblocks selling-plan work.** It also proves why the block was
+right: the third row is a plan named "Weekly membership" that bills
+every 60 days. Its name is wrong by a factor of eight. Had anything
+derived cadence copy from plan names, that error would have shipped.
+**Cadence copy must be generated from `deliveryPolicy`, never from
+`sellingPlan.name`** — see §96.6.
+
+**#2 — grind. RESOLVED: yes, it exists.** Not as an option named
+"grind", which is why §95.7's probe reported a false negative. Yego
+calls it **`Type`**:
+
+```text
+light-roast    Type: Whole Beans | Ground     Size: 12 oz | 5 lbs
+medium-roast   Type: Whole Bean  | Ground     Size: 12 oz
+dark-roast     Type: Whole bean  | Ground     Size: 12 oz
+5-lb-bag       Roast: Light | Medium | Dark   (no Type option)
+```
+
+Note the casing: "Whole Beans", "Whole Bean", "Whole bean" — three
+spellings of one concept across three products. Anything that groups or
+filters on grind must normalise; anything that displays it should show
+Shopify's own string. §93.2's conditional grind question (Q04) is
+therefore live, and §13's grind selector is unconditional after all.
+
+**#3 — Light Roast. RESOLVED, and it is not what the plan assumed.**
+The handle `light-roast` **is** the Gatare coffee:
+
+```text
+handle  light-roast
+title   "Gatare Anaerobic Process."
+price   $25 (12 oz)   $150 (5 lbs)
+tags    coffee, light, roast
+```
+
+They are one product, not two. **Yego sells three coffees**, not four:
+Gatare (light), Medium Roast, Dark Roast — plus the 5 lb Bag, which is a
+format product carrying a `Roast` option, and one mug.
+
+This contradicts §90.02, §90.03 and §93, all of which treat "Light
+Roast" and "Gatare Anaerobic Process" as separate items and build a
+four-card discovery section and a four-answer quiz on that basis. See
+§96.7 — this needs an owner's answer before the homepage is built.
+
+**#4 — decaf. RESOLVED: none.** No decaf product, variant or tag exists
+anywhere in the catalogue. §93.1's instruction to cut the decaf question
+stands, and §93.3's removal of the decaf filter stands.
+
+**#5 — the 5 lb Bag's audience.** Still open. Still needs the owners.
+
+## 96.4 The catalogue, as returned
+
+Thirteen published products. §92's table was close but not current:
+
+```text
+light-roast                            $25 / $150   "Gatare Anaerobic Process."
+medium-roast                           $19
+dark-roast                             $19
+5-lb-bag                               $95          option Roast: Light|Medium|Dark
+yego-12-oz-mugs                        $28          NOT IN §92 — merch
+monthly-drop                           $17          duplicate subscription product
+bi-monthly-drop                        $17          duplicate subscription product
+dark-roast-monthly-subscription        $17          duplicate
+medium-roast-monthly-subscription      $17          duplicate — NOT IN §92
+dark-roast-bi-monthly-subscription     $17          duplicate
+medium-roast-bi-monthly-subscription   $17          duplicate
+5-lb-bag-monthly-subscription          $85          duplicate
+5-lb-bag-bi-monthly-subscription       $85          duplicate
+
+collections: frontpage, roasted-coffee, merch, subscriptions
+```
+
+There is no `all` collection; §92's `all → /shop` mapping should target
+`frontpage` or a Storefront-level product query instead.
+
+Note the price asymmetry: `5-lb-bag` is $95 for Medium or Dark, while
+Gatare at 5 lbs is $150 on its own product. A "5 lb" filter facet
+(§93.3) spans two products at two price points.
+
+**Other findings from the live data:**
+
+- **No metafields.** Every identifier in §5.1's recommended
+  `coffee.*` namespace returns null, as does `custom.*`. There is no
+  structured origin, process, altitude, flavour-note or roast data in
+  Shopify at all. Everything §13's storytelling sections and §9.4's
+  scoring engine want to read **does not exist yet**. What does exist:
+  product descriptions (49–364 characters, real and specific), tags
+  (`coffee`, `light`/`medium`/`dark`, `roast`), option values, and
+  images. §96.7 covers what this means for the quiz.
+- **Descriptions carry pasted-editor HTML** — `<meta charset="utf-8">`
+  fragments and `data-mce-fragment` attributes inline in
+  `descriptionHtml`. Rendering must sanitise rather than trust it.
+- **Inventory is negative** (`totalInventory` −455 on medium-roast)
+  while `availableForSale` is true — continue-selling-when-out-of-stock.
+  `quantityAvailable` must never be surfaced as a stock count, and
+  low-stock badges (§12.3) would be nonsense against this data.
+- **`seo` is empty on every product.** §34's product SEO has to
+  synthesise titles and descriptions from real fields.
+
+## 96.5 Subscriptions: the discount does not exist
+
+Every selling-plan allocation in the store returns a price adjustment of
+**0%**. Read directly from `sellingPlanAllocations.priceAdjustments`:
+
+```text
+light-roast 5 lbs / Whole Beans   "Weekly membership"       $150 -> $150
+dark-roast-monthly-subscription   "Monthly subscription"     $17 -> $17
+5-lb-bag-monthly-subscription     "Monthly subscription"     $85 -> $85
+...  (21 allocations, no discount on any of them)
+```
+
+The apparent subscriber saving — $17 against $19, $85 against $95 — is
+not a selling-plan adjustment. It is a **separate, cheaper product**.
+That has three consequences:
+
+1. §10.3's PDP purchase-mode toggle ("One-time $24 / Subscribe & save
+   $20.40") **cannot be built from this store's data**. On
+   `medium-roast` and `dark-roast` there are no selling plans at all;
+   on `light-roast` the only plan covers the 5 lb variant and saves
+   nothing.
+2. Any "Save X%" copy would have to compare across two different
+   products, which is a merchandising claim, not a Shopify-derived
+   price. §2.1 forbids inventing it and §10.2 forbids computing it from
+   a fixed percentage. So it is not displayed until §92.1's
+   consolidation happens store-side.
+3. §92.1 is confirmed as still-pending Admin work, and it is now the
+   single largest blocker to the subscription-first architecture the
+   whole plan is built around.
+
+## 96.6 Two gaps in our own data layer, found by real data
+
+Neither is a schema error; both are shape errors that only real
+catalogue variety exposes.
+
+**`ProductCardFragment` overstates subscription availability.** It reads
+`sellingPlanGroups(first: 1) { appName }` and maps it to a
+product-level `subscriptionAvailable` boolean. But plans are allocated
+**per variant**: Gatare's plan applies only to its 5 lb variant, so
+`/shop` currently marks the product as subscribable when three of its
+four variants are not. The first attempt at the subscription test made
+the same mistake in reverse and Shopify answered plainly:
+
+```text
+Cannot apply selling plan to variant
+```
+
+`sellingPlanAllocations` on the variant is the only per-variant truth,
+and it carries the price. The card model's boolean needs to become
+"some variant has a plan", and the PDP needs the allocation itself.
+
+**`ProductDetailFragment` has no allocations at all**, so no subscription
+price can reach the UI today. That is the Phase 5 data gap, recorded
+here so it is not rediscovered.
+
+## 96.7 The four-coffee problem
+
+§93 right-sized the quiz for four coffees and named them: Light Roast,
+Medium Roast, Dark Roast, Gatare. There are three, because Light Roast
+*is* Gatare. §93.2's answer set maps two of its four options —
+"Bright & delicate → Light Roast" and "Something unusual → Gatare
+Anaerobic Process" — onto the same SKU.
+
+§93's own logic decides this: *ask only what changes the answer*. Two
+answers that return one product are theatre, and §93.5 forbids padding
+the catalogue to fix it. So either the quiz drops to three flavour
+answers, or the owners confirm that a distinct Light Roast is coming.
+This is question **§92.2 #6** and it blocks §90.02, §90.03 and §93.2.
+
+Compounding it: with no metafields, the only real per-product signal is
+the roast tag, the description text and the option values. A weighted
+engine over three products and one real dimension is a lookup table
+wearing a costume. §9.4's engine still gets built — the weights are
+configurable and the catalogue will grow — but its honesty at this size
+comes from §9.6's "Why we picked it" reasons being drawn from what the
+customer actually said, not from the number of inputs.
+
+## 96.8 Phase 2 exit criteria — closed
+
+| §75 criterion | Status |
+|---|---|
+| One-time product can checkout | **Verified** — driven in a browser, §96.9 |
+| Subscription product can checkout | **Verified** — selling-plan line, §96.9 |
+| Cart totals match checkout | **Verified** — $175.00 both sides |
+
+## 96.9 What was driven, against the real store
+
+Dev server against Yego's live Storefront, real browser:
+
+```text
+/shop                       13 products, real prices, real titles
+/products/light-roast       "Gatare Anaerobic Process.", $25
+  Size -> 5 lbs             price updates to $150 from the variant
+  Type -> Ground            selection resolves to a real variant
+  Add to cart               CartCreate against the live store
+/cart  (fresh request)      2 lines, subtotal $175
+  document.cookie           empty — cart id is genuinely httpOnly
+Shopify Checkout            "Subtotal · 2 items  $175.00"
+                            5 lbs / Ground $150 + 12 oz / Whole Beans $25
+```
+
+Line for line, the app's cart and Shopify's checkout agree.
+
+Separately, a cart line carrying `sellingPlanId` was created against the
+live API and opened:
+
+```text
+light-roast 5 lbs / Whole Beans on "Weekly membership"  $150
+Shopify Checkout: "you agree to the future charges listed on this page
+                   and the cancellation policy"
+```
+
+Shopify renders it as a recurring purchase. The subscription path works
+end to end at the API and checkout level — what does not exist is a
+*sellable* subscription on the coffees anyone would want to subscribe
+to, which is §92.1's store-side work.
+
+The harness now covers both paths: `live.integration.test.ts` runs the
+one-time round-trip, prints every selling-plan allocation with its real
+cadence and price adjustment, asserts every plan states a delivery
+policy, and creates a subscription line. 122 tests passing, 1 skipped.
+
+## 96.10 What still requires a person
+
+1. **§92.1 consolidation** — Admin work. Until real coffees carry
+   selling plans, §10.3's purchase-mode toggle has nothing to bind to.
+2. **§92.2 #6 (new)** — is Light Roast a separate coffee from Gatare, or
+   is the lineup three? Blocks §90.02, §90.03, §93.2.
+3. **The "Weekly membership" plan** — named weekly, bills every 60 days,
+   attached to Gatare 5 lbs and the 5 lb monthly subscription. Rename or
+   retire it in Shopify. A customer reading that name is misled about
+   their own billing.
+4. **§92.2 #5** — the 5 lb Bag's audience.
+5. **Café phone and hours** (§91) — still placeholders, still must not
+   ship.
+6. **Vercel access** — Phase 1's preview-deployment criterion is still
+   the only Phase 1 row open.
