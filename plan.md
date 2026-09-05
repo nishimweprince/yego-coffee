@@ -5822,3 +5822,121 @@ Unchanged from §96.10, plus:
   blocks Phase 4's homepage**, which is the next phase.
 - Product metafields (§5.1) remain empty, which caps how much of §13
   and §9.4 can ever be honest.
+
+---
+
+# 98. Phase 4 Build Record — Homepage
+
+Implemented 2026-09-05. §90's script, in order, against the real
+catalogue.
+
+## 98.1 Delivered
+
+Eight of §90's ten sections, plus the content layer §57 asks for:
+`src/content/home.ts` (copy and merchandising choices),
+`src/content/cafe.ts`, `src/content/brand.ts`, `src/content/navigation.ts`.
+
+No price, title, image or availability is duplicated into content.
+Products are referenced by handle and resolved through Shopify at
+render time.
+
+170 tests. Typecheck, lint and build green. The homepage prerenders
+statically and revalidates on the 15-minute catalogue window (§22).
+
+## 98.2 Two of §90's sections are absent
+
+**§90.08 social proof.** §90.08 itself requires verifiable sources —
+Google reviews, press, real customer quotes — and §71 forbids
+fabricating testimonials. None have been supplied. The section is
+omitted rather than stubbed: an empty testimonial rail states that the
+brand has no customers, which is both false and worse than silence.
+
+**§90.09 journal.** Its three entries are unwritten and the journal
+itself is Phase 7. A "Read more" leading nowhere is worse than a
+shorter page.
+
+Both return the moment their content exists. Neither is a technical
+blocker.
+
+## 98.3 Where §90 and the store disagreed
+
+**§90.03 lists four coffees; three exist.** "Light Roast" and "Gatare
+Anaerobic Process" are one product (§96.3). The signature section is
+driven by the `roasted-coffee` collection and carries §90.03's
+descriptors keyed by handle, so it renders the three that exist. The
+5 lb Bag is deliberately excluded from this section — it is a format of
+the same three roasts, and listing it as a fourth coffee is precisely
+the catalogue-padding §93.5 forbids.
+
+**§90.03 asks for a `Subscribe` primary action per coffee.** There is
+nothing to subscribe to: the real coffees carry no selling plans, and
+the only plan in the store discounts nothing (§96.5). A Subscribe
+button that led to a one-time purchase at the same price would be the
+deceptive framing §10.4 explicitly forbids. The action is `Explore`
+until §92.1 lands.
+
+**§90.07 names four plans; the store publishes eight.** The extra four
+are per-roast duplicates for Medium and Dark (§92.1) — eight
+near-identical rows is a configuration artefact, not merchandising.
+`featuredHandles` in content pins §90.07's four in its order, drops a
+handle that stops existing, and falls back to everything if none match.
+The full set stays one click away at the subscriptions collection.
+
+**§90.06's café phone and hours are not rendered.** Both are unverified
+placeholders (§91). They sit behind a `provisional` flag in
+`src/content/cafe.ts` and nothing renders a provisional value, so the
+homepage shows the confirmed address and a working directions link. The
+flag flips in one edit when the owners confirm. No menu CTA, per §91.
+
+## 98.4 The hero is typographic, and that is a decision
+
+§7 asks for full-viewport cinematic footage. Yego's usable imagery is
+packshots and a small gallery (§93.4), and §67 forbids leaning on
+temporary stock — precisely so the implementation does not end up
+depending on an asset that has to be torn out later.
+
+So the hero is set in type, full-bleed on the soil surface, with the
+upper third left open for footage when it exists. This is the restraint
+the primary references were chosen for (§89.1 — MAME, Siwa, Coffee
+Collective), not a compromise dressed as one, and the copy is strong
+enough to carry it. `MediaPlaceholder` exists for the slots where an
+image is genuinely required and states its crop, resolution and focal
+point per §67.
+
+## 98.5 Verified in a browser
+
+Against Yego's live store, at 375 and at desktop width:
+
+```text
+hero              CTA above the fold on mobile, readable without motion
+discovery         four cards; three to a real coffee, one to the quiz
+signature         Medium $19, Dark $19, Gatare $25–$150 — Shopify's prices
+brand statement   soil surface, gold ordinals (7.83:1, §94.3)
+finder            "A few questions" — no question count (§93.4)
+café              address and Get Directions; no phone, no hours, no menu
+subscription      Monthly Drop / Bi-Monthly Drop / 5 lb Monthly / 5 lb
+                  Bi-Monthly, cadences read from each plan's own policy:
+                  "Every month", "Every 2 weeks", and — on the 5 lb
+                  monthly, which carries both groups — "Every month ·
+                  Every 60 days"
+final CTA         Find My Coffee / See Subscription Options
+```
+
+The subscription cadences are §96.3's rule holding on the highest-
+traffic page in the site: not one of those labels comes from a plan
+name.
+
+## 98.6 Phase 4 exit criteria — §75
+
+| Criterion | Status |
+|---|---|
+| Subscription path visually dominant | **Met** — hero primary CTA, finder, a full soil-surface subscription section and the closing CTA all lead to the quiz or to plans; `Shop Coffee` is secondary throughout |
+| Core Web Vitals within budget | **Not measured** — no Lighthouse run yet; the page is statically prerendered with one client island (the discovery cards) and no third-party script, which is the right starting point. Phase 9 owns the measurement |
+
+## 98.7 A note on ordering
+
+Three CTAs point at `/quiz`, which does not exist until Phase 5 — the
+next phase, built immediately after this one. §75 places the quiz CTA
+in Phase 4 and the quiz in Phase 5, so this gap is the plan's own
+sequencing rather than an oversight, but it is real between these two
+commits and worth naming.
