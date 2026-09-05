@@ -15,4 +15,5 @@ export type NavLink = {
 export const PRIMARY_NAV: NavLink[] = [
   { href: "/shop/coffee", label: "Coffee" },
   { href: "/shop/merch", label: "Merch" },
+  { href: "/quiz", label: "Find Your Coffee" },
 ];

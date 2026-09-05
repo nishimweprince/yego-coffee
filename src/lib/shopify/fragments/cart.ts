@@ -13,6 +13,12 @@ export const CART_LINE_FRAGMENT = /* GraphQL */ `
     sellingPlanAllocation {
       sellingPlan {
         name
+        deliveryPolicy {
+          ... on SellingPlanRecurringDeliveryPolicy {
+            interval
+            intervalCount
+          }
+        }
       }
     }
     merchandise {

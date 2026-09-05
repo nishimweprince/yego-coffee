@@ -5940,3 +5940,146 @@ next phase, built immediately after this one. §75 places the quiz CTA
 in Phase 4 and the quiz in Phase 5, so this gap is the plan's own
 sequencing rather than an oversight, but it is real between these two
 commits and worth naming.
+
+---
+
+# 99. Phase 5 Build Record — Quiz
+
+Implemented 2026-09-05. §93.2's quiz, not §9.2's.
+
+## 99.1 Delivered
+
+`src/lib/quiz/` — `schema.ts` (Zod, §61), `engine.ts` (§9.4's weighted
+matching), `quantity.ts` (§9.5), `reasons.ts` (§9.6's "why"),
+`recommendation.ts` (§62's ordered checks). All pure, all tested: 55
+tests against fixtures modelled on the real catalogue, including its
+awkward parts — negative inventory, a coffee whose roasts live in an
+option, three spellings of "whole bean".
+
+`/quiz`, `QuizShell`, `QuizResult`. `addToCartAction` now accepts a
+selling plan. `Find Your Coffee` joins the navigation.
+
+228 tests. Typecheck, lint, build green.
+
+## 99.2 Three questions, not four
+
+§93.2 specifies four flavour answers, two of which — "Bright &
+delicate → Light Roast" and "Something unusual → Gatare" — return the
+same product (§96.3). Two answers with one outcome is exactly the
+theatre §93 exists to remove, and §96.7 named collapsing them as the
+resolution. `bright` covers both, worded "Bright & out of the
+ordinary".
+
+So a typical run is three questions: flavour, cups per day, grind.
+"I'm not sure" adds §93.2's Q01b and makes it four. The progress
+indicator counts the steps *this run* will ask rather than a fixed
+number, because a customer who chooses "I'm not sure" at question one
+should not watch "1 of 3" become "2 of 4".
+
+Grind is asked only when Shopify actually sells one — §93.2's Q04 was
+conditional on §92.2 #2, which §96.3 answered yes.
+
+## 99.3 The flavour question starts unanswered
+
+The first build defaulted `flavour` to `"smooth"`, which rendered as a
+pre-selected chip on question one. That tells a customer they have
+already answered a question they have not read, and it biases the one
+answer the entire recommendation turns on.
+
+State is now a `QuizDraft` whose flavour is null until answered; an
+unanswered flavour resolves to "I'm not sure", which is a real answer
+with its own follow-up rather than a silent guess. The cups default of
+2 stays: it is a visible starting point on a stepper the customer is
+looking at, which is what §93.2 asks for.
+
+## 99.4 What the quiz does when it cannot offer a subscription
+
+Gatare has no monthly or bi-monthly subscription product — only the
+60-day plan on its 5 lb variant (§96.5). A customer who answers
+"bright" is matched to Gatare and told plainly:
+
+```text
+Gatare Anaerobic Process. isn't available as a subscription yet —
+this is a one-time order.
+```
+
+The alternative would be to quietly recommend a coffee that happens to
+have a plan. That is not the question they were asked, and it would
+make the quiz's answer a function of the store's configuration rather
+than of their taste.
+
+`src/content/subscription.ts` maps each coffee to its subscription
+duplicates. It is written out rather than inferred from handle
+prefixes, because this is a billing relationship and a pattern rule
+would silently mis-map the first product that broke the pattern. Both
+ends are verified at runtime: a mapping whose product has vanished or
+sold out degrades to a one-time purchase rather than a broken
+checkout. §92.1 deletes the file.
+
+## 99.5 Two bugs the live funnel exposed
+
+**The subscription ignored the grind.** A customer who chose Ground
+got whole beans. The duplicate subscription products carry two
+variants differing only by grind, both "12 oz", and the matcher
+accepted any shared option value — so "12 oz" matched first and won.
+Grind is now scored separately and compared as a concept rather than a
+string, because this store spells it "Whole Beans", "Whole Bean" and
+"Whole bean" across three products. If no candidate offers the grind,
+the subscription still goes ahead rather than vanishing.
+
+**The cart described the plan by its name.** The line read
+"BI-MONTHLY SUBSCRIPTION" — a phrase that means every two weeks to some
+readers and every two months to others, which is §92.2 #1, the
+highest-risk item in this plan, rendered on the page where the customer
+commits to a recurring charge. The cart fragment now fetches the
+delivery policy and the line reads **"EVERY 2 WEEKS"**. Shopify's plan
+name is kept only as a fallback.
+
+That completes the rule §96.3 established: no cadence anywhere in this
+storefront — PDP, homepage, quiz result or cart — comes from a selling
+plan's name.
+
+## 99.6 §77's funnel, driven end to end
+
+The plan calls this the most important test in the system. Against
+Yego's live store:
+
+```text
+homepage card "Rich & Chocolatey"  -> /quiz?flavour=rich, opens at Q2
+cups: 2 (pre-selected, adjustable)
+grind: Ground
+result:  Dark Roast, 12 oz / Ground
+         "You said rich and chocolatey"
+         "At 2 cups a day, 2 bags every 2 weeks keeps you stocked
+          without leaving coffee sitting around"
+         2 × 12 oz / Ground, Every 2 weeks, $17.00 per delivery per bag
+         alternate: 5 lb Bag
+Start my subscription -> cart line "12 oz / Ground · EVERY 2 WEEKS  $34"
+Checkout -> Shopify: "$68.00", "you agree to the future charges"
+```
+
+No email was asked for at any point (§9.3). Every price and every
+frequency came from Shopify.
+
+## 99.7 Phase 5 exit criteria — §75
+
+| Criterion | Status |
+|---|---|
+| Recommendation only returns a purchasable Shopify configuration | **Met** — §62's order is enforced in `recommendation.ts` and pinned by tests: sold-out products, products with no sellable variant, vanished subscription mappings and empty catalogues all have explicit cases |
+| Full quiz → subscription checkout E2E passes | **Met in a browser** — §99.6. Not yet as an automated Playwright flow; §40's harness is Phase 9 |
+
+## 99.8 Deliberately not built
+
+**Session persistence and URL step restoration** (§9.3, "where
+useful"). With three questions and no reloads, a customer who leaves
+has lost about twenty seconds. Storing partial answers would outlive
+its usefulness. The flavour prefill *is* in the URL, because that link
+is shared from the homepage.
+
+**Per-step analytics** (§9.3, §31.1's quiz events). Phase 8 owns the
+event layer; instrumenting the quiz before it exists would scatter
+half a taxonomy through this component.
+
+**Configurable weights as data.** `DEFAULT_WEIGHTS` is exported and the
+engine takes an override, but nothing surfaces it. With three coffees
+there is nothing to tune; the seam exists for when there is.

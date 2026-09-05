@@ -38,12 +38,21 @@ function toResult(error: unknown): CartActionResult {
   return { ok: false, message: "Something went wrong. Please try again." };
 }
 
+/**
+ * `sellingPlanId` turns the line into a subscription (§10.1). It is
+ * passed through untouched: the plan is Shopify's, chosen from a real
+ * allocation on this variant, and the frequency the customer is billed
+ * on is Shopify's to decide (§96.3).
+ */
 export async function addToCartAction(
   merchandiseId: string,
   quantity: number,
+  sellingPlanId?: string,
 ): Promise<CartActionResult> {
   try {
-    const cart = await addCartLines([{ merchandiseId, quantity }]);
+    const cart = await addCartLines([
+      { merchandiseId, quantity, ...(sellingPlanId ? { sellingPlanId } : {}) },
+    ]);
     revalidatePath("/cart");
     return { ok: true, cart };
   } catch (error) {

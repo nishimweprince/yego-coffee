@@ -123,8 +123,18 @@ export type CartLineModel = {
   image: ShopifyImage | null;
   unitPrice: Money;
   lineTotal: Money;
-  /** Present only on subscription lines. Phase 2 never sets one. */
+  /** Shopify's plan name. Display only — never a source of cadence. */
   sellingPlanName: string | null;
+  /**
+   * Generated from the plan's delivery policy, e.g. "Every 2 weeks".
+   *
+   * The cart is where a customer commits to a recurring charge, and
+   * Shopify's plan names do not reliably describe it: this store has a
+   * "Weekly membership" that bills every 60 days, and a "Bi-Monthly
+   * subscription" whose own name is ambiguous in English (§92.2 #1,
+   * §96.3). Null when Shopify states no recurring policy.
+   */
+  sellingPlanCadence: string | null;
   availableForSale: boolean;
 };
 

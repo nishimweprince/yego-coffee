@@ -108,7 +108,10 @@ export type ApiCartLine = {
     amountPerQuantity: ApiMoneyV2;
   };
   sellingPlanAllocation: {
-    sellingPlan: { name: string } | null;
+    sellingPlan: {
+      name: string;
+      deliveryPolicy: ApiSellingPlanDeliveryPolicy | null;
+    } | null;
   } | null;
   merchandise: {
     id: string;

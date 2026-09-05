@@ -1,3 +1,4 @@
+import { formatCadence } from "../cadence";
 import type { ApiCart } from "../types.api";
 import type { CartModel } from "../types";
 
@@ -24,6 +25,12 @@ export function mapCart(cart: ApiCart): CartModel {
         lineTotal: line.cost.totalAmount,
         sellingPlanName:
           line.sellingPlanAllocation?.sellingPlan?.name ?? null,
+        sellingPlanCadence: formatCadence(
+          line.sellingPlanAllocation?.sellingPlan?.deliveryPolicy?.interval ??
+            null,
+          line.sellingPlanAllocation?.sellingPlan?.deliveryPolicy
+            ?.intervalCount ?? null,
+        ),
         availableForSale: line.merchandise.availableForSale,
       };
     }),

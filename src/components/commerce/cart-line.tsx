@@ -93,9 +93,14 @@ export function CartLine({ line }: { line: CartLineModel }) {
                 {line.variantTitle}
               </p>
             ) : null}
-            {line.sellingPlanName ? (
+            {/* The cadence Shopify will actually bill on, not the plan's
+                name: "Bi-Monthly" means two different things in English,
+                and this store also has a "Weekly membership" that bills
+                every 60 days (§96.3). The name is kept as secondary
+                detail so a customer can still recognise their plan. */}
+            {line.sellingPlanCadence ?? line.sellingPlanName ? (
               <p className="label mt-stack-sm text-muted-foreground">
-                {line.sellingPlanName}
+                {line.sellingPlanCadence ?? line.sellingPlanName}
               </p>
             ) : null}
           </div>

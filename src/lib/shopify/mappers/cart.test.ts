@@ -60,7 +60,10 @@ describe("mapCart", () => {
             node: {
               ...apiCart.lines.edges[0].node,
               sellingPlanAllocation: {
-                sellingPlan: { name: "Monthly Drop" },
+                sellingPlan: {
+                  name: "Monthly Drop",
+                  deliveryPolicy: { interval: "MONTH", intervalCount: 1 },
+                },
               },
             },
           },
@@ -68,5 +71,59 @@ describe("mapCart", () => {
       },
     };
     expect(mapCart(withPlan).lines[0].sellingPlanName).toBe("Monthly Drop");
+  });
+
+  /**
+   * The cart is where a customer commits to a recurring charge, so the
+   * frequency shown there must come from the delivery policy. This
+   * store contains a plan named "Weekly membership" that bills every
+   * 60 days, and "Bi-Monthly" is ambiguous in English (§92.2 #1).
+   */
+  it("states the cadence from the delivery policy, not the plan name", () => {
+    const misnamed: ApiCart = {
+      ...apiCart,
+      lines: {
+        edges: [
+          {
+            node: {
+              ...apiCart.lines.edges[0].node,
+              sellingPlanAllocation: {
+                sellingPlan: {
+                  name: "Weekly membership",
+                  deliveryPolicy: { interval: "DAY", intervalCount: 60 },
+                },
+              },
+            },
+          },
+        ],
+      },
+    };
+
+    const line = mapCart(misnamed).lines[0];
+    expect(line.sellingPlanCadence).toBe("Every 60 days");
+    expect(line.sellingPlanName).toBe("Weekly membership");
+  });
+
+  it("leaves the cadence null when Shopify states no recurring policy", () => {
+    const noPolicy: ApiCart = {
+      ...apiCart,
+      lines: {
+        edges: [
+          {
+            node: {
+              ...apiCart.lines.edges[0].node,
+              sellingPlanAllocation: {
+                sellingPlan: { name: "Prepaid", deliveryPolicy: null },
+              },
+            },
+          },
+        ],
+      },
+    };
+    expect(mapCart(noPolicy).lines[0].sellingPlanCadence).toBeNull();
+  });
+
+  it("has no cadence on an ordinary one-time line", () => {
+    expect(mapCart(apiCart).lines[0].sellingPlanCadence).toBeNull();
   });
 });
