@@ -38,23 +38,24 @@ export function SignatureCoffees({
             const reversed = index % 2 === 1;
 
             return (
+              /* One link per card, stretched over the whole thing.
+                 The image was a second link to the same place, hidden
+                 from assistive technology with aria-hidden — which is
+                 how a page ends up with focusable content inside an
+                 aria-hidden subtree, and how a screen-reader user ends
+                 up hearing a card with no way into it. */
               <article
                 key={product.id}
-                className="grid items-center gap-stack-lg lg:grid-cols-2 lg:gap-16"
+                className="relative grid items-center gap-stack-lg lg:grid-cols-2 lg:gap-16"
               >
-                <Link
-                  href={`/products/${product.handle}`}
-                  className={reversed ? "lg:order-2" : undefined}
-                  tabIndex={-1}
-                  aria-hidden
-                >
+                <div className={reversed ? "lg:order-2" : undefined}>
                   <ProductMedia
                     image={product.featuredImage}
                     title={product.title}
                     sizes="(min-width: 1024px) 50vw, 100vw"
                     className="bg-surface-elevated"
                   />
-                </Link>
+                </div>
 
                 <div className={reversed ? "lg:order-1" : undefined}>
                   <h3 className="text-h1">{product.title}</h3>
@@ -70,7 +71,7 @@ export function SignatureCoffees({
                   />
                   <Link
                     href={`/products/${product.handle}`}
-                    className="mt-stack-lg inline-block label text-accent underline-offset-4 hover:underline"
+                    className="mt-stack-lg inline-block label text-accent underline-offset-4 after:absolute after:inset-0 hover:underline"
                   >
                     Explore {product.title}
                   </Link>

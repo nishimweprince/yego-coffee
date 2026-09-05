@@ -10,7 +10,9 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
-    "verify:shopify": "vitest run src/lib/shopify/live.integration.test.ts"
+    "verify:shopify": "vitest run src/lib/shopify/live.integration.test.ts",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^7.3.1",
@@ -28,6 +30,7 @@
     "zod": "^4.5.4"
   },
   "devDependencies": {
+    "@playwright/test": "^1.62.1",
     "@shopify/hydrogen-react": "^2026.4.3",
     "@tailwindcss/postcss": "^4",
     "@testing-library/jest-dom": "^7.0.1",

@@ -15,12 +15,23 @@ vi.mock("server-only", () => ({}));
 
 // Minimal stand-in for Next's cookie store, shared across a "request".
 const jar = new Map<string, string>();
+/** Captures the options the cart cookie is written with. */
+let lastCookieOptions: Record<string, unknown> | undefined;
+/** Request headers the code under test sees; set per test. */
+let requestHeaders = new Map<string, string>();
+
 vi.mock("next/headers", () => ({
   cookies: async () => ({
     get: (name: string) =>
       jar.has(name) ? { name, value: jar.get(name) } : undefined,
-    set: (name: string, value: string) => jar.set(name, value),
+    set: (name: string, value: string, options?: Record<string, unknown>) => {
+      jar.set(name, value);
+      lastCookieOptions = options;
+    },
     delete: (name: string) => jar.delete(name),
+  }),
+  headers: async () => ({
+    get: (name: string) => requestHeaders.get(name.toLowerCase()) ?? null,
   }),
 }));
 
@@ -315,5 +326,51 @@ describe("reconciliation", () => {
         { merchandiseId: "gid://shopify/ProductVariant/1", quantity: 99 },
       ]),
     ).rejects.toBeInstanceOf(CartUserError);
+  });
+});
+
+
+/**
+ * WebKit drops `Secure` cookies on an insecure origin; Chrome makes an
+ * exception for localhost and keeps them. A production build served
+ * over plain HTTP therefore kept the cart in Chrome and lost it
+ * entirely in Safari, and every Chromium test passed while it did.
+ * `Secure` now follows the request's real protocol.
+ */
+describe("the cart cookie's Secure flag", () => {
+  beforeEach(() => {
+    requestHeaders = new Map();
+    lastCookieOptions = undefined;
+  });
+
+  it("is set behind an HTTPS proxy", async () => {
+    requestHeaders.set("x-forwarded-proto", "https");
+    const { addCartLines } = await import("./cart");
+    await addCartLines([{ merchandiseId: "v1", quantity: 1 }]);
+    expect(lastCookieOptions?.secure).toBe(true);
+  });
+
+  it("is not set on a plain HTTP request, where it would be dropped", async () => {
+    requestHeaders.set("x-forwarded-proto", "http");
+    const { addCartLines } = await import("./cart");
+    await addCartLines([{ merchandiseId: "v1", quantity: 1 }]);
+    expect(lastCookieOptions?.secure).toBe(false);
+  });
+
+  it("reads only the first protocol from a proxy chain", async () => {
+    requestHeaders.set("x-forwarded-proto", "https, http");
+    const { addCartLines } = await import("./cart");
+    await addCartLines([{ merchandiseId: "v1", quantity: 1 }]);
+    expect(lastCookieOptions?.secure).toBe(true);
+  });
+
+  it("stays httpOnly and lax whatever the protocol", async () => {
+    const { addCartLines } = await import("./cart");
+    await addCartLines([{ merchandiseId: "v1", quantity: 1 }]);
+    expect(lastCookieOptions).toMatchObject({
+      httpOnly: true,
+      sameSite: "lax",
+      path: "/",
+    });
   });
 });

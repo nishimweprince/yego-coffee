@@ -1,6 +1,6 @@
 import "server-only";
 
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
 import { storefrontRequest } from "./client";
 import { mapCart } from "./mappers/cart";
 import {
@@ -52,12 +52,35 @@ async function readCartId(): Promise<string | null> {
   return store.get(CART_COOKIE)?.value ?? null;
 }
 
+/**
+ * `Secure` follows the request's actual protocol, not NODE_ENV.
+ *
+ * Chrome makes a special case for `http://localhost` and stores Secure
+ * cookies there anyway. WebKit does not — it drops them silently. So a
+ * production build served over plain HTTP kept the cart in Chrome and
+ * lost it entirely in Safari, which is how a cross-browser bug hides:
+ * every Chromium test passed.
+ *
+ * On a real HTTPS deployment this still resolves to `secure: true`,
+ * which is the only case that matters for the guarantee.
+ */
+async function isSecureRequest(): Promise<boolean> {
+  const headerList = await headers();
+  const proto =
+    headerList.get("x-forwarded-proto") ?? headerList.get("x-forwarded-protocol");
+  if (proto) return proto.split(",")[0].trim() === "https";
+
+  // No proxy header: trust the deployment only if it says it is
+  // production and gives us nothing to contradict it.
+  return process.env.NODE_ENV === "production";
+}
+
 /** Only callable from a Server Action or Route Handler. */
 async function writeCartId(id: string): Promise<void> {
   const store = await cookies();
   store.set(CART_COOKIE, id, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
+    secure: await isSecureRequest(),
     sameSite: "lax",
     path: "/",
     maxAge: CART_COOKIE_MAX_AGE,

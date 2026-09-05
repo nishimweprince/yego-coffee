@@ -6363,3 +6363,173 @@ it does not provide. §39 gets its CSP in Phase 9, with nonces.
 - **Shopify webhooks** (§23). The secret is in the env contract, but
   the handler needs a webhook registered against a public URL — which
   needs the Vercel access that is still outstanding (§96.10).
+
+---
+
+# 102. Phase 9 Build Record — Optimisation
+
+Implemented 2026-09-05. §40's E2E harness, §35's accessibility floor,
+§39's CSP, §37/§48's error states, and an honest §36 measurement.
+
+## 102.1 Delivered
+
+```text
+playwright.config.ts   desktop (Chromium) + mobile (WebKit, iPhone 13)
+e2e/flow-a  §77's funnel: home -> quiz -> subscription -> checkout
+e2e/flow-b  §78's ordinary purchase, plus the oversell regression
+e2e/flow-c  predictive and full search, including the duplicate filter
+e2e/flow-e  mobile: CTA above the fold, 44px targets, add to cart
+e2e/accessibility  landmarks, one h1, named controls, focus, keyboard
+src/app/    error.tsx, not-found.tsx, loading.tsx
+next.config.ts  Content-Security-Policy
+```
+
+**45 E2E tests passing across two engines. 268 unit tests.** Typecheck,
+lint and build green.
+
+## 102.2 The harness skipped itself. Again.
+
+The first full E2E run reported 24 skipped and exited 0. Playwright
+does not load `.env.local` either, so `requireCredentials()` saw empty
+strings — **exactly §96.1**, in a different tool, four phases later.
+
+The lesson has now cost two debugging sessions, so state it as a rule:
+**a suite that skips itself when unconfigured must be run once in a
+configured state before it is trusted.** A skipped suite and a passing
+suite are the same colour in a summary line, and both exit 0.
+
+## 102.3 Two bugs that only WebKit could find
+
+Running the same suite on Safari's engine found two failures that every
+Chromium test had passed straight through. Both are the same shape: a
+localhost exemption Chrome makes and WebKit does not.
+
+**The cart cookie was `Secure` on plain HTTP.** `secure` was derived
+from `NODE_ENV`, so a production build served over http — `next start`,
+the E2E harness, any environment terminating TLS wrongly — set a
+Secure cookie on an insecure origin. Chrome stores it anyway for
+localhost; WebKit drops it silently. The cart worked in Chrome and was
+empty in Safari.
+
+It now follows the request's actual protocol (`x-forwarded-proto`),
+which resolves to `secure: true` on any real HTTPS deployment — the
+only case that matters — and to false where the browser would discard
+it. Four tests pin it, including the proxy-chain form.
+
+**`upgrade-insecure-requests` broke every stylesheet.** WebKit applies
+the directive to localhost; Chrome exempts it. On the HTTP production
+build, Safari upgraded every CSS and font request to https, they
+failed, and the page rendered completely unstyled — which surfaced as
+eight *layout* failures ("the hero CTA is above the fold" measuring
+767px in a 664px viewport), not as anything mentioning CSP. The
+directive is now emitted only on a real production deploy, where there
+is something to upgrade.
+
+Neither bug is exotic. Both were invisible to a single-engine test run,
+which is precisely what §41 asks for and why the mobile project uses
+WebKit rather than a Chromium phone profile.
+
+## 102.4 The CSP that was built, measured, and taken out
+
+§39 asks for a strict CSP. A nonce-based one was built first. It does
+not work with this app, and it fails in the worst way — clean at build
+time, catastrophic in the browser:
+
+> A nonce is per-request. Statically prerendered HTML is written once,
+> at build time. So every script on `/`, `/about`, `/cafe`, `/journal`,
+> `/policies` and `/subscriptions` carried no matching nonce, and the
+> browser blocked all of them. The homepage was blank, with 26 CSP
+> violations in the console.
+
+Having both requires rendering every page per request, which trades
+§22's explicit "homepage: long cache" and §36's "performance is a
+conversion feature" for script protection on a storefront that handles
+no payment data itself (§2.3) and renders HTML only from its own
+Shopify admin.
+
+What ships is strict in every dimension that does not need a nonce —
+`connect-src` (where data may be sent), `form-action` (where forms may
+post), `frame-ancestors`/`frame-src`, `object-src`, `base-uri` — and
+permits inline scripts, which Next's own bootstrap requires. **It does
+not claim to stop script injection**, and the comment in
+`next.config.ts` says so rather than leaving a reviewer to assume
+otherwise. The lever to go strict is documented there: middleware
+nonce *plus* `force-dynamic` on the static routes. Either half alone
+reproduces the blank page.
+
+This is a deliberate deviation from §39, recorded rather than quietly
+taken.
+
+## 102.5 Accessibility
+
+The floor is now pinned by tests on six pages: one `h1`, a `main`,
+`banner` and `contentinfo` landmark, every control with an accessible
+name, alt text on every image, a visible focus ring, and the quiz
+operable by keyboard alone.
+
+**It found something real.** The homepage's signature-coffee images
+were links to the same product as the text link beside them, hidden
+from assistive technology with `aria-hidden` — focusable content
+inside an `aria-hidden` subtree, and a card a screen-reader user hears
+with no obvious way into it. Replaced with one stretched link per
+card, which is both simpler markup and the correct pattern.
+
+## 102.6 §36, measured — and what could not be
+
+Measured, on the production build:
+
+```text
+TTFB                    1–8 ms          (statically prerendered)
+HTML                    58 KB raw, 8.7 KB gzipped
+CLS                     0               budget < 0.1
+LCP element             the hero H1     — text, not an image
+JavaScript              ~600 KB decoded, 10 requests
+```
+
+CLS of zero is the meaningful one: the typographic hero and
+fixed-ratio media boxes mean nothing moves after paint.
+
+**LCP is not honestly measurable here.** Repeated samples in an
+embedded browser ranged from 1.8s to 4.2s while TTFB stayed under
+20ms — that spread is the measurement environment, not the app.
+§36's budgets are p75 field numbers and need a real deployment and a
+real Lighthouse run, which needs the Vercel access still outstanding
+since Phase 1 (§94.5). Claiming to have met them from these numbers
+would be exactly the kind of green-that-proves-nothing §95 is about.
+
+**One reduction made:** the homepage discovery cards were a client
+island whose entire state was "which card is hovered". §36 says not to
+hydrate static editorial content, and `:hover` / `:focus-within` say
+the same thing with no JavaScript. It is now a Server Component.
+
+The remaining ~600 KB is React and the Next runtime rather than
+application code, and reducing it further is a framework-level
+question, not a cleanup.
+
+## 102.7 Error and empty states
+
+§26 proposed `error.tsx` and `not-found.tsx` in Phase 1; neither was
+ever built. Both exist now, along with `loading.tsx`.
+
+The error boundary follows §95.3's reasoning about `StoreUnavailable`:
+a failure to reach Shopify must not read as an empty store, because a
+store that looks empty is how a misconfigured deploy survives to
+production. It says the failure is ours, offers a retry, and shows the
+digest but never Shopify's message, which can carry query internals
+(§39).
+
+`loading.tsx` is deliberately a held frame rather than a skeleton: a
+skeleton that does not match the content it replaces produces a second
+layout shift when the real thing arrives, at the cost of the CLS
+budget that is currently zero.
+
+## 102.8 Not built in this phase
+
+- **Visual regression** (§40). It needs a baseline everyone agrees on,
+  and the café hours, the metafields and §92.1's consolidation will all
+  change these pages. Baselines captured now would be re-baselined
+  before they ever caught anything.
+- **Flow D** (§40) — login, orders, subscription mutation. That is
+  Phase 6, still blocked on credentials (§100.5).
+- **Rate limiting and dependency/secret scanning** (§39). Both are
+  deployment-platform concerns and need the Vercel access.
