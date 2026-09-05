@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { BRAND } from "@/content/brand";
-import { PRIMARY_NAV } from "@/content/navigation";
+import { FOOTER_NAV } from "@/content/navigation";
 import { Contour } from "@/components/ui/contour";
 
 /**
@@ -34,8 +34,8 @@ export function SiteFooter() {
         </div>
 
         <nav aria-label="Footer">
-          <ul className="flex flex-col gap-stack-sm">
-            {PRIMARY_NAV.map((link) => (
+          <ul className="grid gap-stack-sm sm:grid-cols-2 sm:gap-x-12">
+            {FOOTER_NAV.map((link) => (
               <li key={link.href}>
                 <Link
                   href={link.href}
@@ -45,14 +45,6 @@ export function SiteFooter() {
                 </Link>
               </li>
             ))}
-            <li>
-              <Link
-                href="/search"
-                className="text-body-s text-muted-foreground transition-colors hover:text-foreground"
-              >
-                Search
-              </Link>
-            </li>
           </ul>
         </nav>
       </div>

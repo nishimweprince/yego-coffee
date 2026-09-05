@@ -172,3 +172,30 @@ export type SearchResultsModel = {
   hasNextPage: boolean;
   endCursor: string | null;
 };
+
+export type PageModel = {
+  handle: string;
+  title: string;
+  bodyHtml: string;
+  summary: string;
+  seoTitle: string | null;
+  seoDescription: string | null;
+};
+
+export type PolicyModel = {
+  handle: string;
+  title: string;
+  bodyHtml: string;
+};
+
+export type ArticleModel = {
+  id: string;
+  handle: string;
+  title: string;
+  excerpt: string | null;
+  contentHtml: string | null;
+  publishedAt: string;
+  image: ShopifyImage | null;
+  seoTitle: string | null;
+  seoDescription: string | null;
+};

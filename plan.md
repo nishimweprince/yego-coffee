@@ -6083,3 +6083,145 @@ half a taxonomy through this component.
 **Configurable weights as data.** `DEFAULT_WEIGHTS` is exported and the
 engine takes an override, but nothing surfaces it. With three coffees
 there is nothing to tune; the seam exists for when there is.
+
+---
+
+# 100. Phase 7 Build Record — Café, Story, Journal, Policies
+
+Implemented 2026-09-05. Built **out of §75's order**: Phase 6 needs
+Customer Account API credentials that do not exist (§100.5).
+
+## 100.1 The store already held the content
+
+The plan assumed this phase would be written. It mostly did not need
+to be. Yego's Shopify admin already contains:
+
+```text
+page  who-are-we    Francois's own account of the family business
+page  contact       short
+page  about-us      empty
+policy  Shipping Policy                       real, 95 characters
+policy  Purchase Options Cancellation Policy  real, 1,892 characters
+blog  news          one published article
+```
+
+So `/about` renders the founder's words rather than a rewrite of them,
+`/policies/*` serves Shopify's own documents, and `/subscriptions`
+states the real shipping and cancellation terms. §71 forbids inventing
+brand content; the owners' account of their own family is also simply
+better than anything written for them.
+
+## 100.2 The journal reads Shopify, not MDX
+
+§5.3 recommends repository-managed MDX. There is one real article and
+it lives in Shopify's blog. An MDX pipeline with nothing in it would be
+untested code standing in front of real content, and §5.3's actual
+requirement — that the journal stay portable — is met by the mapper
+boundary: moving to MDX or a CMS later changes `getArticles()`, not the
+pages.
+
+§90.09's three named entries do not exist and were not written. They
+are the owners' to write.
+
+**A trap worth naming:** the Storefront API has no `article(handle:)`
+field, so `getArticle` searches and then matches the handle exactly. A
+search hit on a *different* article must never be served as the one
+that was asked for.
+
+## 100.3 The café ships without its placeholders
+
+`/cafe` renders the confirmed address, a working directions link and
+the real email. It does **not** render the phone or the hours (§91),
+which means no "open now" indicator either — §55 computes that from a
+schedule nobody has verified.
+
+Instead of hours it says: *"Opening hours are best confirmed by email
+before you travel."* That is true, useful, and cannot mislead anyone
+into a closed shop.
+
+The `CafeOrCoffeeShop` structured data carries only confirmed fields.
+§34 would normally want `telephone` and `openingHoursSpecification`,
+but search engines cache and redistribute structured data — publishing
+an unverified schedule there is the most expensive form of the §91
+mistake, not the cheapest.
+
+No menu section, no "coming soon", per §91.
+
+**§91's launch assertion is built** (`assertCafeDetailsAreReal`, five
+tests). It fires on a real production *deploy* — `VERCEL_ENV=production`,
+or `YEGO_ASSERT_LAUNCH_READY=1` to test it — rather than on every local
+`pnpm build`. The risk §91 names is publishing, not compiling, and a
+check that blocks local development teaches the next person to delete
+it. Verified failing:
+
+```text
+Error: plan.md §91: café phone and hours are still a carried-over
+placeholder and cannot be published.
+```
+
+## 100.4 §10.5's benefit list is one line shorter
+
+§10.5's reusable benefit block lists "Save on every delivery". It is
+not shown, because every selling plan in this store adjusts price by 0%
+(§96.5) — and §10.5 itself requires the wording to reflect actual
+Shopify capabilities and store policies. The remaining benefits are
+true, and the cancellation terms are Shopify's own text rather than a
+paraphrase: a paraphrased cancellation policy is a second,
+unmaintained version of a document customers rely on.
+
+## 100.5 Why Phase 6 was skipped, not attempted
+
+The Customer Account API needs `SHOPIFY_CUSTOMER_ACCOUNT_CLIENT_ID` and
+`SHOPIFY_CUSTOMER_ACCOUNT_URL`, issued from a Customer Account API app
+configured in Shopify Admin with callback URLs. Neither exists in
+`.env.local`, and neither can be created from here.
+
+Phase 6's §75 exit criteria are "customer can securely access only own
+data" and "all supported mutations tested". Both are unverifiable
+without credentials. Building the whole account surface anyway would
+reproduce precisely the situation §95 spent four sub-sections
+documenting — a complete, typed, plausible data layer that had never
+made a single request — and §96.1 then found the one bug that made even
+the verification harness a no-op. Authentication and subscription
+mutations are the worst possible place to repeat that.
+
+Account is therefore absent from the navigation too (§97.5: no link
+that 404s).
+
+**What is needed to unblock it**, precisely:
+
+```text
+Shopify Admin → Settings → Customer accounts → choose "Customer
+Accounts" (new), then Headless / Customer Account API:
+  - Client ID
+  - the shop's Customer Account API URL
+  - callback URL:  http://localhost:3000/account/callback  (dev)
+                   https://<domain>/account/callback       (prod)
+  - logout URI, and JavaScript origin
+```
+
+## 100.6 Verified in a browser
+
+```text
+/about       "YEGO MEANS YES", then Francois's own words, then the
+             confirmed facts of §88
+/cafe        address, directions, email; no phone, no hours, no menu;
+             structured data carries only confirmed fields
+/policies    two real policies listed; /policies/nope 404s
+/subscriptions  four plans with real cadences, real shipping terms,
+                Shopify's cancellation policy verbatim
+/journal     the one published article; /journal/nope 404s
+```
+
+233 tests. Typecheck, lint and build green. Navigation now carries
+Coffee, Subscriptions, Find Your Coffee and Café; the footer carries
+Shop, Merch, Our Story, Journal, Policies and Search.
+
+## 100.7 Still open
+
+- **Phase 6** — blocked on the credentials in §100.5.
+- Everything in §96.10 that needs an owner: §92.1's consolidation,
+  §92.2 #5 and #6, the "Weekly membership" plan's name, the café phone
+  and hours, and Vercel access.
+- Product metafields (§5.1) — still the highest-value thing an owner
+  could add, and still what caps §13 and §9.4.

@@ -8,6 +8,11 @@ import {
   mapPredictiveSearch,
   mapSearchResults,
 } from "./mappers/collection";
+import {
+  mapArticle,
+  mapPage,
+  mapPolicies,
+} from "./mappers/content";
 import { mapProductToCard, mapProductToDetail } from "./mappers/product";
 import {
   COLLECTIONS_QUERY,
@@ -18,8 +23,17 @@ import {
   PRODUCT_BY_HANDLE_QUERY,
   SHOP_QUERY,
 } from "./queries/products";
+import {
+  ARTICLES_QUERY,
+  ARTICLE_BY_HANDLE_QUERY,
+  PAGE_BY_HANDLE_QUERY,
+  POLICIES_QUERY,
+} from "./queries/content";
 import { PREDICTIVE_SEARCH_QUERY, SEARCH_QUERY } from "./queries/search";
 import type {
+  ApiArticlesQuery,
+  ApiPageByHandleQuery,
+  ApiPoliciesQuery,
   ApiCollectionByHandleQuery,
   ApiCollectionsQuery,
   ApiPredictiveSearchQuery,
@@ -29,6 +43,9 @@ import type {
   ApiShopQuery,
 } from "./types.api";
 import type {
+  ArticleModel,
+  PageModel,
+  PolicyModel,
   CollectionModel,
   PredictiveSearchModel,
   ProductCardModel,
@@ -218,4 +235,65 @@ export async function getSearchResults(
     // read as a bug (§48).
     totalCount: products.length,
   };
+}
+
+/**
+ * Editorial content from Shopify (§5.1, §22 — static/cache).
+ *
+ * The founder's story, the store's policies and its one published
+ * article are all real content that already exists in the admin. They
+ * cache with the catalogue.
+ */
+
+export async function getPage(handle: string): Promise<PageModel | null> {
+  const data = await storefrontRequest<ApiPageByHandleQuery>({
+    operation: "PageByHandle",
+    query: PAGE_BY_HANDLE_QUERY,
+    variables: { handle },
+    tags: [`shopify:page:${handle}`, "shopify:content"],
+    revalidate: CATALOGUE_REVALIDATE_SECONDS,
+  });
+
+  return data.page ? mapPage(data.page) : null;
+}
+
+export async function getPolicies(): Promise<PolicyModel[]> {
+  const data = await storefrontRequest<ApiPoliciesQuery>({
+    operation: "Policies",
+    query: POLICIES_QUERY,
+    tags: ["shopify:policies", "shopify:content"],
+    revalidate: CATALOGUE_REVALIDATE_SECONDS,
+  });
+
+  return mapPolicies(data);
+}
+
+export async function getArticles(first = 12): Promise<ArticleModel[]> {
+  const data = await storefrontRequest<ApiArticlesQuery>({
+    operation: "Articles",
+    query: ARTICLES_QUERY,
+    variables: { first },
+    tags: ["shopify:articles", "shopify:content"],
+    revalidate: CATALOGUE_REVALIDATE_SECONDS,
+  });
+
+  return data.articles.nodes.map(mapArticle);
+}
+
+export async function getArticle(
+  handle: string,
+): Promise<ArticleModel | null> {
+  const data = await storefrontRequest<ApiArticlesQuery>({
+    operation: "ArticleByHandle",
+    query: ARTICLE_BY_HANDLE_QUERY,
+    // Shopify has no article(handle:) field, so this searches and then
+    // matches exactly — a search hit on a different article must not
+    // be served as the one that was asked for.
+    variables: { handle },
+    tags: [`shopify:article:${handle}`, "shopify:content"],
+    revalidate: CATALOGUE_REVALIDATE_SECONDS,
+  });
+
+  const exact = data.articles.nodes.find((a) => a.handle === handle);
+  return exact ? mapArticle(exact) : null;
 }

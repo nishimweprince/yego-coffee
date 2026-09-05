@@ -183,3 +183,44 @@ export type ApiSearchQuery = {
     edges: Array<{ node: ApiProduct | Record<string, never> }>;
   };
 };
+
+export type ApiPage = {
+  id: string;
+  handle: string;
+  title: string;
+  body: string;
+  bodySummary: string;
+  seo: { title: string | null; description: string | null } | null;
+};
+
+export type ApiPageByHandleQuery = { page: ApiPage | null };
+
+export type ApiPolicy = {
+  id?: string;
+  handle: string;
+  title: string;
+  body: string;
+};
+
+export type ApiPoliciesQuery = {
+  shop: {
+    shippingPolicy: ApiPolicy | null;
+    refundPolicy: ApiPolicy | null;
+    privacyPolicy: ApiPolicy | null;
+    termsOfService: ApiPolicy | null;
+    subscriptionPolicy: ApiPolicy | null;
+  };
+};
+
+export type ApiArticle = {
+  id: string;
+  handle: string;
+  title: string;
+  excerpt: string | null;
+  contentHtml?: string;
+  publishedAt: string;
+  image: ApiImage | null;
+  seo?: { title: string | null; description: string | null } | null;
+};
+
+export type ApiArticlesQuery = { articles: { nodes: ApiArticle[] } };
