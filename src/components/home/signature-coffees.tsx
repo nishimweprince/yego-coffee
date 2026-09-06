@@ -30,29 +30,40 @@ export function SignatureCoffees({
   return (
     <section
       aria-labelledby="signature-heading"
-      className="px-page-x py-section-sm"
+      className="px-page-x py-section-md"
     >
       <div className="mx-auto max-w-6xl">
-        <p className="label text-accent">{HOME.signature.heading}</p>
-        <h2 id="signature-heading" className="sr-only">
+        <h2
+          id="signature-heading"
+          className="type-display text-display-l"
+        >
           {HOME.signature.heading}
         </h2>
 
         <div className="mt-section-sm grid gap-stack-lg lg:grid-cols-[1.2fr_1fr] lg:gap-8">
           {featured ? (
-            <article key={featured.id} className="group relative">
+            <article key={featured.id}>
+              {/* Duplicates the title link below, so it is skipped by
+                  assistive technology rather than announced as an
+                  unnamed link. */}
               <Link
                 href={`/products/${featured.handle}`}
                 className="block overflow-hidden rounded-sm"
+                tabIndex={-1}
+                aria-hidden
               >
                 <ProductMedia
                   image={featured.featuredImage}
                   title={featured.title}
                   sizes="(min-width: 1024px) 55vw, 100vw"
-                  className="bg-muted transition-transform duration-300 ease-(--ease-brand) group-hover:scale-[1.02]"
+                  className="bg-muted"
                 />
               </Link>
-              <h3 className="mt-stack-md text-h1">{featured.title}</h3>
+              <h3 className="mt-stack-md text-h1">
+                <Link href={`/products/${featured.handle}`}>
+                  {featured.title}
+                </Link>
+              </h3>
               {HOME.signature.descriptors[featured.handle] ? (
                 <p className="mt-stack-sm text-body-l text-muted-foreground">
                   {HOME.signature.descriptors[featured.handle]}
@@ -74,19 +85,25 @@ export function SignatureCoffees({
 
           <div className="grid gap-stack-lg sm:grid-cols-2 lg:grid-cols-1">
             {companions.map((product) => (
-              <article key={product.id} className="group">
+              <article key={product.id}>
                 <Link
                   href={`/products/${product.handle}`}
                   className="block overflow-hidden rounded-sm"
+                  tabIndex={-1}
+                  aria-hidden
                 >
                   <ProductMedia
                     image={product.featuredImage}
                     title={product.title}
                     sizes="(min-width: 1024px) 35vw, 100vw"
-                    className="bg-muted transition-transform duration-300 ease-(--ease-brand) group-hover:scale-[1.02]"
+                    className="bg-muted"
                   />
                 </Link>
-                <h3 className="mt-stack-md text-h2">{product.title}</h3>
+                <h3 className="mt-stack-md text-h2">
+                  <Link href={`/products/${product.handle}`}>
+                    {product.title}
+                  </Link>
+                </h3>
                 {HOME.signature.descriptors[product.handle] ? (
                   <p className="mt-stack-xs text-body-m text-muted-foreground">
                     {HOME.signature.descriptors[product.handle]}

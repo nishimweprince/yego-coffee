@@ -3,10 +3,15 @@ import { CAFE } from "@/content/cafe";
 import { HOME } from "@/content/home";
 
 /**
- * §90.06 — the café block.
+ * The café — a full-bleed band.
  *
- * Address and directions only. §90.06 lists a phone number and opening
- * hours too, but both are unverified placeholders (§91) and this is an
+ * The photograph runs the width of the viewport and the address is set
+ * over it, because this section's job is to put a real street address
+ * in front of someone who might walk there. Boxed at 45vw beside a
+ * paragraph, it read as decoration.
+ *
+ * Address and directions only. A phone number and opening hours belong
+ * here too, but both are unverified placeholders (§91) and this is an
  * outward-facing surface: a wrong number reaches a stranger, wrong
  * hours turn someone away at the door. They render the moment
  * `CAFE.provisional` says they are real.
@@ -15,25 +20,31 @@ import { HOME } from "@/content/home";
  */
 export function CafeBlock() {
   return (
-    <section className="px-page-x py-section-sm">
-      <div className="mx-auto max-w-6xl">
-        <p className="label text-accent">Café</p>
-        <div className="mt-stack-md grid items-center gap-stack-lg lg:grid-cols-2 lg:gap-16">
-          <div className="relative order-2 lg:order-1">
-            <Image
-              src="/brand/cup.jpg"
-              alt="A cup of coffee at the Yego Coffee café"
-              width={1000}
-              height={1500}
-              sizes="(min-width: 1024px) 45vw, 100vw"
-              loading="lazy"
-              className="aspect-[16/10] w-full rounded-sm object-cover"
-            />
-          </div>
+    <section
+      aria-labelledby="cafe-heading"
+      data-surface="soil"
+      className="band-scrim relative isolate overflow-hidden"
+    >
+      {/* Stacked on a phone, where the photograph needs its own space
+          to be seen at all; behind the type from lg up, where the frame
+          is wide enough for the words to sit in one half of it. */}
+      <Image
+        src="/brand/cup.jpg"
+        alt="A cup of coffee at the Yego Coffee café"
+        width={1000}
+        height={1500}
+        sizes="100vw"
+        loading="lazy"
+        className="h-64 w-full object-cover sm:h-80 lg:absolute lg:inset-0 lg:-z-10 lg:h-full"
+      />
 
-          <div className="order-1 lg:order-2">
-            <h2 className="text-display-l">{HOME.cafe.heading}</h2>
-            <p className="mt-stack-md max-w-prose text-body-l text-muted-foreground">
+      <div className="relative z-10 px-page-x py-section-md lg:py-section-lg">
+        <div className="mx-auto max-w-6xl">
+          <div className="max-w-[34rem]">
+            <h2 id="cafe-heading" className="type-display text-display-l">
+              {HOME.cafe.heading}
+            </h2>
+            <p className="mt-stack-md text-lede">
               Our roastery and café in Somerville. Come taste the lineup
               before you subscribe.
             </p>
@@ -57,9 +68,9 @@ export function CafeBlock() {
               href={CAFE.directionsUrl}
               target="_blank"
               rel="noreferrer"
-              className="mt-stack-lg inline-block label text-accent underline-offset-4 hover:underline"
+              className="link-sweep mt-stack-lg inline-block label"
             >
-              Get Directions
+              Get directions
             </a>
           </div>
         </div>

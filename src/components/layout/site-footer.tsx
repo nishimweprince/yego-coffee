@@ -17,7 +17,8 @@ import { Contour } from "@/components/ui/contour";
 export function SiteFooter() {
   return (
     <footer data-surface="soil" className="mt-auto px-page-x py-section-sm">
-      <Contour label="Somerville, Massachusetts" />
+      {/* A sign-off, not a heading: it trails. */}
+      <Contour label="Somerville, Massachusetts" align="end" />
 
       <div className="mt-stack-lg grid gap-stack-lg sm:grid-cols-2 lg:grid-cols-[1.2fr_1fr_1fr_1fr]">
         <div>

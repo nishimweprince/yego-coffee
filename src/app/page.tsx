@@ -9,6 +9,7 @@ import { SubscriptionBlock } from "@/components/home/subscription-block";
 import { HOME } from "@/content/home";
 import { COLLECTION_HANDLES } from "@/lib/catalog/collections";
 import { featuredPlans, summarisePlans } from "@/lib/catalog/plans";
+import { getReassurances } from "@/lib/content/reassurance";
 import { hasShopifyCredentials } from "@/lib/env";
 import { getCollection, getProduct } from "@/lib/shopify/storefront";
 
@@ -16,20 +17,24 @@ import { getCollection, getProduct } from "@/lib/shopify/storefront";
  * The homepage — Hero, About, Discovery, showcase, finder, café,
  * subscriptions, closing call to action, in that order.
  *
- * The founder story sits directly after the hero: photograph, two
- * concise paragraphs of confirmed fact, and a link to the full story.
- * The numbered principle grid stays off this page; verified facts
- * travel in the compact Rwanda-to-Somerville rail instead.
+ * The page descends through surface bands rather than sitting on one
+ * flat field: chalk for the opening movement, soil for Discovery,
+ * chalk again for the lineup, wash for the finder, soil for the café,
+ * and ochre once — at the subscription band, where the visitor is
+ * asked to commit.
  *
  * Everything commercial on this page is read from Shopify at render
  * time: no price, title or availability is duplicated into content.
+ * The two reassurances are excerpts of the store's own policy
+ * documents, so shipping cost and cancellation terms reach a visitor
+ * beside the buttons rather than only on /policies.
  */
 export default async function HomePage() {
   if (!hasShopifyCredentials()) {
     // The brand story stands on its own without the catalogue; only the
     // commerce sections need Shopify.
     return (
-      <main>
+      <main data-hero="video">
         <Hero />
         <HomeAbout />
         <CafeBlock />
@@ -37,9 +42,10 @@ export default async function HomePage() {
     );
   }
 
-  const [coffee, subscriptions] = await Promise.all([
+  const [coffee, subscriptions, reassurances] = await Promise.all([
     getCollection(COLLECTION_HANDLES.coffee),
     getCollection(COLLECTION_HANDLES.subscriptions),
+    getReassurances(),
   ]);
 
   // The signature section features the coffees, not the 5 lb Bag: that
@@ -62,25 +68,12 @@ export default async function HomePage() {
   );
 
   return (
-    <main>
+    <main data-hero="video">
       <Hero />
 
       <HomeAbout />
 
-      <section aria-labelledby="discovery-heading" className="px-page-x py-section-sm">
-        <div className="mx-auto max-w-6xl">
-          <p className="label text-accent">Discovery</p>
-          <h2
-            id="discovery-heading"
-            className="mt-stack-md max-w-[18ch] text-display-l"
-          >
-            {HOME.discovery.heading}
-          </h2>
-          <div className="mt-section-sm">
-            <DiscoveryCards products={signature} />
-          </div>
-        </div>
-      </section>
+      <DiscoveryCards products={signature} />
 
       <SignatureCoffees products={signature} />
 
@@ -88,9 +81,12 @@ export default async function HomePage() {
 
       <CafeBlock />
 
-      <SubscriptionBlock plans={plans} />
+      <SubscriptionBlock
+        plans={plans}
+        cancellation={reassurances.cancellation}
+      />
 
-      <FinalCta />
+      <FinalCta shipping={reassurances.shipping} />
     </main>
   );
 }

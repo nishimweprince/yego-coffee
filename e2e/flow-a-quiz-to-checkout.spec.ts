@@ -18,7 +18,7 @@ test.describe("Flow A — home to subscription checkout", () => {
     await page.goto("/");
 
     await expect(
-      page.getByRole("heading", { name: /coffee worth slowing down for/i }),
+      page.getByRole("heading", { name: /fresh coffee on repeat/i }),
     ).toBeVisible();
 
     await page.getByRole("link", { name: "Find My Coffee" }).first().click();

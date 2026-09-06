@@ -17,12 +17,24 @@ test.describe("Flow B — shop to one-time checkout", () => {
     await page.getByRole("link", { name: /medium roast/i }).first().click();
     await expect(page).toHaveURL(/\/products\/medium-roast/);
 
-    await page.getByRole("button", { name: "Add to cart" }).click();
-    await page.getByRole("link", { name: /view cart/i }).click();
+    // `exact` because the sticky buy bar carries the same action with
+    // the product name appended, so both are called "Add to cart".
+    await page
+      .getByRole("button", { name: "Add to cart", exact: true })
+      .click();
 
+    // Adding opens the drawer rather than navigating away.
+    const drawer = page.getByRole("dialog", { name: "Cart" });
+    await expect(drawer).toBeVisible();
+    await expect(drawer.getByText(/subtotal/i)).toBeVisible();
+    await expect(
+      drawer.getByRole("link", { name: /^checkout$/i }),
+    ).toHaveAttribute("href", CHECKOUT_URL);
+
+    // The full cart page is still reachable and still authoritative.
+    await drawer.getByRole("link", { name: /view full cart/i }).click();
     await expect(page).toHaveURL(/\/cart/);
     await expect(page.getByText(/subtotal/i)).toBeVisible();
-
     await expect(
       page.getByRole("link", { name: /^checkout$/i }),
     ).toHaveAttribute("href", CHECKOUT_URL);

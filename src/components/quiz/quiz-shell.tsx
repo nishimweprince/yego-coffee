@@ -221,7 +221,11 @@ export function QuizShell({
       {/* The progress indicator counts the steps this run will ask —
           answering "I'm not sure" adds one, and the total moves with it
           rather than lying about where the customer is (§9.3). */}
-      <Contour label={`Question ${index + 1} of ${steps.length}`} />
+      {/* A progress readout trails the rule it measures. */}
+      <Contour
+        label={`Question ${index + 1} of ${steps.length}`}
+        align="end"
+      />
 
       <h1 className="mt-section-sm text-display-l">{step.question}</h1>
 

@@ -13,7 +13,7 @@ export function AnnouncementBar() {
     >
       Fresh roast on repeat, monthly or every two months.{" "}
       <Link
-        href="/collections/subscriptions"
+        href="/subscriptions"
         className="text-accent underline-offset-4 hover:underline"
       >
         Build a subscription

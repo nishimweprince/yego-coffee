@@ -6,8 +6,9 @@ import { ProductGallery } from "@/components/product/product-gallery";
 import { StoreUnavailable } from "@/components/commerce/store-unavailable";
 import { ProductFacts } from "@/components/product/product-facts";
 import { RelatedProducts } from "@/components/product/related-products";
-import { SubscriptionOptions } from "@/components/product/subscription-options";
 import { Contour } from "@/components/ui/contour";
+import { YegoLine } from "@/components/ui/yego-line";
+import { getReassurances } from "@/lib/content/reassurance";
 import { COLLECTION_HANDLES } from "@/lib/catalog/collections";
 import { env } from "@/lib/env";
 import { breadcrumbJsonLd, productJsonLd } from "@/lib/seo/structured-data";
@@ -55,7 +56,10 @@ export default async function ProductPage({
   const product = await getProduct(handle);
   if (!product) notFound();
 
-  const coffee = await getCollection(COLLECTION_HANDLES.coffee);
+  const [coffee, reassurances] = await Promise.all([
+    getCollection(COLLECTION_HANDLES.coffee),
+    getReassurances(),
+  ]);
   const related = (coffee?.products ?? []).filter((p) => p.handle !== handle);
 
   const hero = product.media[0] ?? product.featuredImage;
@@ -69,21 +73,10 @@ export default async function ProductPage({
       ]
     : [];
 
-  // Every distinct subscription offered across this product's variants.
-  // Which apply to the selected variant is the purchase form's job; this
-  // is the product-level summary (§10.3).
-  const subscriptions = Object.values(
-    Object.fromEntries(
-      product.variants
-        .flatMap((v) => v.subscriptionOptions)
-        .map((option) => [option.sellingPlanId, option]),
-    ),
-  );
-
   const base = env.NEXT_PUBLIC_SITE_URL.replace(/\/$/, "");
 
   return (
-    <main className="px-page-x py-section-md">
+    <main className="px-page-x py-section-md pb-28 lg:pb-section-md">
       {/* §34: product and breadcrumb structured data, entirely from
           Shopify's own catalogue values. */}
       <script
@@ -159,18 +152,17 @@ export default async function ProductPage({
               <ProductFacts product={product} />
             </div>
 
-            {subscriptions.length > 0 ? (
-              <>
-                <Contour label="Subscription" className="mt-section-sm" />
-                <div className="mt-stack-lg">
-                  <SubscriptionOptions options={subscriptions} />
-                  <p className="mt-stack-md text-body-s text-muted-foreground">
-                    Delivered on the schedule above. Prices are the same
-                    as a one-time order.
-                  </p>
-                </div>
-              </>
-            ) : null}
+            {/* The question that stops a first order, answered beside
+                the button instead of on /policies. Just the one: the
+                device is the page's signature and stacking two of them
+                spends it twice. Cancellation terms belong where a
+                recurring charge is actually chosen — the delivery
+                control above says it, and the subscriptions page
+                carries the full text. */}
+            <YegoLine
+              reassurance={reassurances.shipping}
+              className="mt-section-sm"
+            />
           </div>
         </div>
 

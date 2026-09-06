@@ -12,6 +12,7 @@ import {
   removeCartLineAction,
   updateCartLineAction,
 } from "@/app/actions/cart";
+import { cartChanged } from "@/lib/cart/events";
 import type { CartLineModel } from "@/lib/shopify/types";
 
 /**
@@ -51,6 +52,9 @@ export function CartLine({ line }: { line: CartLineModel }) {
           `Only ${confirmed.quantity} available. We've updated your cart.`,
         );
       }
+      // The drawer holds its own copy of the cart and is not on the
+      // server-rendered tree that router.refresh() updates.
+      cartChanged();
       router.refresh();
     });
   }
@@ -62,6 +66,7 @@ export function CartLine({ line }: { line: CartLineModel }) {
         setNotice(result.message);
         return;
       }
+      cartChanged();
       router.refresh();
     });
   }

@@ -1,13 +1,22 @@
 import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
+import { YegoLine } from "@/components/ui/yego-line";
 import { HOME } from "@/content/home";
+import type { Reassurance } from "@/lib/content/reassurance";
 
-/** §90.10 — the closing screen. */
-export function FinalCta() {
+/**
+ * The closing screen.
+ *
+ * The shipping answer sits directly above the last ask, because
+ * "what will delivery cost me" is the question that stops a first
+ * order, and until now the answer lived only on /policies. It is the
+ * store's own sentence, linked to the full document.
+ */
+export function FinalCta({ shipping }: { shipping: Reassurance | null }) {
   return (
-    <section className="px-page-x py-section-md">
+    <section className="px-page-x py-section-lg">
       <div className="mx-auto max-w-6xl">
-        <h2 className="max-w-[14ch] text-display-l">
+        <h2 className="type-display max-w-[14ch] text-display-l">
           {HOME.finalCta.headline}
         </h2>
         <div className="mt-section-sm flex flex-wrap items-center gap-stack-md">
@@ -24,6 +33,8 @@ export function FinalCta() {
             {HOME.finalCta.secondaryCta.label}
           </Link>
         </div>
+
+        <YegoLine reassurance={shipping} className="mt-section-md" />
       </div>
     </section>
   );

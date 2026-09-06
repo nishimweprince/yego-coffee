@@ -33,6 +33,12 @@ export function MobileNav() {
       {open ? (
         <nav
           aria-label="Mobile"
+          // An open menu is a panel, not chrome. On the homepage the
+          // bar around it is transparent over the film hero, and
+          // without a surface of its own this inherited that
+          // transparency: the links landed unreadable on the video.
+          // Declaring the surface here also states what it is.
+          data-surface="mist"
           className="absolute inset-x-0 top-full border-b border-border bg-background px-page-x py-stack-md"
         >
           <ul className="space-y-1">

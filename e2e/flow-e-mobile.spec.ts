@@ -38,9 +38,18 @@ test.describe("Flow E — mobile", () => {
     test.skip(info.project.name !== "mobile", "mobile project only");
 
     await page.goto("/products/dark-roast");
-    await page.getByRole("button", { name: "Add to cart" }).click();
-    await page.getByRole("link", { name: /view cart/i }).click();
 
+    // The sticky buy bar is the phone's primary control: it is the one
+    // that stays reachable once the page scrolls past the form.
+    const buyBar = page.getByRole("button", { name: /^Add to cart — / });
+    await expect(buyBar).toBeVisible();
+    await buyBar.click();
+
+    const drawer = page.getByRole("dialog", { name: "Cart" });
+    await expect(drawer).toBeVisible();
+    await expect(drawer.getByText(/subtotal/i)).toBeVisible();
+
+    await drawer.getByRole("link", { name: /view full cart/i }).click();
     await expect(page).toHaveURL(/\/cart/);
     await expect(page.getByText(/subtotal/i)).toBeVisible();
   });

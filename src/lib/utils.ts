@@ -25,6 +25,7 @@ const twMerge = extendTailwindMerge({
             "h1",
             "h2",
             "h3",
+            "lede",
             "body-l",
             "body-m",
             "body-s",

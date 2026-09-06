@@ -51,8 +51,8 @@ export default async function ShopPage({
   return (
     <main className="px-page-x py-section-sm">
       <div className="mx-auto max-w-6xl">
-        <h1 className="text-display-l">Coffee</h1>
-        <p className="mt-stack-sm max-w-prose text-body-l text-muted-foreground">
+        <h1 className="type-display text-display-l">Coffee</h1>
+        <p className="mt-stack-md max-w-prose text-lede text-muted-foreground">
           Grown in Rwanda. Roasted in Somerville.
         </p>
 
@@ -80,8 +80,10 @@ export default async function ShopPage({
         )}
 
         {merch && merch.products.length > 0 ? (
-          <section className="mt-section-lg">
-            <p className="label text-accent">Merch</p>
+          <section aria-labelledby="merch-heading" className="mt-section-lg">
+            <h2 id="merch-heading" className="type-display text-display-l">
+              Merch
+            </h2>
             <div className="mt-section-sm">
               <ProductGrid products={merch.products} priorityCount={0} />
             </div>

@@ -22,7 +22,7 @@ export function ProductPrice({
 
   return (
     <p className={cn("flex items-baseline gap-2", className)}>
-      <span className="text-price font-medium">
+      <span className="type-figure text-price">
         {formatMoneyCompact(price)}
       </span>
       {discounted ? (
@@ -50,7 +50,7 @@ export function PriceRange({
 }) {
   const single = min.amount === max.amount;
   return (
-    <p className={cn("text-price font-medium", className)}>
+    <p className={cn("type-figure text-price", className)}>
       {single
         ? formatMoneyCompact(min)
         : `${formatMoneyCompact(min)} – ${formatMoneyCompact(max)}`}

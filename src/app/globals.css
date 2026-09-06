@@ -1,28 +1,54 @@
 @import "tailwindcss";
 
 /* ============================================================
-   Yego Coffee — quiet, sans-led design tokens.
+   Yego Coffee — design tokens.
 
-   Paper is deliberately close to neutral rather than a green cast.
-   Origin colours now behave as accents instead of atmosphere: forest
-   for action, ochre for factual emphasis, and ink for the footer.
+   Three typefaces, each with a job, and a page that descends
+   through surface bands rather than sitting on one flat field.
+   Origin colours behave as accents: forest for action, ochre as
+   a field at the commitment moment, ink for the dark bands.
    ============================================================ */
 
 @theme {
-  /* -- Typefaces ------------------------------------------- */
-  --font-display: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
-  --font-sans: var(--font-source-sans), ui-sans-serif, system-ui, sans-serif;
+  /* -- Typeface ---------------------------------------------
+     One family, DM Sans, in three registers.
 
-  /* -- Brand palette ---------------------------------------- */
-  --color-paper: #f7f7f2;
+     The roles are still distinct — they are separated by weight,
+     size, tracking and case rather than by family:
+
+       display  700, tracked tight
+       body     400, normal tracking
+       utility  700, small, uppercase, tracked wide
+
+     DM Sans is variable on optical size and weight only. It has no
+     width axis, so nothing here may vary width — that was the
+     previous system's main device and it does nothing on this face.
+
+     The role names stay so every component keeps working through the
+     same three hooks if a second family ever returns. */
+  --font-display: var(--font-dm-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-body: var(--font-dm-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-utility: var(--font-dm-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-dm-sans), ui-sans-serif, system-ui, sans-serif;
+
+  /* -- Brand palette ----------------------------------------
+     Paper is a cooled chalk: the previous #f7f7f2 pushed a yellow
+     cast into four photographs that are the brand's best asset. */
+  --color-paper: #f1ede4;
   --color-ink: #1c211d;
   --color-forest: #315b46;
-  --color-sage-wash: #e6ebe6;
+  --color-sage-wash: #e5e6dc;
   --color-ochre: #8a5b12;
   --color-cherry: #9d3b2e;
 
+  /* The ochre *field*. Distinct from --color-ochre, which stays the
+     dark rule-and-ring value that may never carry text on a light
+     ground (2.4:1). This one is a background: ink on it measures
+     5.87:1, so the commitment band can be saturated and still read. */
+  --color-ochre-field: #c8912a;
+
   /* Compatibility ramps keep existing utility classes stable while
-     every semantic assignment resolves to the six-colour palette. */
+     every semantic assignment resolves to the brand palette. */
   --color-soil-900: var(--color-ink);
   --color-soil-800: var(--color-ink);
   --color-soil-700: color-mix(in srgb, var(--color-ink) 92%, white);
@@ -47,14 +73,15 @@
   --color-cherry-600: var(--color-cherry);
 
   /* -- Type scale -------------------------------------------
-     Display sizes are fluid; text sizes are fixed for rhythm. */
-  --text-display-xl: clamp(3rem, 1.85rem + 4.5vw, 5.5rem);
-  --text-display-xl--line-height: 0.94;
-  --text-display-xl--letter-spacing: -0.045em;
+     Display sizes are fluid; text sizes are fixed for rhythm.
+     One display-xl per page, and it is allowed to be large. */
+  --text-display-xl: clamp(3.25rem, 1.1rem + 8vw, 8.5rem);
+  --text-display-xl--line-height: 0.92;
+  --text-display-xl--letter-spacing: -0.035em;
 
   --text-display-l: clamp(2.25rem, 1.45rem + 3vw, 4rem);
   --text-display-l--line-height: 0.98;
-  --text-display-l--letter-spacing: -0.035em;
+  --text-display-l--letter-spacing: -0.03em;
 
   --text-h1: clamp(1.875rem, 1.35rem + 1.8vw, 2.75rem);
   --text-h1--line-height: 1.06;
@@ -68,11 +95,16 @@
   --text-h3--line-height: 1.3;
   --text-h3--letter-spacing: -0.01em;
 
+  /* The lede. A serif reading face carries a larger opening
+     paragraph than the old sans did without shouting. */
+  --text-lede: clamp(1.25rem, 1.05rem + 0.6vw, 1.5rem);
+  --text-lede--line-height: 1.45;
+
   --text-body-l: 1.1875rem;
   --text-body-l--line-height: 1.6;
 
   --text-body-m: 1rem;
-  --text-body-m--line-height: 1.6;
+  --text-body-m--line-height: 1.62;
 
   --text-body-s: 0.875rem;
   --text-body-s--line-height: 1.55;
@@ -81,16 +113,16 @@
   --text-caption--line-height: 1.45;
 
   /* Label: the utility register — eyebrows, meta, data.
-     Condensed + tracked out, set in Archivo's width axis. */
+     Condensed and tracked out, set in Archivo's width axis. */
   --text-label: 0.6875rem;
   --text-label--line-height: 1;
-  --text-label--letter-spacing: 0.08em;
+  --text-label--letter-spacing: 0.09em;
 
   --text-price: 1.0625rem;
   --text-price--line-height: 1.2;
-  --text-price--letter-spacing: -0.01em;
+  --text-price--letter-spacing: 0;
 
-  /* -- Semantic spacing (§17.3) ----------------------------- */
+  /* -- Semantic spacing ------------------------------------- */
   --spacing-page-x: clamp(1.25rem, 4vw, 5rem);
   --spacing-section-sm: clamp(2.5rem, 4vw, 4rem);
   --spacing-section-md: clamp(3.5rem, 6vw, 6rem);
@@ -100,9 +132,7 @@
   --spacing-stack-md: 1.5rem;
   --spacing-stack-lg: 2.5rem;
 
-  /* -- Shape ------------------------------------------------
-     Softly rounded. Friendliness comes from the corners as well as
-     the typeface — client review asked for rounder controls. */
+  /* -- Shape ------------------------------------------------ */
   --radius-sm: 4px;
   --radius-md: 8px;
   --radius-lg: 8px;
@@ -116,10 +146,12 @@
    Semantic layer.
 
    Assignments live on [data-surface] rather than a global dark
-   theme. This brand needs full-bleed dark *sections* inside a
-   light page (§90 hero, §90.04 brand statement) far more than it
-   needs a user-toggled dark mode — so inversion is a surface
-   context you nest, not a document state.
+   theme. This brand needs full-bleed bands inside a light page
+   far more than it needs a user-toggled dark mode — so inversion
+   is a surface context you nest, not a document state.
+
+   The page descends through these: chalk, soil, chalk, wash,
+   soil, ochre, chalk. No two adjacent sections share a ground.
    ============================================================ */
 
 :root,
@@ -169,7 +201,7 @@
   --surface: var(--color-sage-wash);
   --surface-elevated: var(--color-paper);
   --muted: var(--color-paper);
-  --muted-foreground: color-mix(in srgb, var(--color-ink) 68%, var(--color-paper));
+  --muted-foreground: color-mix(in srgb, var(--color-ink) 68%, var(--color-sage-wash));
   --border: color-mix(in srgb, var(--color-ink) 16%, var(--color-sage-wash));
   --rule: color-mix(in srgb, var(--color-ink) 32%, var(--color-sage-wash));
   --accent: var(--color-forest);
@@ -181,6 +213,120 @@
   --success: var(--color-forest);
   --warning: var(--color-ochre);
   --destructive: var(--color-cherry);
+}
+
+/* The commitment band. Used once per page, where the visitor is
+   asked to start a subscription. Everything on it is ink: forest
+   on ochre measures 2.78:1 and would be unreadable. */
+[data-surface="ochre"] {
+  --background: var(--color-ochre-field);
+  --foreground: var(--color-ink);
+  --surface: var(--color-ochre-field);
+  --surface-elevated: color-mix(in srgb, var(--color-ochre-field) 88%, white);
+  --muted: color-mix(in srgb, var(--color-ink) 12%, var(--color-ochre-field));
+  --muted-foreground: color-mix(in srgb, var(--color-ink) 85%, var(--color-ochre-field));
+  --border: color-mix(in srgb, var(--color-ink) 24%, var(--color-ochre-field));
+  --rule: color-mix(in srgb, var(--color-ink) 42%, var(--color-ochre-field));
+  --accent: var(--color-ink);
+  --accent-foreground: var(--color-ochre-field);
+  --primary: var(--color-ink);
+  --primary-hover: color-mix(in srgb, var(--color-ink) 88%, white);
+  --primary-foreground: var(--color-paper);
+  --ring: var(--color-ink);
+  --success: var(--color-ink);
+  --warning: var(--color-ink);
+  --destructive: var(--color-cherry);
+}
+
+/* ============================================================
+   Chrome over film.
+
+   Deliberately unlayered. The [data-surface] blocks above are
+   unlayered too, and an unlayered rule beats anything in
+   @layer components no matter how specific it is — inside the
+   layer these overrides lost to the announcement bar's own
+   data-surface and the bar stayed opaque over the video.
+   ============================================================ */
+
+/* ----------------------------------------------------------
+   Chrome over film.
+
+   On a page whose hero is a full-screen video, the announcement bar
+   and the header float on the footage instead of sitting on a bar
+   above it — the hero is only full-screen if nothing is stacked on
+   top of it. `:has()` keeps this a property of the page rather than
+   a prop threaded through the root layout, so every other route
+   keeps the ordinary solid, sticky header.
+
+   Once the visitor scrolls past the film the chrome returns as a
+   fixed, solid bar: wayfinding matters more than the effect the
+   moment the picture is gone.
+   ---------------------------------------------------------- */
+/* Boxless by default, so the announcement bar and the header stay
+   direct flex children of <body> and keep the behaviour they have
+   always had: the bar scrolls away, the header sticks. The wrapper
+   only becomes a real box on a page that needs to float it. */
+[data-chrome] {
+  display: contents;
+}
+
+body:has(main[data-hero="video"]) [data-chrome] {
+  display: block;
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+  z-index: 50;
+}
+
+/* Inside the floating wrapper the header must not try to stick to a
+   box that is only as tall as itself. */
+body:has(main[data-hero="video"]) [data-chrome] > header {
+  position: relative;
+}
+
+/* The announcement bar carries its own [data-surface], which would
+   otherwise win over an ancestor, so it is named here too — but only
+   it. Sweeping every descendant [data-surface] into transparency also
+   caught the open mobile menu, whose panel then disappeared and left
+   its links floating unreadably over the film. */
+html:not([data-chrome-solid]) body:has(main[data-hero="video"]) [data-chrome],
+html:not([data-chrome-solid]) body:has(main[data-hero="video"]) [data-chrome] > p[data-surface] {
+  --background: transparent;
+  --foreground: var(--color-paper);
+  --muted-foreground: color-mix(in srgb, var(--color-paper) 82%, transparent);
+  --accent: var(--color-paper);
+  --border: color-mix(in srgb, var(--color-paper) 20%, transparent);
+  --rule: color-mix(in srgb, var(--color-paper) 30%, transparent);
+  --ring: var(--color-paper);
+  background-color: transparent;
+  color: var(--color-paper);
+}
+
+/* Over film every colour in the bar is paper, so the announcement's
+   link loses the accent colour that marked it as one. It gets a rule
+   instead — the affordance has to survive the inversion. */
+html:not([data-chrome-solid])
+  body:has(main[data-hero="video"])
+  [data-chrome]
+  p a {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+/* The wordmark is a dark raster on transparent, so it vanishes over
+   footage. Knocking it out to solid paper matches the rest of the
+   floating chrome; it returns to its own colours the moment the bar
+   goes solid. */
+html:not([data-chrome-solid])
+  body:has(main[data-hero="video"])
+  [data-chrome]
+  img {
+  filter: brightness(0) invert(1);
+}
+
+html[data-chrome-solid] body:has(main[data-hero="video"]) [data-chrome] {
+  position: fixed;
+  animation: yego-chrome-in 300ms var(--ease-brand) both;
 }
 
 @theme inline {
@@ -211,7 +357,8 @@
   body {
     background-color: var(--background);
     color: var(--foreground);
-    font-family: var(--font-sans);
+    font-family: var(--font-body);
+    font-optical-sizing: auto;
     font-size: var(--text-body-m);
     line-height: var(--text-body-m--line-height);
     -webkit-font-smoothing: antialiased;
@@ -223,15 +370,18 @@
     color: var(--foreground);
   }
 
-  /* Archivo's condensed width echoes roastery labels and the current
-     wordmark without turning every page into a fashion editorial. */
-  .font-display,
+  /* Headings take the display face at a reading width. The two
+     display sizes narrow it further below — width is a deliberate
+     contrast between registers, not one constant applied to
+     everything. */
   h1,
   h2,
-  h3 {
+  h3,
+  h4 {
     font-family: var(--font-display);
-    font-variation-settings: "wdth" 90;
-    font-weight: 600;
+    font-variation-settings: "opsz" 32;
+    font-weight: 700;
+    letter-spacing: -0.015em;
   }
 
   /* Tailwind v4's Preflight leaves buttons at the browser default
@@ -259,24 +409,59 @@
   }
 
   ::selection {
-    background-color: var(--color-sun-500);
-    color: var(--color-soil-900);
+    background-color: var(--color-ochre-field);
+    color: var(--color-ink);
   }
 }
 
 @layer components {
   /* ----------------------------------------------------------
-     The contour rule — the signature device.
+     Type registers.
+
+     Three faces, three jobs. `.type-display` narrows Bricolage's
+     width axis and opens its optical size for the one or two
+     headlines a page sets large; `.type-utility` is Archivo held
+     condensed so labels, prices and data read as a different
+     voice from either the headline or the copy.
+     ---------------------------------------------------------- */
+  .type-display {
+    font-family: var(--font-display);
+    font-variation-settings: "opsz" 40;
+    font-weight: 700;
+    letter-spacing: -0.035em;
+  }
+
+  .type-utility,
+  .label {
+    font-family: var(--font-utility);
+    font-variation-settings: "opsz" 9;
+    font-weight: 700;
+    font-size: var(--text-label);
+    line-height: var(--text-label--line-height);
+    letter-spacing: var(--text-label--letter-spacing);
+    text-transform: uppercase;
+  }
+
+  /* Prices and other figures: the utility face, unshouted. */
+  .type-figure {
+    font-family: var(--font-utility);
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0;
+    text-transform: none;
+  }
+
+  /* ----------------------------------------------------------
+     The contour rule — the signature line.
 
      Rwanda is the land of a thousand hills; its coffee grows on
-     terraces, and altitude is a real quality signal in the cup.
-     Section boundaries are drawn as topographic contour lines
-     rather than a single hairline: three strokes, unequal, the
-     way elevation reads on a map.
+     terraces. A section boundary is drawn as a topographic
+     contour rather than a single hairline: two strokes, unequal,
+     the way elevation reads on a map.
 
-     The label slot carries something true (a section name, or a
-     real altitude on product pages). It never carries invented
-     sequence numbers.
+     Used only where it marks a true transition. The label slot
+     carries something verified — a place, a section name. It
+     never carries an invented altitude or sequence number.
      ---------------------------------------------------------- */
   .contour {
     display: flex;
@@ -310,25 +495,83 @@
     opacity: 0.45;
   }
 
+  /* The short stroke tapers away from the label, so the pair always
+     reads as elevation falling off from the named point. */
+  .contour:has(.contour__label:first-child) .contour__lines::after {
+    margin-inline-start: auto;
+  }
+
   .contour__label {
     flex: 0 0 auto;
-    font-family: var(--font-sans);
+    font-family: var(--font-utility);
     font-size: var(--text-label);
     line-height: var(--text-label--line-height);
     letter-spacing: var(--text-label--letter-spacing);
-    font-variation-settings: "wdth" 82;
-    font-weight: 600;
+    font-variation-settings: "opsz" 9;
+    font-weight: 700;
     text-transform: uppercase;
     color: var(--muted-foreground);
   }
 
-  .label {
-    font-size: var(--text-label);
-    line-height: var(--text-label--line-height);
-    letter-spacing: var(--text-label--letter-spacing);
-    font-family: var(--font-display);
-    font-variation-settings: "wdth" 82;
-    font-weight: 600;
+  /* ----------------------------------------------------------
+     The film hero.
+
+     A full-screen video needs the words to hold against whatever
+     frame happens to be playing, without dimming the footage into
+     grey. The scrim is weighted to the bottom, where the type sits,
+     and clears through the middle so the picture stays a picture.
+     Built from the band's own --background, so it follows the
+     surface rather than hard-coding black.
+     ---------------------------------------------------------- */
+  .hero-scrim::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+      /* Behind the type, which is set low and to the left. */
+      linear-gradient(
+        to right,
+        color-mix(in srgb, var(--background) 62%, transparent) 0%,
+        color-mix(in srgb, var(--background) 30%, transparent) 55%,
+        transparent 100%
+      ),
+      /* Bottom for the words, top for the chrome, open in between. */
+      linear-gradient(
+        to top,
+        color-mix(in srgb, var(--background) 94%, transparent) 0%,
+        color-mix(in srgb, var(--background) 80%, transparent) 34%,
+        color-mix(in srgb, var(--background) 40%, transparent) 66%,
+        color-mix(in srgb, var(--background) 72%, transparent) 100%
+      );
+  }
+
+  /* ----------------------------------------------------------
+     Band scrim.
+
+     A full-bleed photograph that carries type needs the type to stay
+     legible without flattening the image into a grey rectangle. The
+     scrim is built from the band's own --background, so it inverts
+     correctly with the surface it sits on: heaviest behind the text,
+     clearing toward the open side of the frame.
+
+     Wide viewports only. On a phone there is no open side — a scrim
+     that covers the text column covers the whole photograph, and the
+     band becomes a dark rectangle with the image hidden underneath.
+     Narrow layouts stack the picture above the words instead.
+     ---------------------------------------------------------- */
+  @media (min-width: 64rem) {
+    .band-scrim::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        to right,
+        var(--background) 0%,
+        color-mix(in srgb, var(--background) 85%, transparent) 42%,
+        color-mix(in srgb, var(--background) 20%, transparent) 100%
+      );
+    }
   }
 
   /* ----------------------------------------------------------
@@ -350,13 +593,63 @@
     background-color: currentColor;
     transform-origin: left;
     transform: scaleX(0);
-    transition: transform 300ms ease var(--ease-brand);
+    transition: transform 300ms var(--ease-brand);
   }
 
   .link-sweep:hover::after,
   .link-sweep:focus-visible::after,
   .link-sweep[aria-current="page"]::after {
     transform: scaleX(1);
+  }
+}
+
+/* ============================================================
+   Motion — one orchestrated moment.
+
+   The hero arrives: the headline rises a line at a time and the
+   photograph wipes in from the band edge. Nothing else on the
+   site animates on load, so this reads as the page opening
+   rather than as decoration scattered down it.
+   ============================================================ */
+
+@keyframes yego-rise {
+  from {
+    opacity: 0;
+    transform: translateY(0.5em);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes yego-chrome-in {
+  from {
+    transform: translateY(-100%);
+  }
+  to {
+    transform: none;
+  }
+}
+
+@keyframes yego-wipe {
+  from {
+    clip-path: inset(0 0 0 100%);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+@layer components {
+  .rise-in {
+    animation: yego-rise 700ms var(--ease-brand) both;
+    animation-delay: var(--rise-delay, 0ms);
+  }
+
+  .wipe-in {
+    animation: yego-wipe 900ms var(--ease-brand) both;
+    animation-delay: var(--rise-delay, 0ms);
   }
 }
 

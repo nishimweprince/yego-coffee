@@ -27,17 +27,15 @@ export type DiscoveryCard = {
 
 export const HOME = {
   hero: {
-    eyebrow: "Coffee subscriptions",
     headline: "Fresh coffee on repeat.",
     body: "Pick your roast and delivery rhythm. We roast in Somerville and ship it fresh, so the good coffee never runs out.",
-    primaryCta: { label: "Build My Subscription", href: "/collections/subscriptions" },
-    secondaryCta: { label: "Find My Coffee", href: "/quiz" },
+    primaryCta: { label: "Start a subscription", href: "/subscriptions" },
+    secondaryCta: { label: "Find my coffee", href: "/quiz" },
     /** Verified facts only (§88): ownership, roastery, market. */
     trust: ["Family owned", "Roasted in Somerville", "Ships across the US"],
   },
 
   about: {
-    eyebrow: "About Yego Coffee",
     heading: "Family coffee, from Rwanda to Somerville.",
     paragraphs: [
       "Yego Coffee is family-owned by Fatuma and Francois Tuyishime. Yego is Kinyarwanda for yes, the family's answer as they rebuilt around coffee.",
@@ -154,15 +152,15 @@ export const HOME = {
       "Roasted before it ships",
       "Manage it from your account",
     ],
-    cta: { label: "Build My Subscription", href: "/collections/subscriptions" },
+    cta: { label: "Start a subscription", href: "/subscriptions" },
   },
 
   finalCta: {
     headline: "Your next coffee is waiting.",
-    primaryCta: { label: "Find My Coffee", href: "/quiz" },
+    primaryCta: { label: "Find my coffee", href: "/quiz" },
     secondaryCta: {
-      label: "See Subscription Options",
-      href: "/collections/subscriptions",
+      label: "See subscription options",
+      href: "/subscriptions",
     },
   },
 } as const;

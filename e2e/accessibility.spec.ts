@@ -48,6 +48,10 @@ test.describe("accessibility floor", () => {
           nodes
             .filter((node) => {
               const el = node as HTMLElement;
+              // Not in the accessibility tree at all, so not a control
+              // a screen reader can land on. Product cards deliberately
+              // hide the image link that duplicates the title link.
+              if (el.closest('[aria-hidden="true"]')) return false;
               const text = (el.textContent ?? "").trim();
               const label = el.getAttribute("aria-label");
               const labelledBy = el.getAttribute("aria-labelledby");
