@@ -113,14 +113,12 @@ export default function CafePage() {
               >
                 {BRAND.email}
               </a>
-              {CAFE.provisional.hours ? (
-                /* Saying "email first" is honest; printing hours nobody
-                   has confirmed is not (§91). */
-                <p className="mt-stack-md max-w-prose text-body-s text-muted-foreground">
-                  Opening hours are best confirmed by email before you
-                  travel.
-                </p>
-              ) : null}
+              {/* No opening hours are published, so this is the whole
+                  answer rather than a caveat on one (§91). */}
+              <p className="mt-stack-md max-w-prose text-body-s text-muted-foreground">
+                Opening hours are best confirmed by email before you
+                travel.
+              </p>
             </div>
 
             <div>

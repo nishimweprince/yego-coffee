@@ -11,10 +11,10 @@ import { HOME } from "@/content/home";
  * paragraph, it read as decoration.
  *
  * Address and directions only. A phone number and opening hours belong
- * here too, but both are unverified placeholders (§91) and this is an
- * outward-facing surface: a wrong number reaches a stranger, wrong
- * hours turn someone away at the door. They render the moment
- * `CAFE.provisional` says they are real.
+ * here too, but neither has been confirmed by the owners, and this is
+ * an outward-facing surface: a wrong number reaches a stranger, wrong
+ * hours turn someone away at the door. They are not carried in the
+ * repository at all (§91) — see src/content/cafe.ts.
  *
  * "View Café Menu" is omitted entirely per §91 — there is no menu.
  */
@@ -54,15 +54,6 @@ export function CafeBlock() {
               <br />
               {CAFE.locality}, {CAFE.region} {CAFE.postalCode}
             </address>
-
-            {!CAFE.provisional.phone ? (
-              <a
-                href={`tel:${CAFE.phone.replace(/\s/g, "")}`}
-                className="mt-stack-sm inline-block text-body-m text-muted-foreground hover:text-foreground"
-              >
-                {CAFE.phone}
-              </a>
-            ) : null}
 
             <a
               href={CAFE.directionsUrl}

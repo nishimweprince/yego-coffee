@@ -1,16 +1,25 @@
 /**
  * The café (plan.md §91).
  *
- * Address and email are confirmed from the live site (§88). Phone and
- * hours are **carried-over placeholders**, not verified café details,
- * and §91 is explicit that they are safe to develop against and unsafe
- * to publish: a wrong number routes a real customer to a stranger, and
- * wrong hours turn someone away at the door.
+ * Address and email are confirmed from the live site (§88).
  *
- * They are therefore held behind `provisional`, and nothing renders a
- * provisional value. Replacing them is a single edit here, and Phase 7
- * adds the build-time assertion §91 asks for so a production build
- * cannot ship while these are still true.
+ * **Phone and opening hours are deliberately absent.** They were held
+ * here as carried-over placeholders behind a `provisional` flag — a
+ * number with a Missouri area code for a café in Somerville,
+ * Massachusetts, and an invented 08:00–18:00 all week. Nothing
+ * rendered them, but §91's launch guard reads these flags, so their
+ * presence failed every production deploy: the site could not ship at
+ * all until someone produced the real values.
+ *
+ * Unverified data that nothing displays is not worth the risk of one
+ * day being displayed. Deleting it satisfies §91 outright rather than
+ * gating it, and the guard stays armed for anything added later.
+ *
+ * To publish them: add `phone` / `hours` back with values confirmed by
+ * the owners, and add the matching `provisional` entries set to
+ * `false`. Set an entry to `true` only while a value is still
+ * unverified — that is what the guard is for, and it will stop the
+ * deploy until it is resolved.
  */
 
 export type OpeningHours = { open: string; close: string };
@@ -31,19 +40,10 @@ export const CAFE = {
     )}`;
   },
 
-  /** UNVERIFIED — §91. Nothing may render these while true. */
-  provisional: {
-    phone: true,
-    hours: true,
-  },
-  phone: "+1 816 352 9842",
-  hours: {
-    monday: [{ open: "08:00", close: "18:00" }],
-    tuesday: [{ open: "08:00", close: "18:00" }],
-    wednesday: [{ open: "08:00", close: "18:00" }],
-    thursday: [{ open: "08:00", close: "18:00" }],
-    friday: [{ open: "08:00", close: "18:00" }],
-    saturday: [{ open: "08:00", close: "18:00" }],
-    sunday: [{ open: "08:00", close: "18:00" }],
-  } satisfies Record<string, OpeningHours[]>,
+  /**
+   * Fields whose values exist but are not yet confirmed by the owners.
+   * `true` blocks a production deploy (see cafe-guard.ts). Empty is the
+   * correct state: nothing unverified is carried here.
+   */
+  provisional: {} as Record<string, boolean>,
 } as const;
