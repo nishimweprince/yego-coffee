@@ -6533,3 +6533,215 @@ budget that is currently zero.
   Phase 6, still blocked on credentials (§100.5).
 - **Rate limiting and dependency/secret scanning** (§39). Both are
   deployment-platform concerns and need the Vercel access.
+
+---
+
+# 103. Owner Decisions — 2026-09-06
+
+Two of the open questions in §96.10 are now settled by the owners.
+
+## 103.1 §92.2 #6 — the lineup is three coffees
+
+**Settled: Light Roast and Gatare are one product.** Yego sells three
+coffees — Medium Roast, Dark Roast, and Gatare Anaerobic Process (the
+light roast) — plus the 5 lb Bag as a format and one mug.
+
+This confirms what the storefront was already built against (§96.7,
+§98.3, §99.2), so nothing changes in the code:
+
+- §93.2's quiz keeps three flavour answers, not four. "Bright & out of
+  the ordinary" covers what §93.2 split across "Bright & delicate" and
+  "Something unusual".
+- §90.03's signature section renders the `roasted-coffee` collection,
+  which returns three coffees and the bulk bag.
+- §90.02's four discovery cards remain correct: three lead to a real
+  coffee, the fourth opens the quiz.
+
+**§92.2 #6 is closed.** Anyone later reading §90.03's four-item list
+should read it as three; the decision is here, not there.
+
+## 103.2 Phase 6 — build without credentials
+
+The owners have directed that Phase 6 be built against Shopify's
+documented Customer Account API without credentials, having been told
+what that costs (§100.5): no request will have been made, and §75's
+exit criteria — "customer can securely access only own data" and "all
+supported mutations tested" — cannot be met by construction.
+
+That decision is recorded here so §104's status is not mistaken for an
+oversight. §104 sets out exactly what was verified, what was not, and
+what the first hour with real credentials must check.
+
+## 103.3 Still open
+
+Unchanged: §92.1's consolidation, §92.2 #5 (the 5 lb Bag's audience),
+the "Weekly membership" plan's misleading name, the café phone and
+hours, product metafields, and Vercel access.
+
+---
+
+# 104. Phase 6 Build Record — Customer Accounts
+
+Implemented 2026-09-06, **without credentials**, per §103.2.
+
+Read §104.7 before trusting anything here against a real store.
+
+## 104.1 Delivered
+
+```text
+src/lib/customer/
+  env.ts          lazy config, same split as §94.2's Shopify env
+  pkce.ts         PKCE, state, nonce, constant-time compare
+  return-to.ts    open-redirect guard
+  session.ts      httpOnly token cookies
+  auth.ts         authorize URL, code exchange, refresh, logout
+  client.ts       authenticated GraphQL transport, no-store
+  queries.ts      9 operations
+  mappers.ts      defensive raw → view model
+  validation.ts   Zod schemas shared by forms and actions
+  guard.ts        the per-page session check
+  account.ts      typed reads
+
+src/middleware.ts        the HTTP-level account boundary
+src/app/account/         login, callback, logout, signin-failed,
+                         (signed-in)/{overview, orders, orders/[id],
+                         subscriptions, addresses, profile}
+src/components/account/  nav, order history, address book, forms
+```
+
+426 unit tests, 71 E2E across Chromium and WebKit. Typecheck, lint,
+build green.
+
+## 104.2 What is genuinely verified, and what is not
+
+**Verified, independently of Shopify:**
+
+| Thing | How |
+|---|---|
+| PKCE S256 derivation | Against **RFC 7636's own worked example**, so the algorithm is checked against the specification rather than against itself |
+| Verifier entropy and length | 200-sample uniqueness, RFC bounds |
+| Constant-time state compare | Prefix, length and equality cases |
+| Open-redirect refusal | Absolute, protocol-relative, backslash and `javascript:` forms |
+| Every GraphQL document | Parses, one operation, named to match, fragments defined and used (§95.7's checks, now 150 assertions) |
+| Mapper behaviour on unexpected shapes | Null nestings, absent fields, empty connections — 24 cases, all "render a gap, never throw" |
+| Input validation | ZIP, state code, trimming, length caps, gid shape |
+| The auth boundary | Live: 307 before render, forged state refused, GET logout inert |
+| Nothing indexed or cached | `force-dynamic` + `robots: noindex` on every account route |
+
+**Not verified, and unverifiable here:**
+
+- That any of the nine documents match the real Customer Account API
+  schema. There is no published schema to validate against — §95.10's
+  independent check has no counterpart for this API, so these have one
+  fewer layer of proof than every Storefront document.
+- That the OAuth endpoints are at the paths assumed
+  (`/oauth/authorize`, `/oauth/token`, `/logout`).
+- That the token response carries the fields assumed.
+- That `subscriptionContracts` returns anything at all for this store.
+- Any mutation. None has been executed.
+
+## 104.3 The boundary is at the HTTP level, not in the render
+
+`requireCustomerSession()` runs during rendering, and by the time it
+calls `redirect()` the account layout has already streamed — so the
+response was **200 with a client-side redirect**, not an HTTP one. No
+data leaked, because the page body never rendered, but an auth
+boundary should not depend on the order in which a tree streams.
+
+`src/middleware.ts` now decides before anything renders: 307 to
+`/account/login`, destination preserved. It is a *presence* check on
+the session cookie and deliberately nothing more — middleware cannot
+validate a token without a network call, and pretending otherwise
+would put a security decision where it cannot be made. Authorisation
+stays with Shopify, which scopes every response to the token, and with
+the page guard and Server Actions, which re-check the session (§11.7).
+
+The middleware stands down entirely when customer accounts are
+unconfigured: otherwise clicking "Account" in the nav sent a visitor to
+a login route answering `503 {"error": "not configured"}`. The page
+explains it in English instead.
+
+## 104.4 Ownership, and why no code enforces it
+
+§75's Phase 6 criterion is "customer can securely access only own
+data". **No function in this phase takes a customer id.** The Customer
+Account API scopes every response to the token's own customer, so the
+way to keep that guarantee true is never to accept an identifier from
+the client and never to ask for one.
+
+The single id accepted anywhere — an order id in a URL, an address id
+in a form — is shape-checked and handed to an API that will not return
+another customer's record. The order page 404s rather than reporting
+that an order exists but belongs to someone else.
+
+This is a real guarantee, but it is Shopify's, not ours. It is the one
+part of §75's criterion that cannot be demonstrated without a token
+and a second customer to try it against.
+
+## 104.5 A bug the accessibility tests caught
+
+`/account/signin-failed` sat inside the account layout, so it rendered
+**nested `<main>` elements** and showed the account navigation —
+Overview, Orders, Addresses, Sign out — to someone who had just failed
+to sign in.
+
+The signed-in area now lives in an `(signed-in)` route group with its
+own shell, and `/account/layout.tsx` carries only the caching and
+indexing rules. The a11y sweep gained `/account/signin-failed`,
+`/subscriptions` and `/policies`, since this class of bug is
+invisible until something counts landmarks.
+
+## 104.6 §11.6's subscription operations are not built
+
+§11.6 asks for cancel, pause, resume, change frequency, change
+quantity and skip. None are offered, and this is the same reasoning as
+§99.4 rather than a shortfall:
+
+Yego's subscriptions are run by Seal Subscriptions and sold as
+duplicate products, not native Shopify selling plans (§92.1, §96.5).
+Shopify's native `subscriptionContracts` has nothing to manage. §11.6
+is explicit that anything this API does not support must link into
+Shopify's supported flow "rather than being reimplemented insecurely".
+
+A pause button that silently did nothing is the worst available
+outcome: the customer believes the next charge is stopped, and it is
+not. §11.7's confirmation and rollback requirements cannot be met
+against an API that does not own the contract.
+
+The query is written and the page renders contracts when they exist,
+so when §92.1's consolidation lands this grows controls rather than
+needing a rebuild.
+
+## 104.7 The first hour with real credentials
+
+In this order — each step's failure explains the next one's:
+
+1. `/account/login` — does Shopify accept the authorize URL, or is the
+   path wrong? (`auth.ts`)
+2. Sign in, land on `/account/callback` — does the token exchange
+   return the assumed fields? (`auth.ts`, `requestTokens`)
+3. `/account` — does `CustomerOverview` validate, and does
+   `mapProfile` find a name where it expects one?
+4. `/account/orders` — the connection shape and `fulfillments` nesting
+   are the least certain part of `mappers.ts`.
+5. `/account/orders/[id]` — `statusPageUrl` and `trackingInformation`
+   are assumptions.
+6. `/account/subscriptions` — expect empty. If it is *not* empty, the
+   §92.1 picture is wrong and §11.6 should be revisited.
+7. `/account/addresses` — create, edit, set default, delete. The
+   mutation argument names are the most likely thing to be wrong.
+8. Then, and only then, mark §75's Phase 6 exit criteria.
+
+Fix disagreements in `queries.ts` and `mappers.ts`. The UI reads view
+models and should not need to change — that boundary exists for
+precisely this.
+
+## 104.8 Phase 6 exit criteria — §75
+
+| Criterion | Status |
+|---|---|
+| Customer can securely access only own data | **Unverified.** The boundary is verified (§104.3); the scoping is Shopify's and needs a token and a second customer to demonstrate |
+| All supported mutations tested | **Not met.** No mutation has been executed. Their inputs are validated and their error handling is written; that is not the same thing |
+
+Phase 6 cannot be signed off, and §103.2 records that this was known
+when the work was commissioned.

@@ -7,7 +7,19 @@ import { expect, requireCredentials, test } from "./fixtures";
  * that silently regress: one h1, real landmarks, every control with an
  * accessible name, and a visible focus ring.
  */
-const PAGES = ["/", "/shop", "/quiz", "/cafe", "/about", "/journal"];
+const PAGES = [
+  "/",
+  "/shop",
+  "/quiz",
+  "/cafe",
+  "/about",
+  "/journal",
+  "/subscriptions",
+  "/policies",
+  // Nested <main> elements lived here: the sign-in failure page
+  // inherited the account layout's own <main> (§104.5).
+  "/account/signin-failed",
+];
 
 test.describe("accessibility floor", () => {
   test.beforeEach(() => requireCredentials());

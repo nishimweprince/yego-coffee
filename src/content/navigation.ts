@@ -2,9 +2,12 @@
  * Navigation (plan.md §6), repository-managed per §5.2.
  *
  * A link is added the moment its destination exists — a navigation
- * item that 404s costs more trust than a shorter menu. Account is the
- * one item of §6's IA still missing, and it stays out until Phase 6
- * has real Customer Account credentials to build against.
+ * item that 404s costs more trust than a shorter menu.
+ *
+ * §6's IA is now complete. `/account` resolves whether or not customer
+ * accounts are configured: without credentials it explains that
+ * accounts are not switched on yet, which is a true answer rather than
+ * a dead link (§104).
  */
 
 export type NavLink = {
@@ -17,6 +20,7 @@ export const PRIMARY_NAV: NavLink[] = [
   { href: "/subscriptions", label: "Subscriptions" },
   { href: "/quiz", label: "Find Your Coffee" },
   { href: "/cafe", label: "Café" },
+  { href: "/account", label: "Account" },
 ];
 
 /** Secondary destinations, footer only — §8.12. */
