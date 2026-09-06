@@ -30,7 +30,7 @@ const PUBLIC_ACCOUNT_PATHS = [
   "/account/signin-failed",
 ];
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   if (PUBLIC_ACCOUNT_PATHS.some((path) => pathname.startsWith(path))) {
