@@ -49,20 +49,19 @@ export default async function ShopPage({
   const roasts = availableRoasts(coffees);
 
   return (
-    <main className="px-page-x py-section-md">
+    <main className="px-page-x py-section-sm">
       <div className="mx-auto max-w-6xl">
         <h1 className="text-display-l">Coffee</h1>
-        <p className="mt-stack-md max-w-prose text-body-l text-muted-foreground">
+        <p className="mt-stack-sm max-w-prose text-body-l text-muted-foreground">
           Grown in Rwanda. Roasted in Somerville.
         </p>
 
-        <div className="mt-section-sm">
+        <div className="mt-stack-lg flex flex-wrap items-center justify-between gap-stack-md">
           <RoastFilter options={roasts} selected={selected} />
+          <p className="label text-muted-foreground">
+            {`${visible.length} of ${coffees.length}`}
+          </p>
         </div>
-
-        <p className="label text-muted-foreground mt-stack-lg">
-          {`${visible.length} of ${coffees.length}`}
-        </p>
 
         {visible.length === 0 ? (
           <div className="mt-section-sm">

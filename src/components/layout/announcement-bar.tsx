@@ -8,8 +8,8 @@ import Link from "next/link";
 export function AnnouncementBar() {
   return (
     <p
-      data-surface="soil"
-      className="px-page-x py-stack-sm text-center text-body-s text-muted-foreground"
+      data-surface="wash"
+      className="border-b border-border px-page-x py-stack-sm text-center text-body-s text-muted-foreground"
     >
       Fresh roast on repeat, monthly or every two months.{" "}
       <Link

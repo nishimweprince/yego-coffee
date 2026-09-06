@@ -1,25 +1,20 @@
+import Image from "next/image";
 import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck } from "@fortawesome/free-solid-svg-icons/faCheck";
 import { buttonVariants } from "@/components/ui/button";
-import { HeroSlides } from "@/components/home/hero-slides";
 import { HOME } from "@/content/home";
 
 /**
- * §90.01 — the hero, subscription-led and full-height.
+ * The hero — subscription-led, static, a Server Component.
  *
- * The frame is `min-h-svh`: the first screen is the whole pitch, not
- * its opening line. Photography rotates through the live site's real
- * gallery while the copy stands still — the promise and the CTAs never
- * move under the visitor. Copy is plain customer language, no em
- * dashes, no manifestos.
+ * One roasting photograph beside the subscription message. No
+ * carousel, no autoplay, nothing to hydrate: the promise and the CTAs
+ * never move under the visitor. Copy is plain customer language.
  */
 export function Hero() {
   return (
-    <section
-      data-surface="soil"
-      className="flex min-h-svh items-center px-page-x py-section-md"
-    >
+    <section className="px-page-x py-section-md">
       <div className="mx-auto grid w-full max-w-6xl items-center gap-stack-lg lg:grid-cols-[1.1fr_0.9fr] lg:gap-16">
         <div>
           <p className="label text-accent">{HOME.hero.eyebrow}</p>
@@ -33,7 +28,8 @@ export function Hero() {
 
           {/* Links, not buttons: these navigate. The button styling
               comes from the shared variants so a CTA cannot drift from
-              the system (§17.6). Size lg per §42. */}
+              the system (§17.6). Size lg per §42; min-h-11 keeps the
+              44px target on mobile. */}
           <div className="mt-section-sm flex flex-wrap items-center gap-stack-md">
             <Link
               href={HOME.hero.primaryCta.href}
@@ -66,7 +62,17 @@ export function Hero() {
           </ul>
         </div>
 
-        <HeroSlides />
+        <div className="overflow-hidden rounded-sm">
+          <Image
+            src="/brand/roast.jpg"
+            alt="Coffee roasting at the Yego Coffee roastery"
+            width={1200}
+            height={1500}
+            priority
+            sizes="(min-width: 1024px) 40vw, 100vw"
+            className="aspect-[4/5] w-full object-cover"
+          />
+        </div>
       </div>
     </section>
   );

@@ -130,10 +130,10 @@ export default async function ProductPage({
           </ol>
         </nav>
 
-        <div className="mt-stack-lg grid gap-section-sm lg:grid-cols-2 lg:gap-16">
+        <div className="mt-stack-lg grid items-start gap-section-sm lg:grid-cols-2 lg:gap-16">
           <ProductGallery images={gallery} title={product.title} />
 
-          <div>
+          <div className="lg:sticky lg:top-24">
             <h1 className="text-h1">{product.title}</h1>
 
             <div className="mt-stack-lg">

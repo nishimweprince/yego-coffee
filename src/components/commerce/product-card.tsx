@@ -20,12 +20,8 @@ export function ProductCard({
   className?: string;
 }) {
   return (
-    <article
-      className={cn(
-        "group rounded-md transition-all duration-200 ease-(--ease-brand) hover:-translate-y-1 hover:shadow-md p-1",
-        className,
-      )}
-    >
+    <article className={cn("group", className)}>
+
       <Link
         href={`/products/${product.handle}`}
         className="block focus-visible:outline-2 focus-visible:outline-offset-4"

@@ -52,8 +52,8 @@ export default async function QuizPage({ searchParams }: PageProps<"/quiz">) {
   ]);
 
   return (
-    <main className="px-page-x py-section-md">
-      <div className="mx-auto grid max-w-6xl items-start gap-stack-lg lg:grid-cols-[1fr_0.7fr] lg:gap-16">
+    <main className="px-page-x py-section-sm">
+      <div className="mx-auto grid max-w-6xl items-start gap-stack-md lg:grid-cols-[1fr_0.7fr] lg:gap-16">
         <QuizShell
           coffees={coffees.filter((p) => p !== null)}
           subscriptionProducts={subscriptionProducts.filter((p) => p !== null)}

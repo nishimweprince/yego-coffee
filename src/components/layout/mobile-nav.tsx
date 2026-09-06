@@ -36,7 +36,7 @@ export function MobileNav() {
           className="absolute inset-x-0 top-full border-b border-border bg-background px-page-x py-stack-md"
         >
           <ul className="space-y-1">
-            {PRIMARY_NAV.map((link) => (
+            {[...PRIMARY_NAV, { href: "/contact", label: "Contact" }].map((link) => (
               <li key={link.href}>
                 <Link
                   href={link.href}

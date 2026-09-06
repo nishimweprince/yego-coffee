@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { Contour } from "@/components/ui/contour";
 import { BRAND } from "@/content/brand";
 import { CAFE } from "@/content/cafe";
@@ -50,10 +51,24 @@ export default function CafePage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
       />
 
-      <div className="mx-auto max-w-4xl">
-        <h1 className="text-display-l">Come have one with us.</h1>
+      <div className="mx-auto grid max-w-6xl items-center gap-stack-lg lg:grid-cols-2 lg:gap-16">
+        <figure className="overflow-hidden rounded-sm">
+          <Image
+            src="/brand/cup.jpg"
+            alt="A cup of coffee at the Yego Coffee café"
+            width={1000}
+            height={1500}
+            sizes="(min-width: 1024px) 45vw, 100vw"
+            priority
+            className="aspect-[4/5] w-full object-cover"
+          />
+        </figure>
 
-        <Contour label="Somerville" className="mt-section-sm" />
+        <div>
+          <p className="label text-accent">Café</p>
+          <h1 className="mt-stack-md text-display-l">Come have one with us.</h1>
+
+          <Contour label="Somerville" className="mt-section-sm" />
 
         <div className="mt-section-sm grid gap-stack-lg sm:grid-cols-2">
           <div>
@@ -90,6 +105,7 @@ export default function CafePage() {
               </p>
             ) : null}
           </div>
+        </div>
         </div>
       </div>
     </main>

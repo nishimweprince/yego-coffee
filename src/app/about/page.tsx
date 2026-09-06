@@ -30,16 +30,8 @@ export default async function AboutPage() {
 
   return (
     <main>
-      <section data-surface="soil" className="px-page-x py-section-lg">
+      <section className="px-page-x py-section-md">
         <div className="mx-auto grid max-w-6xl items-center gap-stack-lg lg:grid-cols-2 lg:gap-16">
-          <div>
-            <h1 className="text-display-l">{HOME.statement.headline}</h1>
-            <div className="mt-stack-lg max-w-prose space-y-stack-xs text-body-l text-muted-foreground">
-              {HOME.statement.body.map((line) => (
-                <p key={line}>{line}</p>
-              ))}
-            </div>
-          </div>
           <figure>
             <Image
               src="/brand/founders.jpg"
@@ -47,13 +39,24 @@ export default async function AboutPage() {
               width={1500}
               height={1000}
               sizes="(min-width: 1024px) 45vw, 100vw"
-              loading="lazy"
-              className="aspect-[3/2] w-full rounded-md object-cover"
+              priority
+              className="aspect-[3/2] w-full rounded-sm object-cover"
             />
             <figcaption className="mt-stack-sm text-body-s text-muted-foreground">
               Fatuma and Francois Tuyishime, Somerville, Massachusetts.
             </figcaption>
           </figure>
+          <div>
+            <p className="label text-accent">Our story</p>
+            <h1 className="mt-stack-md text-display-l">
+              {HOME.statement.headline}
+            </h1>
+            <div className="mt-stack-lg max-w-prose space-y-stack-xs text-body-l text-muted-foreground">
+              {HOME.statement.body.map((line) => (
+                <p key={line}>{line}</p>
+              ))}
+            </div>
+          </div>
         </div>
       </section>
 

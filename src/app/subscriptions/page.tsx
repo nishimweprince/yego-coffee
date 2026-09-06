@@ -75,12 +75,20 @@ export default async function SubscriptionsPage() {
 
   return (
     <main>
-      <section data-surface="soil" className="px-page-x py-section-lg">
+      <section className="px-page-x py-section-md">
         <div className="mx-auto max-w-5xl">
-          <h1 className="max-w-[14ch] text-display-l">
+          <p className="label text-accent">Subscriptions</p>
+          <h1 className="mt-stack-md max-w-[14ch] text-display-l">
             {HOME.subscription.heading}
           </h1>
-          <ol className="mt-section-md grid gap-stack-lg sm:grid-cols-3">
+          <ul className="mt-stack-lg flex max-w-prose flex-wrap gap-x-6 gap-y-stack-xs">
+            {HOME.subscription.benefits.map((benefit) => (
+              <li key={benefit} className="text-body-s text-muted-foreground">
+                {benefit}
+              </li>
+            ))}
+          </ul>
+          <ol className="mt-section-sm grid gap-stack-lg sm:grid-cols-3">
             {HOME.subscription.steps.map((step, index) => (
               <li key={step}>
                 <span className="label text-accent">
@@ -93,18 +101,15 @@ export default async function SubscriptionsPage() {
         </div>
       </section>
 
-      <section className="px-page-x py-section-md">
+      <section className="px-page-x py-section-sm">
         <div className="mx-auto max-w-5xl">
           <p className="label text-accent">Plans</p>
-          <ul className="mt-section-sm space-y-2">
+          <ul className="mt-section-sm border-t border-rule">
             {plans.map((plan) => (
-              <li
-                key={plan.handle}
-                className="rounded-md bg-surface-elevated transition-all duration-200 ease-(--ease-brand) hover:-translate-y-px"
-              >
+              <li key={plan.handle} className="border-b border-rule">
                 <Link
                   href={`/products/${plan.handle}`}
-                  className="flex flex-wrap items-baseline justify-between gap-x-8 gap-y-stack-xs px-stack-lg py-stack-md transition-colors hover:text-accent"
+                  className="flex min-h-11 flex-wrap items-baseline justify-between gap-x-8 gap-y-stack-xs py-stack-md transition-colors hover:text-accent"
                 >
                   <span className="text-body-l">{plan.title}</span>
                   <span className="flex items-baseline gap-6">
@@ -136,7 +141,7 @@ export default async function SubscriptionsPage() {
             cancellationComplete ? (
               <section
                 aria-label="Cancellation"
-                className="mt-section-md rounded-md bg-surface-elevated p-stack-lg"
+                className="mt-section-md border-t border-rule pt-stack-lg"
               >
                 <p className="label text-accent">Cancellation</p>
                 <h2 className="mt-stack-md max-w-[20ch] text-h1">

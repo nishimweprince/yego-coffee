@@ -20,21 +20,21 @@ import { HOME } from "@/content/home";
  */
 export function CoffeeFinder() {
   return (
-    <section className="px-page-x py-section-md">
+    <section className="px-page-x py-section-sm">
       <div className="mx-auto grid max-w-6xl items-center gap-stack-lg lg:grid-cols-2 lg:gap-16">
-        <div className="relative">
+        <div className="order-2">
           <Image
-            src="/brand/roast.jpg"
-            alt="Freshly roasted Yego coffee"
+            src="/brand/brew.jpg"
+            alt="A cup of Yego coffee being brewed"
             width={1000}
             height={1500}
             sizes="(min-width: 1024px) 45vw, 100vw"
             loading="lazy"
-            className="aspect-[4/5] w-full rounded-sm object-cover"
+            className="aspect-[16/10] w-full rounded-sm object-cover"
           />
         </div>
 
-        <div>
+        <div className="order-1">
           <h2 className="text-display-l">{HOME.finder.heading}</h2>
           <div className="mt-stack-lg space-y-stack-xs text-body-l text-muted-foreground">
             {HOME.finder.body.map((line) => (

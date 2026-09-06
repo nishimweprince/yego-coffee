@@ -18,19 +18,27 @@ export type NavLink = {
 /**
  * Primary destinations, header and mobile menu.
  *
- * Mirrors the live site's coverage — roasted coffee, merch and
- * subscriptions under shop, our story, contact — plus the headless
- * storefront's own discovery paths (quiz, café, account).
+ * Five items: Shop, Subscriptions, Find Your Coffee, Our Story, Café.
+ * Search, Account and Cart are utilities rendered as icons; Contact
+ * lives in the footer.
  */
 export const PRIMARY_NAV: NavLink[] = [
-  { href: "/shop/coffee", label: "Coffee" },
-  { href: "/shop/merch", label: "Merch" },
-  { href: "/quiz", label: "Find Your Coffee" },
+  { href: "/shop", label: "Shop" },
   { href: "/subscriptions", label: "Subscriptions" },
+  { href: "/quiz", label: "Find Your Coffee" },
   { href: "/about", label: "Our Story" },
   { href: "/cafe", label: "Café" },
-  { href: "/contact", label: "Contact" },
+];
+
+/**
+ * Utility destinations, rendered as header icons.
+ *
+ * Routes unchanged — this only groups what the header already linked.
+ */
+export const UTILITY_NAV: NavLink[] = [
+  { href: "/search", label: "Search" },
   { href: "/account", label: "Account" },
+  { href: "/cart", label: "Cart" },
 ];
 
 export type NavGroup = {

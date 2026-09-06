@@ -27,7 +27,7 @@ export function CafeBlock() {
               height={1500}
               sizes="(min-width: 1024px) 45vw, 100vw"
               loading="lazy"
-              className="aspect-[4/5] w-full rounded-sm object-cover"
+              className="aspect-[16/10] w-full rounded-sm object-cover"
             />
           </div>
 

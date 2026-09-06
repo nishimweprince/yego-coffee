@@ -8,18 +8,13 @@ import { HOME } from "@/content/home";
 import type { SubscriptionPlanSummary } from "@/lib/catalog/plans";
 
 /**
- * §90.07 — the subscription section.
+ * The subscription section — clean ruled rows on Paper.
  *
- * Plans and prices come from Shopify (§2.1, §8.7: "do not hardcode plan
- * availability"), and every cadence line is generated from the selling
- * plan's own delivery policy rather than its name — the store contains
- * a plan called "Weekly membership" that bills every 60 days (§96.3).
- *
- * §90.07's four named plans are the store's current duplicate
- * subscription products (§92.1). They are shown as they are, because
- * they are what a customer can actually buy today. Nothing here claims
- * a saving: every selling plan in the store adjusts price by 0%
- * (§96.5), and §2.1 forbids inventing the comparison.
+ * Plans and prices come from Shopify, and every cadence line is
+ * generated from the selling plan's own delivery policy rather than
+ * its name. Nothing here claims a saving: every selling plan in the
+ * store adjusts price by 0%, and inventing the comparison is
+ * forbidden.
  */
 export function SubscriptionBlock({
   plans,
@@ -27,10 +22,17 @@ export function SubscriptionBlock({
   plans: SubscriptionPlanSummary[];
 }) {
   return (
-    <section data-surface="soil" className="px-page-x py-section-md">
+    <section
+      aria-labelledby="subscription-heading"
+      data-surface="wash"
+      className="px-page-x py-section-md"
+    >
       <div className="mx-auto max-w-6xl">
         <p className="label text-accent">Subscriptions</p>
-        <h2 className="mt-stack-md text-display-l max-w-[14ch]">
+        <h2
+          id="subscription-heading"
+          className="mt-stack-md max-w-[14ch] text-display-l"
+        >
           {HOME.subscription.heading}
         </h2>
 
@@ -62,15 +64,12 @@ export function SubscriptionBlock({
         </ol>
 
         {plans.length > 0 ? (
-          <ul className="mt-section-md space-y-2">
+          <ul className="mt-section-md border-t border-rule">
             {plans.map((plan) => (
-              <li
-                key={plan.handle}
-                className="rounded-md bg-surface-elevated transition-all duration-200 ease-(--ease-brand) hover:-translate-y-px"
-              >
+              <li key={plan.handle} className="border-b border-rule">
                 <Link
                   href={`/products/${plan.handle}`}
-                  className="group flex flex-wrap items-baseline justify-between gap-x-8 gap-y-stack-xs px-stack-lg py-stack-md transition-colors hover:text-accent"
+                  className="group flex min-h-11 flex-wrap items-baseline justify-between gap-x-8 gap-y-stack-xs py-stack-md transition-colors hover:text-accent"
                 >
                   <span className="text-body-l">{plan.title}</span>
                   <span className="flex items-baseline gap-6">

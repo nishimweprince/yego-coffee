@@ -42,15 +42,12 @@ export default async function PoliciesPage() {
             No policies are published yet.
           </p>
         ) : (
-          <ul className="mt-section-sm space-y-2">
+          <ul className="mt-section-sm border-t border-rule">
             {policies.map((policy) => (
-              <li
-                key={policy.handle}
-                className="rounded-md bg-surface-elevated transition-all duration-200 ease-(--ease-brand) hover:-translate-y-px"
-              >
+              <li key={policy.handle} className="border-b border-rule">
                 <Link
                   href={`/policies/${policy.handle}`}
-                  className="group flex items-baseline justify-between gap-4 px-stack-lg py-stack-md text-body-l transition-colors hover:text-accent"
+                  className="group flex min-h-11 items-baseline justify-between gap-4 py-stack-md text-body-l transition-colors hover:text-accent"
                 >
                   {policy.title}
                   <FontAwesomeIcon
