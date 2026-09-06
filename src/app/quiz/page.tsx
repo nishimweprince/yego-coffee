@@ -52,22 +52,21 @@ export default async function QuizPage({ searchParams }: PageProps<"/quiz">) {
   ]);
 
   return (
-    <main className="px-page-x py-section-sm">
-      <div className="mx-auto grid max-w-6xl items-start gap-stack-md lg:grid-cols-[1fr_0.7fr] lg:gap-16">
+    <main data-surface="wash" className="px-page-x py-section-md">
+      <div className="mx-auto grid max-w-6xl items-stretch gap-stack-md lg:grid-cols-[1fr_0.7fr] lg:gap-16">
         <QuizShell
           coffees={coffees.filter((p) => p !== null)}
           subscriptionProducts={subscriptionProducts.filter((p) => p !== null)}
           prefill={prefill}
         />
-        <div className="relative hidden lg:block">
+        <div className="relative hidden min-h-[28rem] lg:block">
           <Image
             src="/brand/roast.jpg"
             alt="Freshly roasted Yego coffee"
-            width={1000}
-            height={1500}
+            fill
             sizes="(min-width: 1024px) 30vw, 0px"
             loading="lazy"
-            className="aspect-[3/4] w-full rounded-md object-cover"
+            className="rounded-md object-cover"
           />
         </div>
       </div>

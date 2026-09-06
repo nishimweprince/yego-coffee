@@ -262,24 +262,39 @@ function Choices({
   onSelect: (value: string) => void;
 }) {
   return (
-    <div role="radiogroup" className="grid gap-2 sm:grid-cols-2">
-      {options.map((option) => (
-        <button
-          key={option.value}
-          type="button"
-          role="radio"
-          aria-checked={value === option.value}
-          onClick={() => onSelect(option.value)}
-          className={cn(
-            "min-h-24 border p-stack-md text-left font-display text-h3 transition-colors",
-            value === option.value
-              ? "border-foreground bg-foreground text-background"
-              : "border-foreground/25 hover:border-foreground/60",
-          )}
-        >
-          {option.label}
-        </button>
-      ))}
+    <div role="radiogroup" className="grid gap-3 sm:grid-cols-2">
+      {options.map((option) => {
+        const checked = value === option.value;
+        return (
+          <button
+            key={option.value}
+            type="button"
+            role="radio"
+            aria-checked={checked}
+            onClick={() => onSelect(option.value)}
+            className={cn(
+              "group flex min-h-32 flex-col justify-between rounded-sm border p-stack-md text-left transition-colors",
+              checked
+                ? "border-foreground bg-foreground text-background"
+                : "border-foreground/20 hover:border-foreground/60 hover:bg-foreground/[0.03]",
+            )}
+          >
+            {/* The mark is what made these read as choices rather than
+                as four empty outlined boxes: the state is visible
+                before you hover, and it reads as a control. */}
+            <span
+              aria-hidden
+              className={cn(
+                "block h-3 w-3 rounded-full border transition-colors",
+                checked
+                  ? "border-background bg-background"
+                  : "border-foreground/40 group-hover:border-foreground",
+              )}
+            />
+            <span className="font-display text-h3">{option.label}</span>
+          </button>
+        );
+      })}
     </div>
   );
 }

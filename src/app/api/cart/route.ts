@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { hasShopifyCredentials } from "@/lib/env";
 import { getCart } from "@/lib/shopify/cart";
+import { getReassurances } from "@/lib/content/reassurance";
 
 /**
  * The cart, for the drawer.
@@ -13,13 +14,19 @@ import { getCart } from "@/lib/shopify/cart";
  */
 export async function GET() {
   if (!hasShopifyCredentials()) {
-    return NextResponse.json({ cart: null });
+    return NextResponse.json({ cart: null, shipping: null });
   }
 
   try {
-    const cart = await getCart();
-    return NextResponse.json({ cart });
+    // The drawer is a client island and cannot read the store's policy
+    // documents itself, so the free-shipping threshold travels with the
+    // cart it applies to.
+    const [cart, reassurances] = await Promise.all([
+      getCart(),
+      getReassurances(),
+    ]);
+    return NextResponse.json({ cart, shipping: reassurances.shipping });
   } catch {
-    return NextResponse.json({ cart: null }, { status: 200 });
+    return NextResponse.json({ cart: null, shipping: null }, { status: 200 });
   }
 }

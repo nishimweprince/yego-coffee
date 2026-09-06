@@ -3,6 +3,8 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faXmark } from "@fortawesome/free-solid-svg-icons/faXmark";
 import Image from "next/image";
 import { formatMoney } from "@/lib/formatting/money";
 import { track } from "@/lib/analytics/analytics";
@@ -101,10 +103,16 @@ export function SearchPanel({ onClose }: { onClose: () => void }) {
         if (event.target === event.currentTarget) onClose();
       }}
     >
+      {/* The panel opens from the header, so it lives inside the chrome
+          in the DOM. On the homepage that chrome floats over the film
+          hero with every colour inverted to paper — which left this
+          dialog's text paper-on-white and unreadable. It declares the
+          surface it is actually on, the way the mobile menu does. */}
       <div
         role="dialog"
         aria-modal="true"
         aria-label="Search"
+        data-surface="mist"
         className="h-fit w-full max-w-2xl border border-border bg-surface-elevated"
       >
         <form
@@ -112,7 +120,7 @@ export function SearchPanel({ onClose }: { onClose: () => void }) {
             event.preventDefault();
             submit(query);
           }}
-          className="border-b border-border"
+          className="flex items-center border-b border-border pr-stack-sm"
         >
           <input
             ref={inputRef}
@@ -123,6 +131,19 @@ export function SearchPanel({ onClose }: { onClose: () => void }) {
             aria-label="Search coffee and gear"
             className="w-full bg-transparent px-stack-md py-stack-md text-body-l outline-none placeholder:text-muted-foreground"
           />
+          {query ? (
+            <button
+              type="button"
+              onClick={() => {
+                setQuery("");
+                inputRef.current?.focus();
+              }}
+              className="inline-flex min-h-11 min-w-11 shrink-0 items-center justify-center text-muted-foreground transition-colors hover:text-foreground"
+              aria-label="Clear search"
+            >
+              <FontAwesomeIcon icon={faXmark} className="h-4 w-4" />
+            </button>
+          ) : null}
         </form>
 
         <div className="max-h-[55vh] overflow-y-auto">

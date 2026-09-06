@@ -4,12 +4,12 @@ import { notFound } from "next/navigation";
 import { ProductPurchaseForm } from "@/components/commerce/product-purchase-form";
 import { ProductGallery } from "@/components/product/product-gallery";
 import { StoreUnavailable } from "@/components/commerce/store-unavailable";
-import { ProductFacts } from "@/components/product/product-facts";
 import { RelatedProducts } from "@/components/product/related-products";
 import { Contour } from "@/components/ui/contour";
 import { YegoLine } from "@/components/ui/yego-line";
 import { getReassurances } from "@/lib/content/reassurance";
 import { COLLECTION_HANDLES } from "@/lib/catalog/collections";
+import { ROAST_LABELS, roastsOf } from "@/lib/catalog/facets";
 import { env } from "@/lib/env";
 import { breadcrumbJsonLd, productJsonLd } from "@/lib/seo/structured-data";
 import { hasShopifyCredentials } from "@/lib/env";
@@ -62,6 +62,8 @@ export default async function ProductPage({
   ]);
   const related = (coffee?.products ?? []).filter((p) => p.handle !== handle);
 
+  const roasts = roastsOf(product);
+
   const hero = product.media[0] ?? product.featuredImage;
 
   // The viewer gallery: the hero first, then the rest of the media,
@@ -76,7 +78,7 @@ export default async function ProductPage({
   const base = env.NEXT_PUBLIC_SITE_URL.replace(/\/$/, "");
 
   return (
-    <main className="px-page-x py-section-md pb-28 lg:pb-section-md">
+    <main className="pb-28 lg:pb-0">
       {/* §34: product and breadcrumb structured data, entirely from
           Shopify's own catalogue values. */}
       <script
@@ -101,7 +103,7 @@ export default async function ProductPage({
           ),
         }}
       />
-      <div className="mx-auto max-w-6xl">
+      <div className="mx-auto max-w-6xl px-page-x py-section-md">
         <nav aria-label="Breadcrumb">
           <ol className="flex flex-wrap items-center gap-2">
             <li>
@@ -123,15 +125,43 @@ export default async function ProductPage({
           </ol>
         </nav>
 
+        {/* The gallery is the column that sticks, not the buy column.
+            The other way round left the picture ending half a screen
+            above the text beside it, with a column of nothing under
+            it. */}
         <div className="mt-stack-lg grid items-start gap-section-sm lg:grid-cols-2 lg:gap-16">
-          <ProductGallery images={gallery} title={product.title} />
+          <div className="lg:sticky lg:top-28">
+            <ProductGallery images={gallery} title={product.title} />
+          </div>
 
-          <div className="lg:sticky lg:top-24">
+          <div>
             <h1 className="text-h1">{product.title}</h1>
+
+            {/* Roast is the one fact about a coffee that is not already
+                a control on this page, so it sits with the name rather
+                than in a specification block that repeated the size and
+                grind pickers word for word. */}
+            {roasts.length > 0 ? (
+              <p className="mt-stack-sm label text-muted-foreground">
+                {roasts.map((roast) => ROAST_LABELS[roast]).join(" · ")} roast
+              </p>
+            ) : null}
 
             <div className="mt-stack-lg">
               <ProductPurchaseForm product={product} />
             </div>
+
+            {/* The question that stops a first order, answered beside
+                the button rather than below the description where it
+                had scrolled out of sight. Just the one: the device is
+                the page's signature and stacking two of them spends it
+                twice. Cancellation terms belong where a recurring
+                charge is actually chosen — the delivery control says
+                it, and the subscriptions page carries the full text. */}
+            <YegoLine
+              reassurance={reassurances.shipping}
+              className="mt-section-sm"
+            />
 
             {product.descriptionHtml ? (
               <>
@@ -141,33 +171,16 @@ export default async function ProductPage({
                     leaves <meta> fragments inline (§96.4); they render
                     as nothing, which is the correct outcome. */}
                 <div
-                  className="mt-stack-lg space-y-stack-md text-body-m text-muted-foreground [&_a]:underline [&_strong]:text-foreground"
+                  className="mt-stack-lg max-w-prose space-y-stack-md text-body-m text-muted-foreground [&_a]:underline [&_strong]:text-foreground"
                   dangerouslySetInnerHTML={{ __html: product.descriptionHtml }}
                 />
               </>
             ) : null}
-
-            <Contour label="Specification" className="mt-section-sm" />
-            <div className="mt-stack-lg">
-              <ProductFacts product={product} />
-            </div>
-
-            {/* The question that stops a first order, answered beside
-                the button instead of on /policies. Just the one: the
-                device is the page's signature and stacking two of them
-                spends it twice. Cancellation terms belong where a
-                recurring charge is actually chosen — the delivery
-                control above says it, and the subscriptions page
-                carries the full text. */}
-            <YegoLine
-              reassurance={reassurances.shipping}
-              className="mt-section-sm"
-            />
           </div>
         </div>
-
-        <RelatedProducts products={related} />
       </div>
+
+      <RelatedProducts products={related} />
     </main>
   );
 }

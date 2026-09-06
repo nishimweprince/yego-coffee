@@ -1,4 +1,4 @@
-import { ProductCard } from "@/components/commerce/product-card";
+import { ProductGrid } from "@/components/commerce/product-grid";
 import { Contour } from "@/components/ui/contour";
 import type { ProductCardModel } from "@/lib/shopify/types";
 
@@ -19,12 +19,18 @@ export function RelatedProducts({
   if (products.length === 0) return null;
 
   return (
-    <section className="mt-section-lg">
-      <Contour label={heading} />
-      <div className="mt-section-sm grid gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
-        {products.map((product) => (
-          <ProductCard key={product.id} product={product} />
-        ))}
+    <section
+      aria-label={heading}
+      data-surface="wash"
+      className="px-page-x py-section-md"
+    >
+      <div className="mx-auto max-w-6xl">
+        <Contour label={heading} />
+        <ProductGrid
+          products={products}
+          priorityCount={0}
+          className="mt-section-sm"
+        />
       </div>
     </section>
   );

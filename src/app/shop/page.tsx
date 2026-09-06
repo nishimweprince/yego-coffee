@@ -48,48 +48,63 @@ export default async function ShopPage({
   const visible = filterByRoast(coffees, selected);
   const roasts = availableRoasts(coffees);
 
+  const filtered = selected.length > 0;
+
   return (
-    <main className="px-page-x py-section-sm">
-      <div className="mx-auto max-w-6xl">
-        <h1 className="type-display text-display-l">Coffee</h1>
-        <p className="mt-stack-md max-w-prose text-lede text-muted-foreground">
-          Grown in Rwanda. Roasted in Somerville.
-        </p>
-
-        <div className="mt-stack-lg flex flex-wrap items-center justify-between gap-stack-md">
-          <RoastFilter options={roasts} selected={selected} />
-          <p className="label text-muted-foreground">
-            {`${visible.length} of ${coffees.length}`}
+    <main>
+      <section className="px-page-x py-section-md">
+        <div className="mx-auto max-w-6xl">
+          <h1 className="type-display text-display-l">Coffee</h1>
+          <p className="mt-stack-md max-w-prose text-lede text-muted-foreground">
+            Grown in Rwanda. Roasted in Somerville.
           </p>
+
+          <div className="mt-section-sm flex flex-wrap items-center justify-between gap-stack-md">
+            <RoastFilter options={roasts} selected={selected} />
+            {/* A count that never changes is noise. It appears when a
+                filter is hiding something, which is the only moment it
+                tells the reader anything. */}
+            {filtered ? (
+              <p className="label text-muted-foreground">
+                {`${visible.length} of ${coffees.length}`}
+              </p>
+            ) : null}
+          </div>
+
+          {visible.length === 0 ? (
+            <div className="mt-section-sm">
+              <p className="text-lede">No coffee matches that roast.</p>
+              <Link
+                href="/shop"
+                className="mt-stack-md inline-block text-body-m text-accent underline-offset-4 hover:underline"
+              >
+                Show every coffee
+              </Link>
+            </div>
+          ) : (
+            <div className="mt-section-sm">
+              <ProductGrid products={visible} />
+            </div>
+          )}
         </div>
+      </section>
 
-        {visible.length === 0 ? (
-          <div className="mt-section-sm">
-            <p className="text-body-l">No coffee matches that roast.</p>
-            <Link
-              href="/shop"
-              className="mt-stack-sm inline-block text-body-m text-accent underline-offset-4 hover:underline"
-            >
-              Show every coffee
-            </Link>
-          </div>
-        ) : (
-          <div className="mt-section-sm">
-            <ProductGrid products={visible} />
-          </div>
-        )}
-
-        {merch && merch.products.length > 0 ? (
-          <section aria-labelledby="merch-heading" className="mt-section-lg">
+      {merch && merch.products.length > 0 ? (
+        <section
+          aria-labelledby="merch-heading"
+          data-surface="wash"
+          className="px-page-x py-section-md"
+        >
+          <div className="mx-auto max-w-6xl">
             <h2 id="merch-heading" className="type-display text-display-l">
               Merch
             </h2>
             <div className="mt-section-sm">
               <ProductGrid products={merch.products} priorityCount={0} />
             </div>
-          </section>
-        ) : null}
-      </div>
+          </div>
+        </section>
+      ) : null}
     </main>
   );
 }

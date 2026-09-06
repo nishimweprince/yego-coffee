@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import { buttonVariants } from "@/components/ui/button";
 import { Contour } from "@/components/ui/contour";
 import { BRAND } from "@/content/brand";
 import { HOME } from "@/content/home";
@@ -42,16 +43,15 @@ export default async function AboutPage() {
               priority
               className="aspect-[3/2] w-full rounded-sm object-cover"
             />
-            <figcaption className="mt-stack-sm text-body-s text-muted-foreground">
-              Fatuma and Francois Tuyishime, Somerville, Massachusetts.
+            <figcaption className="mt-stack-sm label text-muted-foreground">
+              Fatuma and Francois Tuyishime, Somerville, Massachusetts
             </figcaption>
           </figure>
           <div>
-            <p className="label text-accent">Our story</p>
-            <h1 className="mt-stack-md text-display-l">
+            <h1 className="type-display text-display-l">
               {HOME.statement.headline}
             </h1>
-            <div className="mt-stack-lg max-w-prose space-y-stack-xs text-body-l text-muted-foreground">
+            <div className="mt-stack-lg max-w-prose space-y-stack-xs text-lede text-muted-foreground">
               {HOME.statement.body.map((line) => (
                 <p key={line}>{line}</p>
               ))}
@@ -60,20 +60,28 @@ export default async function AboutPage() {
         </div>
       </section>
 
+      {/* The owners' own account, on its own ground and at a reading
+          measure. It ran the full container before, at line lengths
+          well past what anyone reads comfortably, under a rule
+          labelled with the Shopify page's title — which is a decorative
+          eyebrow, not a transition. The words are the section; they do
+          not need announcing. */}
+      {story?.bodyHtml ? (
+        <section
+          aria-label="Our story"
+          data-surface="wash"
+          className="px-page-x py-section-md"
+        >
+          <div
+            className="mx-auto max-w-[54ch] space-y-stack-md text-body-l [&_a]:underline [&_strong]:text-foreground"
+            dangerouslySetInnerHTML={{ __html: story.bodyHtml }}
+          />
+        </section>
+      ) : null}
+
       <section className="px-page-x py-section-md">
         <div className="mx-auto max-w-4xl">
-          {story?.bodyHtml ? (
-            <>
-              <Contour label={story.title} />
-              {/* Written by the owners in the Shopify admin (§39). */}
-              <div
-                className="mt-section-sm max-w-prose space-y-stack-md text-body-l [&_a]:underline [&_strong]:text-foreground"
-                dangerouslySetInnerHTML={{ __html: story.bodyHtml }}
-              />
-            </>
-          ) : null}
-
-          <Contour label="The facts" className="mt-section-md" />
+          <Contour label="The facts" />
           <dl className="mt-section-sm grid gap-x-8 gap-y-stack-lg sm:grid-cols-2">
             <div>
               <dt className="label text-muted-foreground">Owners</dt>
@@ -100,6 +108,28 @@ export default async function AboutPage() {
               </dd>
             </div>
           </dl>
+        </div>
+      </section>
+
+      {/* The story ended on a definition list and stopped. Someone who
+          reads to the bottom of this page is the most persuaded
+          visitor on the site and had nowhere to go. */}
+      <section data-surface="soil" className="px-page-x py-section-md">
+        <div className="mx-auto max-w-4xl">
+          <h2 className="type-display max-w-[16ch] text-display-l">
+            Taste what four decades of it turned into.
+          </h2>
+          <div className="mt-section-sm flex flex-wrap items-center gap-stack-md">
+            <Link href="/shop" className={buttonVariants({ size: "lg" })}>
+              See the coffee
+            </Link>
+            <Link
+              href="/cafe"
+              className={buttonVariants({ variant: "secondary", size: "lg" })}
+            >
+              Visit the café
+            </Link>
+          </div>
         </div>
       </section>
     </main>

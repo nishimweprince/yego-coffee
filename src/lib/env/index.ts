@@ -23,11 +23,32 @@ import { z } from "zod";
  * exist, without weakening the fail-fast guarantee where it counts.
  */
 
+/**
+ * Hosting dashboards (Vercel among them) have no way to express "not
+ * set" for a variable that exists in the project: an unfilled field is
+ * exported as the empty string, and `.env.example` declares several of
+ * ours that way too. Zod's `.optional()` and `.default()` only fire on
+ * `undefined`, so an empty string reaches the validator and is reported
+ * as a malformed value — which is how a deploy with *no* analytics
+ * configured came to fail the build.
+ *
+ * Blank means absent. A value that is present and wrong still is.
+ */
+function blankToUndefined(value: unknown): unknown {
+  return typeof value === "string" && value.trim() === "" ? undefined : value;
+}
+
+const optionalString = <T extends z.ZodTypeAny>(schema: T) =>
+  z.preprocess(blankToUndefined, schema.optional());
+
 const coreSchema = z.object({
   NODE_ENV: z
     .enum(["development", "test", "production"])
     .default("development"),
-  NEXT_PUBLIC_SITE_URL: z.string().url().default("http://localhost:3000"),
+  NEXT_PUBLIC_SITE_URL: z.preprocess(
+    blankToUndefined,
+    z.string().url().default("http://localhost:3000"),
+  ),
 });
 
 const shopifySchema = z.object({
@@ -49,12 +70,11 @@ const shopifySchema = z.object({
  * providers simply do not load when their key is missing (§31).
  */
 const analyticsSchema = z.object({
-  NEXT_PUBLIC_GA_MEASUREMENT_ID: z
-    .string()
-    .regex(/^G-[A-Z0-9]+$/, { message: "must look like G-XXXXXXX" })
-    .optional(),
-  NEXT_PUBLIC_POSTHOG_KEY: z.string().min(1).optional(),
-  NEXT_PUBLIC_POSTHOG_HOST: z.string().url().optional(),
+  NEXT_PUBLIC_GA_MEASUREMENT_ID: optionalString(
+    z.string().regex(/^G-[A-Z0-9]+$/, { message: "must look like G-XXXXXXX" }),
+  ),
+  NEXT_PUBLIC_POSTHOG_KEY: optionalString(z.string().min(1)),
+  NEXT_PUBLIC_POSTHOG_HOST: optionalString(z.string().url()),
 });
 
 export type CoreEnv = z.infer<typeof coreSchema>;

@@ -21,8 +21,8 @@ export default function ContactPage() {
       <div className="mx-auto grid max-w-6xl items-center gap-stack-lg lg:grid-cols-2 lg:gap-16">
         <figure className="overflow-hidden rounded-sm">
           <Image
-            src="/brand/cup.jpg"
-            alt="A cup of coffee at the Yego Coffee café"
+            src="/brand/brew.jpg"
+            alt="A cup of Yego coffee being brewed"
             width={1000}
             height={1500}
             sizes="(min-width: 1024px) 45vw, 100vw"
@@ -31,8 +31,7 @@ export default function ContactPage() {
           />
         </figure>
         <div>
-          <p className="label text-accent">Contact</p>
-          <h1 className="mt-stack-md text-display-l">Talk to a human.</h1>
+          <h1 className="type-display text-display-l">Talk to a human.</h1>
           <p className="mt-stack-lg max-w-prose text-body-l text-muted-foreground">
             Questions about an order or a subscription: write to us,
             or come have one with us in Somerville.
@@ -57,7 +56,7 @@ export default function ContactPage() {
               rel="noreferrer"
               className="link-sweep mt-stack-lg inline-block label text-accent"
             >
-              Get Directions
+              Get directions
             </a>
           </div>
         </div>

@@ -10,6 +10,7 @@ import { CartLine } from "./cart-line";
 import { buttonVariants } from "@/components/ui/button";
 import { CART_CHANGED, CART_OPEN } from "@/lib/cart/events";
 import { formatMoneyCompact } from "@/lib/formatting/money";
+import type { Reassurance } from "@/lib/content/reassurance";
 import type { CartModel } from "@/lib/shopify/types";
 
 /**
@@ -35,6 +36,7 @@ export function CartDrawer() {
   const [open, setOpen] = useState(false);
   const [count, setCount] = useState(0);
   const [cart, setCart] = useState<CartModel | null>(null);
+  const [shipping, setShipping] = useState<Reassurance | null>(null);
   const [loading, setLoading] = useState(false);
   const panel = useRef<HTMLDivElement>(null);
   const trigger = useRef<HTMLAnchorElement>(null);
@@ -57,8 +59,12 @@ export function CartDrawer() {
     setLoading(true);
     try {
       const response = await fetch("/api/cart", { cache: "no-store" });
-      const data = (await response.json()) as { cart: CartModel | null };
+      const data = (await response.json()) as {
+        cart: CartModel | null;
+        shipping: Reassurance | null;
+      };
       setCart(data.cart);
+      setShipping(data.shipping);
       setCount(data.cart?.totalQuantity ?? 0);
     } catch {
       setCart(null);
@@ -220,6 +226,15 @@ export function CartDrawer() {
                 <p className="mt-stack-sm text-body-s text-muted-foreground">
                   Shipping and tax are calculated at checkout.
                 </p>
+                {/* The threshold, where it changes what someone does
+                    next: one more bag may be the difference between
+                    paying for delivery and not. Verbatim from the
+                    store's own policy. */}
+                {shipping ? (
+                  <p className="mt-stack-sm text-body-s text-muted-foreground">
+                    {shipping.html}
+                  </p>
+                ) : null}
                 <a
                   href={cart.checkoutUrl}
                   className={`${buttonVariants({ size: "lg" })} mt-stack-md w-full`}

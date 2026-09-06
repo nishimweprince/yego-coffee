@@ -35,53 +35,102 @@ export default async function JournalPage() {
 
   const articles = await getArticles();
 
+  // The blog currently holds a single post, and a three-column grid
+  // rendered it as one card beside two empty cells. One entry is a
+  // feature; a handful is a grid. The layout follows the writing
+  // rather than the writing having to fill the layout.
+  const [lead, ...rest] = articles;
+
+  const date = (published: string) =>
+    new Date(published).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+
   return (
     <main className="px-page-x py-section-md">
       <div className="mx-auto max-w-5xl">
-        <h1 className="text-display-l">Journal</h1>
-        <Contour label="From the roastery" className="mt-section-sm" />
+        <h1 className="type-display text-display-l">Journal</h1>
 
         {articles.length === 0 ? (
-          <p className="mt-section-sm text-body-l text-muted-foreground">
-            Nothing published yet.
+          <p className="mt-section-sm text-lede text-muted-foreground">
+            Nothing published yet. The roastery notes will land here.
           </p>
         ) : (
-          <div className="mt-section-sm grid gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
-            {articles.map((article, index) => (
-              <article key={article.id}>
-                <Link href={`/journal/${article.handle}`} className="group block">
-                  <div className="relative aspect-[4/3] overflow-hidden bg-surface-elevated">
-                    {article.image ? (
-                      <Image
-                        src={article.image.url}
-                        alt={article.image.altText ?? ""}
-                        fill
-                        priority={index === 0}
-                        sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-                        className="object-cover transition-transform duration-500 ease-(--ease-brand) group-hover:scale-[1.02]"
-                      />
-                    ) : null}
+          <>
+            <Link
+              href={`/journal/${lead.handle}`}
+              className="group mt-section-sm block"
+            >
+              <div className="grid items-center gap-stack-lg sm:grid-cols-2 sm:gap-12">
+                {lead.image ? (
+                  <div className="relative aspect-[4/3] overflow-hidden rounded-sm bg-surface-elevated">
+                    <Image
+                      src={lead.image.url}
+                      alt={lead.image.altText ?? ""}
+                      fill
+                      priority
+                      sizes="(min-width: 640px) 50vw, 100vw"
+                      className="object-cover"
+                    />
                   </div>
+                ) : null}
+                <div>
                   <time
-                    dateTime={article.publishedAt}
-                    className="label mt-stack-md block text-muted-foreground"
+                    dateTime={lead.publishedAt}
+                    className="label block text-muted-foreground"
                   >
-                    {new Date(article.publishedAt).toLocaleDateString("en-US", {
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                    })}
+                    {date(lead.publishedAt)}
                   </time>
-                  <h2 className="mt-stack-sm text-h3">{article.title}</h2>
-                  {article.excerpt ? (
-                    <p className="mt-stack-sm text-body-m text-muted-foreground">
-                      {article.excerpt}
+                  <h2 className="mt-stack-md text-h1">{lead.title}</h2>
+                  {lead.excerpt ? (
+                    <p className="mt-stack-md max-w-prose text-body-l text-muted-foreground">
+                      {lead.excerpt}
                     </p>
                   ) : null}
-                </Link>
-              </article>
-            ))}
-          </div>
+                  <span className="link-sweep mt-stack-lg inline-block label text-accent">
+                    Read it
+                  </span>
+                </div>
+              </div>
+            </Link>
+
+            {rest.length > 0 ? (
+              <>
+                <Contour label="Earlier" className="mt-section-lg" />
+                <div className="mt-section-sm grid gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
+                  {rest.map((article) => (
+                    <article key={article.id}>
+                      <Link
+                        href={`/journal/${article.handle}`}
+                        className="group block"
+                      >
+                        <div className="relative aspect-[4/3] overflow-hidden rounded-sm bg-surface-elevated">
+                          {article.image ? (
+                            <Image
+                              src={article.image.url}
+                              alt={article.image.altText ?? ""}
+                              fill
+                              sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                              className="object-cover"
+                            />
+                          ) : null}
+                        </div>
+                        <time
+                          dateTime={article.publishedAt}
+                          className="label mt-stack-md block text-muted-foreground"
+                        >
+                          {date(article.publishedAt)}
+                        </time>
+                        <h3 className="mt-stack-sm text-h3">{article.title}</h3>
+                      </Link>
+                    </article>
+                  ))}
+                </div>
+              </>
+            ) : null}
+          </>
         )}
       </div>
     </main>
