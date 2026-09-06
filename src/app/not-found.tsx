@@ -17,7 +17,7 @@ export default function NotFound() {
         <Contour label="404" className="mt-section-sm" />
         <p className="mt-section-sm max-w-prose text-body-l text-muted-foreground">
           It may have moved, or the link may be old. Yego roasts a small
-          lineup — everything we sell is a click away.
+          lineup: everything we sell is a click away.
         </p>
         <div className="mt-section-sm flex flex-wrap gap-stack-md">
           <Link href="/shop" className={buttonVariants({ size: "lg" })}>

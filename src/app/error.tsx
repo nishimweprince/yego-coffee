@@ -35,7 +35,7 @@ export default function Error({
         <h1 className="text-display-l">Something went wrong.</h1>
         <Contour label="Error" className="mt-section-sm" />
         <p className="mt-section-sm max-w-prose text-body-l text-muted-foreground">
-          This is on us, not on you. Trying again often works — the
+          This is on us, not on you. Trying again often works. The
           problem is usually a moment&apos;s trouble reaching our
           catalogue.
         </p>

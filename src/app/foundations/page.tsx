@@ -53,7 +53,7 @@ export default function FoundationsPage() {
           Designed from the hillside, not the roastery.
         </h1>
         <p className="mt-stack-md max-w-[58ch] text-body-l text-muted-foreground">
-          Specialty coffee brands almost all design from the roasted bean —
+          Specialty coffee brands almost all design from the roasted bean:
           cream grounds, brown type, a terracotta accent. Yego&rsquo;s story
           starts at the other end of the chain, on a Rwandan hillside where
           the coffee grows. So the palette comes from there instead: volcanic
@@ -82,17 +82,17 @@ export default function FoundationsPage() {
         <p className="mt-stack-lg max-w-[58ch] text-body-s text-muted-foreground">
           <strong className="text-foreground">One hard rule:</strong> sun-500
           never carries text on a light ground. It measures 1.85:1 against
-          mist-200 — fine as a fill, a rule or a focus ring, unreadable as a
-          word. On soil it reaches 7.8:1 and becomes the accent.
+          mist-200. That is fine as a fill, a rule or a focus ring, and
+          unreadable as a word. On soil it reaches 7.8:1 and becomes the accent.
         </p>
       </section>
 
       <section className="mx-auto mt-section-md max-w-5xl">
         <Contour label="Type" />
         <p className="mt-stack-lg max-w-[58ch] text-body-m text-muted-foreground">
-          Fraunces sets the editorial voice with its wonk axis on — the display
-          face should read made by hand, not machined, for a business four
-          decades into one family. Archivo carries everything structural, and
+          Fraunces sets the editorial voice with its wonk axis on. The
+          display face should read made by hand, not machined, for a
+          business four decades into one family. Archivo carries everything structural, and
           its width axis gives the label register its condensed, tracked-out
           form.
         </p>

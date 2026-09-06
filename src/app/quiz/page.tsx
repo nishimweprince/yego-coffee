@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { QuizShell } from "@/components/quiz/quiz-shell";
 import { StoreUnavailable } from "@/components/commerce/store-unavailable";
 import { SUBSCRIPTION_PRODUCT_FOR_COFFEE } from "@/content/subscription";
@@ -9,8 +10,7 @@ import { getCollection, getProduct } from "@/lib/shopify/storefront";
 
 export const metadata: Metadata = {
   title: "Find your coffee",
-  description:
-    "A few questions, and we'll match you to a roast — and a rhythm.",
+  description: "A few questions to match you to a roast and a rhythm.",
 };
 
 /**
@@ -53,11 +53,24 @@ export default async function QuizPage({ searchParams }: PageProps<"/quiz">) {
 
   return (
     <main className="px-page-x py-section-md">
-      <QuizShell
-        coffees={coffees.filter((p) => p !== null)}
-        subscriptionProducts={subscriptionProducts.filter((p) => p !== null)}
-        prefill={prefill}
-      />
+      <div className="mx-auto grid max-w-6xl items-start gap-stack-lg lg:grid-cols-[1fr_0.7fr] lg:gap-16">
+        <QuizShell
+          coffees={coffees.filter((p) => p !== null)}
+          subscriptionProducts={subscriptionProducts.filter((p) => p !== null)}
+          prefill={prefill}
+        />
+        <div className="relative hidden lg:block">
+          <Image
+            src="/brand/roast.jpg"
+            alt="Freshly roasted Yego coffee"
+            width={1000}
+            height={1500}
+            sizes="(min-width: 1024px) 30vw, 0px"
+            loading="lazy"
+            className="aspect-[3/4] w-full rounded-md object-cover"
+          />
+        </div>
+      </div>
     </main>
   );
 }

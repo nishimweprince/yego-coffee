@@ -63,7 +63,7 @@ export default async function SearchPage({
               <div className="mt-section-sm">
                 <p className="text-body-l">Nothing matched that search.</p>
                 <p className="mt-stack-sm text-body-m text-muted-foreground">
-                  Yego roasts a small lineup — three coffees and a 5 lb bag.
+                  Yego roasts a small lineup: three coffees and a 5 lb bag.
                 </p>
                 <Link
                   href="/shop"

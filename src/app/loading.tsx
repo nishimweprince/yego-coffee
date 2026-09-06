@@ -1,19 +1,19 @@
-import { Contour } from "@/components/ui/contour";
+import { ProductGridSkeleton } from "@/components/commerce/product-grid-skeleton";
 
 /**
  * The route-level loading state (plan.md §38).
  *
- * Deliberately quiet: a skeleton that imitates the page it is
- * replacing produces a double layout shift when the real content
- * arrives at a different size, which costs the CLS budget in §36. A
- * held frame with the section rule is honest about waiting.
+ * Skeleton cards shaped like the catalogue grids, so navigating
+ * between shop, search and collections holds its frame instead of
+ * flashing an empty page. Labelled for assistive technology; the
+ * pulse stills under `prefers-reduced-motion` (globals.css).
  */
 export default function Loading() {
   return (
     <main className="px-page-x py-section-md" aria-busy="true">
       <div className="mx-auto max-w-6xl">
-        <Contour label="Loading" />
         <span className="sr-only">Loading</span>
+        <ProductGridSkeleton />
       </div>
     </main>
   );

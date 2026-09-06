@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
-import { Contour } from "@/components/ui/contour";
 import { StoreUnavailable } from "@/components/commerce/store-unavailable";
 import { PriceRange } from "@/components/commerce/product-price";
 import { HOME } from "@/content/home";
 import { COLLECTION_HANDLES } from "@/lib/catalog/collections";
 import { featuredPlans, summarisePlans } from "@/lib/catalog/plans";
 import { hasShopifyCredentials } from "@/lib/env";
+import { splitPolicySections } from "@/lib/shopify/policies";
 import { getCollection, getPolicies, getProduct } from "@/lib/shopify/storefront";
 
 export const metadata: Metadata = {
@@ -53,6 +53,26 @@ export default async function SubscriptionsPage() {
   const cancellation = policies.find((p) => /cancellation|subscription/i.test(p.title));
   const shipping = policies.find((p) => /shipping/i.test(p.title));
 
+  // The cancellation document covers subscriptions, pre-orders and
+  // try-before-you-buy; only the first applies to anything Yego sells.
+  // Excerpt the intro plus the Subscriptions section verbatim and link
+  // the full document. If the store ever rewrites the doc so the
+  // section is unrecognisable, fall back to the whole body rather than
+  // an empty reassurance.
+  const cancellationSections = cancellation
+    ? splitPolicySections(cancellation.bodyHtml)
+    : [];
+  const cancellationExcerpt = cancellationSections.filter(
+    (section) =>
+      section.heading === null ||
+      /^(cancellation policy|subscriptions)$/i.test(section.heading),
+  );
+  const cancellationComplete =
+    cancellationExcerpt.length > 0 &&
+    cancellationExcerpt.some((section) =>
+      /^(subscriptions)$/i.test(section.heading ?? ""),
+    );
+
   return (
     <main>
       <section data-surface="soil" className="px-page-x py-section-lg">
@@ -75,13 +95,16 @@ export default async function SubscriptionsPage() {
 
       <section className="px-page-x py-section-md">
         <div className="mx-auto max-w-5xl">
-          <Contour label="Plans" />
-          <ul className="mt-section-sm divide-y divide-border border-y border-border">
+          <p className="label text-accent">Plans</p>
+          <ul className="mt-section-sm space-y-2">
             {plans.map((plan) => (
-              <li key={plan.handle}>
+              <li
+                key={plan.handle}
+                className="rounded-md bg-surface-elevated transition-all duration-200 ease-(--ease-brand) hover:-translate-y-px"
+              >
                 <Link
                   href={`/products/${plan.handle}`}
-                  className="flex flex-wrap items-baseline justify-between gap-x-8 gap-y-stack-xs py-stack-md transition-colors hover:text-accent"
+                  className="flex flex-wrap items-baseline justify-between gap-x-8 gap-y-stack-xs px-stack-lg py-stack-md transition-colors hover:text-accent"
                 >
                   <span className="text-body-l">{plan.title}</span>
                   <span className="flex items-baseline gap-6">
@@ -97,7 +120,7 @@ export default async function SubscriptionsPage() {
             ))}
           </ul>
 
-          <Contour label="What you get" className="mt-section-md" />
+          <p className="label text-accent mt-section-md">What you get</p>
           <ul className="mt-section-sm max-w-prose space-y-stack-md text-body-l">
             <li>Freshly roasted coffee on your schedule.</li>
             <li>Skip, change or cancel according to the terms below.</li>
@@ -110,13 +133,40 @@ export default async function SubscriptionsPage() {
           </ul>
 
           {cancellation ? (
-            <>
-              <Contour label={cancellation.title} className="mt-section-md" />
-              <div
-                className="mt-section-sm max-w-prose space-y-stack-md text-body-m text-muted-foreground [&_a]:underline [&_strong]:text-foreground"
-                dangerouslySetInnerHTML={{ __html: cancellation.bodyHtml }}
-              />
-            </>
+            cancellationComplete ? (
+              <section
+                aria-label="Cancellation"
+                className="mt-section-md rounded-md bg-surface-elevated p-stack-lg"
+              >
+                <p className="label text-accent">Cancellation</p>
+                <h2 className="mt-stack-md max-w-[20ch] text-h1">
+                  Cancel or change at any time.
+                </h2>
+                {cancellationExcerpt.map((section) => (
+                  <div
+                    key={section.heading ?? "intro"}
+                    className="mt-stack-md max-w-prose space-y-stack-md text-body-m text-muted-foreground [&_a]:underline [&_strong]:text-foreground"
+                    dangerouslySetInnerHTML={{ __html: section.html }}
+                  />
+                ))}
+                <Link
+                  href={`/policies/${cancellation.handle}`}
+                  className="link-sweep mt-stack-lg inline-block label text-accent"
+                >
+                  Read the full cancellation policy
+                </Link>
+              </section>
+            ) : (
+              <>
+                <p className="label text-accent mt-section-md">
+                  {cancellation.title}
+                </p>
+                <div
+                  className="mt-section-sm max-w-prose space-y-stack-md text-body-m text-muted-foreground [&_a]:underline [&_strong]:text-foreground"
+                  dangerouslySetInnerHTML={{ __html: cancellation.bodyHtml }}
+                />
+              </>
+            )
           ) : null}
 
           <div className="mt-section-md">

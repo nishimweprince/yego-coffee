@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { ProductMedia } from "@/components/commerce/product-media";
-import { Contour } from "@/components/ui/contour";
 import { HOME } from "@/content/home";
 import { PriceRange } from "@/components/commerce/product-price";
 import type { ProductCardModel } from "@/lib/shopify/types";
@@ -28,11 +27,11 @@ export function SignatureCoffees({
   if (products.length === 0) return null;
 
   return (
-    <section className="px-page-x py-section-md">
+    <section className="px-page-x py-section-sm">
       <div className="mx-auto max-w-6xl">
-        <Contour label={HOME.signature.heading} />
+        <p className="label text-accent">{HOME.signature.heading}</p>
 
-        <div className="mt-section-sm space-y-section-md">
+        <div className="mt-section-sm space-y-section-sm">
           {products.map((product, index) => {
             const descriptor = HOME.signature.descriptors[product.handle];
             const reversed = index % 2 === 1;

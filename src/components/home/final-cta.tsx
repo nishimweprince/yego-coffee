@@ -5,7 +5,7 @@ import { HOME } from "@/content/home";
 /** §90.10 — the closing screen. */
 export function FinalCta() {
   return (
-    <section className="px-page-x py-section-lg">
+    <section className="px-page-x py-section-md">
       <div className="mx-auto max-w-6xl">
         <h2 className="max-w-[14ch] text-display-l">
           {HOME.finalCta.headline}

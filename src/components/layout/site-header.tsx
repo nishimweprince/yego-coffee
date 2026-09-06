@@ -1,37 +1,46 @@
+import Image from "next/image";
 import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBagShopping } from "@fortawesome/free-solid-svg-icons/faBagShopping";
+import { CartCount } from "@/components/commerce/cart-count";
+import { MobileNav } from "@/components/layout/mobile-nav";
 import { SearchTrigger } from "@/components/search/search-trigger";
 import { PRIMARY_NAV } from "@/content/navigation";
 
 /**
- * The navigation shell — a Server Component (§20). Only the search
- * panel below it is interactive.
+ * The navigation shell — a Server Component (§20). Search, the mobile
+ * menu and the cart badge are the only interactive islands.
  *
- * No cart count is shown. Reading the cart cookie here would make every
- * page in the app dynamic, including the statically cached catalogue
- * (§22), to render one number. The count belongs to the cart drawer
- * (§15.1), which is Phase 4 work.
+ * Sticky, so wayfinding survives the now-denser page. The badge reads
+ * through `/api/cart/count` on the client: reading the cart cookie
+ * here would make every page dynamic (§22).
  */
 export function SiteHeader() {
   return (
-    <header className="border-b border-border">
-      <div className="flex items-center justify-between gap-6 px-page-x py-stack-md">
+    <header className="sticky top-0 z-50 border-b border-border bg-background">
+      <div className="relative flex items-center justify-between gap-6 px-page-x py-stack-md">
         <Link
           href="/"
-          className="font-display text-h3 tracking-tight"
-          aria-label="Yego Coffee — home"
+          className="transition-opacity hover:opacity-80"
+          aria-label="Yego Coffee home"
         >
-          Yego
+          <Image
+            src="/brand/logo.png"
+            alt="Yego Coffee"
+            width={240}
+            height={125}
+            priority
+            className="h-10 w-auto"
+          />
         </Link>
 
-        <nav aria-label="Primary" className="hidden sm:block">
-          <ul className="flex items-center gap-8">
+        <nav aria-label="Primary" className="hidden lg:block">
+          <ul className="flex items-center gap-6">
             {PRIMARY_NAV.map((link) => (
               <li key={link.href}>
                 <Link
                   href={link.href}
-                  className="label text-muted-foreground transition-colors hover:text-foreground"
+                  className="link-sweep label text-muted-foreground transition-colors hover:text-foreground"
                 >
                   {link.label}
                 </Link>
@@ -44,11 +53,13 @@ export function SiteHeader() {
           <SearchTrigger />
           <Link
             href="/cart"
-            className="inline-flex min-h-11 min-w-11 items-center justify-center text-foreground transition-colors hover:text-accent"
+            className="relative inline-flex min-h-11 min-w-11 items-center justify-center text-foreground transition-colors hover:text-accent"
             aria-label="Cart"
           >
             <FontAwesomeIcon icon={faBagShopping} className="h-4 w-4" />
+            <CartCount />
           </Link>
+          <MobileNav />
         </div>
       </div>
     </header>

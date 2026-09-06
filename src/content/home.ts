@@ -27,10 +27,13 @@ export type DiscoveryCard = {
 
 export const HOME = {
   hero: {
-    headline: "Coffee worth slowing down for.",
-    body: "From Rwandan farms to Somerville roasting — a family's coffee, matched to how you drink it.",
-    primaryCta: { label: "Find My Coffee", href: "/quiz" },
-    secondaryCta: { label: "Shop Coffee", href: "/shop" },
+    eyebrow: "Coffee subscriptions",
+    headline: "Fresh coffee on repeat.",
+    body: "Pick your roast and delivery rhythm. We roast in Somerville and ship it fresh, so the good coffee never runs out.",
+    primaryCta: { label: "Build My Subscription", href: "/collections/subscriptions" },
+    secondaryCta: { label: "Find My Coffee", href: "/quiz" },
+    /** Verified facts only (§88): ownership, roastery, market. */
+    trust: ["Family owned", "Roasted in Somerville", "Ships across the US"],
   },
 
   discovery: {
@@ -102,7 +105,7 @@ export const HOME = {
      */
     body: [
       "A few questions. About 30 seconds.",
-      "We'll match you to a roast — and a rhythm.",
+      "We will match you to a roast and a rhythm.",
     ],
     cta: { label: "Start the quiz", href: "/quiz" },
   },
@@ -133,6 +136,13 @@ export const HOME = {
       "Choose your roast",
       "Tell us how often you brew",
       "We roast, pack, and send it",
+    ],
+    /** Factual reassurances: cadences exist in the store, the account
+     * page manages subscriptions, every bag is roasted before it ships. */
+    benefits: [
+      "Monthly or every two months",
+      "Roasted before it ships",
+      "Manage it from your account",
     ],
     cta: { label: "Build My Subscription", href: "/collections/subscriptions" },
   },

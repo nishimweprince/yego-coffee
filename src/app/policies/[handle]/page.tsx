@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Contour } from "@/components/ui/contour";
 import { hasShopifyCredentials } from "@/lib/env";
+import { splitPolicySections } from "@/lib/shopify/policies";
 import { getPolicies } from "@/lib/shopify/storefront";
 
 export async function generateMetadata({
@@ -39,11 +40,26 @@ export default async function PolicyPage({
         <Contour className="mt-section-sm" />
         {/* Shopify's own policy text, unaltered: this is what the
             customer agrees to at checkout, and paraphrasing it here
-            would create two versions of a legal document. */}
-        <div
-          className="mt-section-sm space-y-stack-md text-body-m [&_a]:underline [&_h2]:text-h3 [&_h2]:mt-stack-lg [&_strong]:text-foreground"
-          dangerouslySetInnerHTML={{ __html: policy.bodyHtml }}
-        />
+            would create two versions of a legal document. Bodies that
+            carry <strong> section runs get real headings; flat bodies
+            render exactly as before. */}
+        {splitPolicySections(policy.bodyHtml).map((section, index) => (
+          <section key={section.heading ?? "intro"}>
+            {section.heading ? (
+              <h2
+                className={
+                  index === 0 ? "mt-section-sm text-h3" : "mt-stack-lg text-h3"
+                }
+              >
+                {section.heading}
+              </h2>
+            ) : null}
+            <div
+              className="mt-stack-md space-y-stack-md text-body-m [&_a]:underline [&_strong]:text-foreground"
+              dangerouslySetInnerHTML={{ __html: section.html }}
+            />
+          </section>
+        ))}
       </div>
     </main>
   );

@@ -6,20 +6,21 @@ import { cn } from "@/lib/utils";
  * Button (plan.md §17.6).
  *
  * shadcn's structure — cva variants, asChild-free for now — with the
- * visual language replaced entirely. Corners are near-square: the
- * warmth in this system comes from the typeface, not from radii.
- * Press feedback is a 1px settle rather than a scale, which reads as
- * weight rather than bounce.
+ * visual language replaced entirely. Corners are softly rounded
+ * (--radius-sm), carrying some of the warmth alongside the typeface.
+ * Interaction is communicated by colour and rule changes, not floating
+ * shadows or movement. This keeps actions tactile without turning every
+ * link into a card-like object.
  */
 
 const buttonVariants = cva(
   [
     "inline-flex items-center justify-center gap-2 whitespace-nowrap",
     "font-sans font-medium select-none",
-    "transition-[background-color,color,border-color,translate] duration-150",
+    "transition-[background-color,color,border-color] duration-200",
     "ease-(--ease-brand)",
-    "active:translate-y-px",
-    "disabled:pointer-events-none disabled:opacity-40",
+    "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring",
+    "disabled:pointer-events-none disabled:opacity-40 disabled:shadow-none",
   ],
   {
     variants: {
@@ -29,8 +30,9 @@ const buttonVariants = cva(
         primary:
           "bg-primary text-primary-foreground rounded-sm hover:bg-primary-hover",
         secondary:
-          "border border-foreground/25 text-foreground rounded-sm hover:border-foreground/60 hover:bg-foreground/[0.04]",
-        ghost: "text-foreground rounded-sm hover:bg-foreground/[0.06]",
+          "border border-foreground/30 text-foreground rounded-sm hover:border-foreground hover:bg-foreground/[0.04]",
+        ghost:
+          "text-foreground rounded-sm hover:bg-foreground/[0.06]",
         /* Editorial link: the rule grows from the leading edge, the
            way a pen underlines — not a fade-in. */
         link: [

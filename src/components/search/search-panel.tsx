@@ -126,6 +126,21 @@ export function SearchPanel({ onClose }: { onClose: () => void }) {
         </form>
 
         <div className="max-h-[55vh] overflow-y-auto">
+          {pending && shown.products.length === 0 ? (
+            <ul aria-hidden className="animate-pulse">
+              {[0, 1, 2].map((index) => (
+                <li
+                  key={index}
+                  className="flex items-center gap-stack-md px-stack-md py-stack-sm"
+                >
+                  <span className="h-12 w-12 shrink-0 rounded-sm bg-muted" />
+                  <span className="h-5 min-w-0 flex-1 rounded-sm bg-muted" />
+                  <span className="h-5 w-16 rounded-sm bg-muted" />
+                </li>
+              ))}
+            </ul>
+          ) : null}
+
           {shown.products.length > 0 ? (
             <ul>
               {shown.products.map((product) => (

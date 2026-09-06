@@ -16,7 +16,7 @@ export function AccountNotConfigured() {
       <Contour className="mt-section-sm" />
       <p className="mt-section-sm max-w-prose text-body-l text-muted-foreground">
         Customer accounts are not switched on for this store yet. Your
-        orders are safe — order confirmation emails carry a link to
+        orders are safe. Order confirmation emails carry a link to
         everything, including managing a subscription.
       </p>
       <Link

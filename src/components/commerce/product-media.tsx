@@ -13,12 +13,16 @@ export function ProductMedia({
   priority = false,
   sizes = "(min-width: 768px) 50vw, 100vw",
   className,
+  zoomOnHover = false,
 }: {
   image: ShopifyImage | null;
   title: string;
   priority?: boolean;
   sizes?: string;
   className?: string;
+  /** Lean into the product photo on hover. Product pages only —
+   * cards stay still so grids do not shimmer as the pointer crosses. */
+  zoomOnHover?: boolean;
 }) {
   if (!image) {
     return (
@@ -34,14 +38,24 @@ export function ProductMedia({
   }
 
   return (
-    <div className={cn("relative aspect-square overflow-hidden", className)}>
+    <div
+      className={cn(
+        "relative aspect-square overflow-hidden",
+        zoomOnHover && "group/zoom",
+        className,
+      )}
+    >
       <Image
         src={image.url}
         alt={image.altText ?? title}
         fill
         sizes={sizes}
         priority={priority}
-        className="object-cover"
+        className={cn(
+          "object-cover",
+          zoomOnHover &&
+            "transition-transform duration-500 ease-(--ease-brand) group-hover/zoom:scale-105",
+        )}
       />
     </div>
   );

@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ProductMedia } from "@/components/commerce/product-media";
 import { ProductPurchaseForm } from "@/components/commerce/product-purchase-form";
+import { ProductGallery } from "@/components/product/product-gallery";
 import { StoreUnavailable } from "@/components/commerce/store-unavailable";
 import { ProductFacts } from "@/components/product/product-facts";
 import { RelatedProducts } from "@/components/product/related-products";
@@ -60,6 +60,15 @@ export default async function ProductPage({
 
   const hero = product.media[0] ?? product.featuredImage;
 
+  // The viewer gallery: the hero first, then the rest of the media,
+  // deduplicated and capped — five frames are plenty to swipe through.
+  const gallery = hero
+    ? [
+        hero,
+        ...product.media.filter((image) => image.url !== hero.url).slice(0, 4),
+      ]
+    : [];
+
   // Every distinct subscription offered across this product's variants.
   // Which apply to the selected variant is the purchase form's job; this
   // is the product-level summary (§10.3).
@@ -101,37 +110,28 @@ export default async function ProductPage({
       />
       <div className="mx-auto max-w-6xl">
         <nav aria-label="Breadcrumb">
-          <Link
-            href="/shop"
-            className="label text-muted-foreground hover:text-foreground"
-          >
-            Shop
-          </Link>
+          <ol className="flex flex-wrap items-center gap-2">
+            <li>
+              <Link
+                href="/shop"
+                className="label text-muted-foreground hover:text-foreground"
+              >
+                Shop
+              </Link>
+            </li>
+            <li aria-hidden className="label text-muted-foreground">
+              /
+            </li>
+            <li>
+              <span aria-current="page" className="label text-foreground">
+                {product.title}
+              </span>
+            </li>
+          </ol>
         </nav>
 
         <div className="mt-stack-lg grid gap-section-sm lg:grid-cols-2 lg:gap-16">
-          <div className="space-y-2">
-            <ProductMedia
-              image={hero}
-              title={product.title}
-              priority
-              sizes="(min-width: 1024px) 50vw, 100vw"
-              className="bg-surface-elevated"
-            />
-            {product.media.length > 1 ? (
-              <div className="grid grid-cols-4 gap-2">
-                {product.media.slice(1, 5).map((image) => (
-                  <ProductMedia
-                    key={image.url}
-                    image={image}
-                    title={product.title}
-                    sizes="120px"
-                    className="bg-surface-elevated"
-                  />
-                ))}
-              </div>
-            ) : null}
-          </div>
+          <ProductGallery images={gallery} title={product.title} />
 
           <div>
             <h1 className="text-h1">{product.title}</h1>

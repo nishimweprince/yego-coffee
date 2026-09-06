@@ -1,59 +1,66 @@
 @import "tailwindcss";
 
 /* ============================================================
-   Yego Coffee — design tokens (plan.md §17)
+   Yego Coffee — quiet, sans-led design tokens.
 
-   Palette rationale: specialty coffee brands design from the
-   roasted bean — creams, browns, terracotta. Yego's story starts
-   at the other end of the supply chain, on a Rwandan hillside.
-   This palette is drawn from the growing end: volcanic soil,
-   highland mist, terraced green, and the sun off the flag.
+   Paper is deliberately close to neutral rather than a green cast.
+   Origin colours now behave as accents instead of atmosphere: forest
+   for action, ochre for factual emphasis, and ink for the footer.
    ============================================================ */
 
 @theme {
   /* -- Typefaces ------------------------------------------- */
-  --font-display: var(--font-fraunces), ui-serif, Georgia, serif;
-  --font-sans: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-source-sans), ui-sans-serif, system-ui, sans-serif;
 
-  /* -- Brand ramp ------------------------------------------- */
-  --color-soil-900: #0d1410;
-  --color-soil-800: #131c17;
-  --color-soil-700: #1d2a22;
-  --color-soil-600: #2a3a30;
+  /* -- Brand palette ---------------------------------------- */
+  --color-paper: #f7f7f2;
+  --color-ink: #1c211d;
+  --color-forest: #315b46;
+  --color-sage-wash: #e6ebe6;
+  --color-ochre: #8a5b12;
+  --color-cherry: #9d3b2e;
 
-  --color-terrace-700: #1f4531;
-  --color-terrace-600: #2c5a43;
-  --color-terrace-500: #3d7357;
-  --color-terrace-400: #457f60;
+  /* Compatibility ramps keep existing utility classes stable while
+     every semantic assignment resolves to the six-colour palette. */
+  --color-soil-900: var(--color-ink);
+  --color-soil-800: var(--color-ink);
+  --color-soil-700: color-mix(in srgb, var(--color-ink) 92%, white);
+  --color-soil-600: color-mix(in srgb, var(--color-ink) 78%, white);
 
-  --color-sage-600: #5a6b5f;
-  --color-sage-400: #93a395;
-  --color-sage-200: #c4cdc2;
+  --color-terrace-700: color-mix(in srgb, var(--color-forest) 88%, black);
+  --color-terrace-600: var(--color-forest);
+  --color-terrace-500: color-mix(in srgb, var(--color-forest) 88%, white);
+  --color-terrace-400: color-mix(in srgb, var(--color-forest) 76%, white);
 
-  --color-mist-300: #d2d8ce;
-  --color-mist-200: #e8ebe4;
-  --color-mist-100: #f2f4ee;
+  --color-sage-600: color-mix(in srgb, var(--color-ink) 68%, var(--color-paper));
+  --color-sage-400: color-mix(in srgb, var(--color-ink) 38%, var(--color-paper));
+  --color-sage-200: var(--color-sage-wash);
 
-  --color-sun-500: #e0a32e;
-  --color-sun-600: #c98c1c;
+  --color-mist-300: var(--color-sage-wash);
+  --color-mist-200: var(--color-paper);
+  --color-mist-100: #ffffff;
 
-  --color-cherry-600: #b23a26;
+  --color-sun-500: var(--color-ochre);
+  --color-sun-600: var(--color-ochre);
+
+  --color-cherry-600: var(--color-cherry);
 
   /* -- Type scale -------------------------------------------
      Display sizes are fluid; text sizes are fixed for rhythm. */
-  --text-display-xl: clamp(3.25rem, 1.5rem + 7vw, 8rem);
-  --text-display-xl--line-height: 0.92;
-  --text-display-xl--letter-spacing: -0.035em;
+  --text-display-xl: clamp(3rem, 1.85rem + 4.5vw, 5.5rem);
+  --text-display-xl--line-height: 0.94;
+  --text-display-xl--letter-spacing: -0.045em;
 
-  --text-display-l: clamp(2.5rem, 1.2rem + 4.5vw, 5rem);
+  --text-display-l: clamp(2.25rem, 1.45rem + 3vw, 4rem);
   --text-display-l--line-height: 0.98;
-  --text-display-l--letter-spacing: -0.028em;
+  --text-display-l--letter-spacing: -0.035em;
 
-  --text-h1: clamp(2rem, 1.2rem + 2.5vw, 3.25rem);
+  --text-h1: clamp(1.875rem, 1.35rem + 1.8vw, 2.75rem);
   --text-h1--line-height: 1.06;
   --text-h1--letter-spacing: -0.02em;
 
-  --text-h2: clamp(1.5rem, 1.1rem + 1.4vw, 2.25rem);
+  --text-h2: clamp(1.5rem, 1.15rem + 1.1vw, 2rem);
   --text-h2--line-height: 1.12;
   --text-h2--letter-spacing: -0.015em;
 
@@ -77,7 +84,7 @@
      Condensed + tracked out, set in Archivo's width axis. */
   --text-label: 0.6875rem;
   --text-label--line-height: 1;
-  --text-label--letter-spacing: 0.14em;
+  --text-label--letter-spacing: 0.08em;
 
   --text-price: 1.0625rem;
   --text-price--line-height: 1.2;
@@ -85,19 +92,20 @@
 
   /* -- Semantic spacing (§17.3) ----------------------------- */
   --spacing-page-x: clamp(1.25rem, 4vw, 5rem);
-  --spacing-section-sm: clamp(3rem, 6vw, 5rem);
-  --spacing-section-md: clamp(4.5rem, 9vw, 8rem);
-  --spacing-section-lg: clamp(6rem, 13vw, 12rem);
+  --spacing-section-sm: clamp(2.5rem, 4vw, 4rem);
+  --spacing-section-md: clamp(3.5rem, 6vw, 6rem);
+  --spacing-section-lg: clamp(4.5rem, 8vw, 8rem);
   --spacing-stack-xs: 0.375rem;
   --spacing-stack-sm: 0.75rem;
   --spacing-stack-md: 1.5rem;
   --spacing-stack-lg: 2.5rem;
 
   /* -- Shape ------------------------------------------------
-     Near-square. Softness comes from the typeface, not corners. */
-  --radius-sm: 2px;
-  --radius-md: 3px;
-  --radius-lg: 4px;
+     Softly rounded. Friendliness comes from the corners as well as
+     the typeface — client review asked for rounder controls. */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 8px;
 
   /* -- Motion ----------------------------------------------- */
   --ease-brand: cubic-bezier(0.22, 0.61, 0.36, 1);
@@ -116,46 +124,63 @@
 
 :root,
 [data-surface="mist"] {
-  --background: var(--color-mist-200);
-  --foreground: var(--color-soil-800);
-  --surface: var(--color-mist-200);
-  --surface-elevated: var(--color-mist-100);
-  --muted: var(--color-mist-300);
-  --muted-foreground: var(--color-sage-600);
-  --border: var(--color-mist-300);
-  --rule: var(--color-sage-400);
-  --accent: var(--color-terrace-600);
-  --accent-foreground: var(--color-mist-100);
-  --primary: var(--color-terrace-600);
+  --background: var(--color-paper);
+  --foreground: var(--color-ink);
+  --surface: var(--color-paper);
+  --surface-elevated: #ffffff;
+  --muted: var(--color-sage-wash);
+  --muted-foreground: color-mix(in srgb, var(--color-ink) 68%, var(--color-paper));
+  --border: color-mix(in srgb, var(--color-ink) 16%, var(--color-paper));
+  --rule: color-mix(in srgb, var(--color-ink) 32%, var(--color-paper));
+  --accent: var(--color-forest);
+  --accent-foreground: var(--color-paper);
+  --primary: var(--color-forest);
   --primary-hover: var(--color-terrace-700);
-  --primary-foreground: #ffffff;
-  --ring: var(--color-terrace-600);
-  --success: var(--color-terrace-600);
-  --warning: var(--color-sun-600);
-  --destructive: var(--color-cherry-600);
+  --primary-foreground: var(--color-paper);
+  --ring: var(--color-ochre);
+  --success: var(--color-forest);
+  --warning: var(--color-ochre);
+  --destructive: var(--color-cherry);
 }
 
 [data-surface="soil"] {
-  --background: var(--color-soil-800);
-  --foreground: var(--color-mist-200);
-  --surface: var(--color-soil-800);
-  --surface-elevated: var(--color-soil-700);
-  --muted: var(--color-soil-600);
-  --muted-foreground: var(--color-sage-400);
-  --border: var(--color-soil-600);
-  --rule: var(--color-sage-600);
-  --accent: var(--color-sun-500);
-  --accent-foreground: var(--color-soil-900);
-  /* Primary stays green on dark rather than following --accent to gold:
-     white on sun-500 is 1.85:1. Stepped one shade lighter so the fill
-     clears 3:1 against the soil ground (WCAG 1.4.11). */
-  --primary: var(--color-terrace-500);
-  --primary-hover: var(--color-terrace-400);
-  --primary-foreground: #ffffff;
-  --ring: var(--color-sun-500);
-  --success: var(--color-terrace-500);
-  --warning: var(--color-sun-500);
-  --destructive: #e0705c;
+  --background: var(--color-ink);
+  --foreground: var(--color-paper);
+  --surface: var(--color-ink);
+  --surface-elevated: color-mix(in srgb, var(--color-ink) 92%, white);
+  --muted: color-mix(in srgb, var(--color-ink) 82%, white);
+  --muted-foreground: color-mix(in srgb, var(--color-paper) 72%, var(--color-ink));
+  --border: color-mix(in srgb, var(--color-paper) 20%, var(--color-ink));
+  --rule: color-mix(in srgb, var(--color-paper) 36%, var(--color-ink));
+  --accent: var(--color-paper);
+  --accent-foreground: var(--color-ink);
+  --primary: var(--color-paper);
+  --primary-hover: var(--color-sage-wash);
+  --primary-foreground: var(--color-ink);
+  --ring: var(--color-paper);
+  --success: var(--color-paper);
+  --warning: var(--color-paper);
+  --destructive: var(--color-paper);
+}
+
+[data-surface="wash"] {
+  --background: var(--color-sage-wash);
+  --foreground: var(--color-ink);
+  --surface: var(--color-sage-wash);
+  --surface-elevated: var(--color-paper);
+  --muted: var(--color-paper);
+  --muted-foreground: color-mix(in srgb, var(--color-ink) 68%, var(--color-paper));
+  --border: color-mix(in srgb, var(--color-ink) 16%, var(--color-sage-wash));
+  --rule: color-mix(in srgb, var(--color-ink) 32%, var(--color-sage-wash));
+  --accent: var(--color-forest);
+  --accent-foreground: var(--color-paper);
+  --primary: var(--color-forest);
+  --primary-hover: var(--color-terrace-700);
+  --primary-foreground: var(--color-paper);
+  --ring: var(--color-ochre);
+  --success: var(--color-forest);
+  --warning: var(--color-ochre);
+  --destructive: var(--color-cherry);
 }
 
 @theme inline {
@@ -198,16 +223,15 @@
     color: var(--foreground);
   }
 
-  /* Fraunces carries the editorial voice. WONK on, low optical
-     size: the display face should read made-by-hand, not machined —
-     a four-decade family business, not a fashion house. */
+  /* Archivo's condensed width echoes roastery labels and the current
+     wordmark without turning every page into a fashion editorial. */
   .font-display,
   h1,
   h2,
   h3 {
     font-family: var(--font-display);
-    font-variation-settings: "SOFT" 20, "WONK" 1;
-    font-weight: 400;
+    font-variation-settings: "wdth" 90;
+    font-weight: 600;
   }
 
   /* Tailwind v4's Preflight leaves buttons at the browser default
@@ -292,7 +316,7 @@
     font-size: var(--text-label);
     line-height: var(--text-label--line-height);
     letter-spacing: var(--text-label--letter-spacing);
-    font-variation-settings: "wdth" 88;
+    font-variation-settings: "wdth" 82;
     font-weight: 600;
     text-transform: uppercase;
     color: var(--muted-foreground);
@@ -302,9 +326,37 @@
     font-size: var(--text-label);
     line-height: var(--text-label--line-height);
     letter-spacing: var(--text-label--letter-spacing);
-    font-variation-settings: "wdth" 88;
+    font-family: var(--font-display);
+    font-variation-settings: "wdth" 82;
     font-weight: 600;
-    text-transform: uppercase;
+  }
+
+  /* ----------------------------------------------------------
+     Sweep underline for navigation links.
+     The rule grows from the leading edge on hover and retreats
+     the same way — the same pen-underline language as the button
+     link variant, as a class any nav link can share.
+     ---------------------------------------------------------- */
+  .link-sweep {
+    position: relative;
+  }
+
+  .link-sweep::after {
+    content: "";
+    position: absolute;
+    inset-inline: 0;
+    bottom: -4px;
+    height: 1px;
+    background-color: currentColor;
+    transform-origin: left;
+    transform: scaleX(0);
+    transition: transform 300ms ease var(--ease-brand);
+  }
+
+  .link-sweep:hover::after,
+  .link-sweep:focus-visible::after,
+  .link-sweep[aria-current="page"]::after {
+    transform: scaleX(1);
   }
 }
 

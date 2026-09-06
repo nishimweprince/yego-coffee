@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { Contour } from "@/components/ui/contour";
 import { BRAND } from "@/content/brand";
@@ -30,13 +31,29 @@ export default async function AboutPage() {
   return (
     <main>
       <section data-surface="soil" className="px-page-x py-section-lg">
-        <div className="mx-auto max-w-4xl">
-          <h1 className="text-display-l">{HOME.statement.headline}</h1>
-          <div className="mt-stack-lg max-w-prose space-y-stack-xs text-body-l text-muted-foreground">
-            {HOME.statement.body.map((line) => (
-              <p key={line}>{line}</p>
-            ))}
+        <div className="mx-auto grid max-w-6xl items-center gap-stack-lg lg:grid-cols-2 lg:gap-16">
+          <div>
+            <h1 className="text-display-l">{HOME.statement.headline}</h1>
+            <div className="mt-stack-lg max-w-prose space-y-stack-xs text-body-l text-muted-foreground">
+              {HOME.statement.body.map((line) => (
+                <p key={line}>{line}</p>
+              ))}
+            </div>
           </div>
+          <figure>
+            <Image
+              src="/brand/founders.jpg"
+              alt="Fatuma and Francois Tuyishime, the family behind Yego Coffee"
+              width={1500}
+              height={1000}
+              sizes="(min-width: 1024px) 45vw, 100vw"
+              loading="lazy"
+              className="aspect-[3/2] w-full rounded-md object-cover"
+            />
+            <figcaption className="mt-stack-sm text-body-s text-muted-foreground">
+              Fatuma and Francois Tuyishime, Somerville, Massachusetts.
+            </figcaption>
+          </figure>
         </div>
       </section>
 

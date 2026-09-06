@@ -27,10 +27,10 @@ const features = tableFeatures({});
 const helper = createColumnHelper<typeof features, OrderSummary>();
 
 function formatDate(value: string): string {
-  if (!value) return "—";
+  if (!value) return "Unknown";
   const date = new Date(value);
   return Number.isNaN(date.getTime())
-    ? "—"
+    ? "Unknown"
     : date.toLocaleDateString("en-US", {
         year: "numeric",
         month: "short",
@@ -45,7 +45,7 @@ function formatDate(value: string): string {
  * would be an invented promise about where a parcel is.
  */
 function humanise(status: string | null): string {
-  if (!status) return "—";
+  if (!status) return "Unknown";
   const lower = status.replace(/_/g, " ").toLowerCase();
   return lower.charAt(0).toUpperCase() + lower.slice(1);
 }

@@ -27,6 +27,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${base}/subscriptions`, lastModified: now, priority: 0.8 },
     { url: `${base}/about`, lastModified: now, priority: 0.6 },
     { url: `${base}/cafe`, lastModified: now, priority: 0.6 },
+    { url: `${base}/contact`, lastModified: now, priority: 0.5 },
     { url: `${base}/journal`, lastModified: now, priority: 0.5 },
     { url: `${base}/policies`, lastModified: now, priority: 0.3 },
     ...SHOP_SECTIONS.map((section) => ({

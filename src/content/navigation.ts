@@ -15,20 +15,59 @@ export type NavLink = {
   label: string;
 };
 
+/**
+ * Primary destinations, header and mobile menu.
+ *
+ * Mirrors the live site's coverage — roasted coffee, merch and
+ * subscriptions under shop, our story, contact — plus the headless
+ * storefront's own discovery paths (quiz, café, account).
+ */
 export const PRIMARY_NAV: NavLink[] = [
   { href: "/shop/coffee", label: "Coffee" },
-  { href: "/subscriptions", label: "Subscriptions" },
+  { href: "/shop/merch", label: "Merch" },
   { href: "/quiz", label: "Find Your Coffee" },
+  { href: "/subscriptions", label: "Subscriptions" },
+  { href: "/about", label: "Our Story" },
   { href: "/cafe", label: "Café" },
+  { href: "/contact", label: "Contact" },
   { href: "/account", label: "Account" },
 ];
 
-/** Secondary destinations, footer only — §8.12. */
-export const FOOTER_NAV: NavLink[] = [
-  { href: "/shop", label: "Shop" },
-  { href: "/shop/merch", label: "Merch" },
-  { href: "/about", label: "Our Story" },
-  { href: "/journal", label: "Journal" },
-  { href: "/policies", label: "Policies" },
-  { href: "/search", label: "Search" },
+export type NavGroup = {
+  label: string;
+  links: NavLink[];
+};
+
+/**
+ * Footer groups (§8.12). Every destination exists — a footer link
+ * that 404s costs more trust than a shorter column.
+ */
+export const FOOTER_GROUPS: NavGroup[] = [
+  {
+    label: "Shop",
+    links: [
+      { href: "/shop/coffee", label: "Coffee" },
+      { href: "/shop/merch", label: "Merch" },
+      { href: "/subscriptions", label: "Subscriptions" },
+      { href: "/quiz", label: "Find Your Coffee" },
+    ],
+  },
+  {
+    label: "Company",
+    links: [
+      { href: "/about", label: "Our Story" },
+      { href: "/cafe", label: "Café" },
+      { href: "/contact", label: "Contact" },
+      { href: "/journal", label: "Journal" },
+    ],
+  },
+  {
+    label: "Support",
+    links: [
+      { href: "/account", label: "Account" },
+      { href: "/cart", label: "Cart" },
+      { href: "/policies", label: "Policies" },
+      { href: "/search", label: "Search" },
+    ],
+  },
 ];

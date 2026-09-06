@@ -52,7 +52,7 @@ export default async function SubscriptionsPage() {
           </p>
           <p className="mt-stack-md max-w-prose text-body-m text-muted-foreground">
             Yego&apos;s coffee subscriptions are managed through the link
-            in your order confirmation email — that is where you can
+            in your order confirmation email. That is where you can
             change the frequency, skip a delivery, or cancel. If you
             can&apos;t find it, email us and we&apos;ll sort it out.
           </p>
@@ -93,7 +93,7 @@ export default async function SubscriptionsPage() {
                     <li key={line.id} className="flex justify-between gap-4">
                       <span className="text-body-m">
                         {line.quantity} × {line.name}
-                        {line.variantTitle ? ` — ${line.variantTitle}` : ""}
+                        {line.variantTitle ? ` · ${line.variantTitle}` : ""}
                       </span>
                       {line.price ? (
                         <span className="text-price tabular-nums">

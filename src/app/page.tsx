@@ -6,7 +6,6 @@ import { FinalCta } from "@/components/home/final-cta";
 import { Hero } from "@/components/home/hero";
 import { SignatureCoffees } from "@/components/home/signature-coffees";
 import { SubscriptionBlock } from "@/components/home/subscription-block";
-import { Contour } from "@/components/ui/contour";
 import { HOME } from "@/content/home";
 import { COLLECTION_HANDLES } from "@/lib/catalog/collections";
 import { featuredPlans, summarisePlans } from "@/lib/catalog/plans";
@@ -68,14 +67,14 @@ export default async function HomePage() {
     <main>
       <Hero />
 
-      <section className="px-page-x py-section-md">
+      <section className="px-page-x py-section-sm">
         <div className="mx-auto max-w-6xl">
-          <Contour label="Discovery" />
-          <h2 className="mt-section-sm max-w-[18ch] text-display-l">
+          <p className="label text-accent">Discovery</p>
+          <h2 className="mt-stack-md max-w-[18ch] text-display-l">
             {HOME.discovery.heading}
           </h2>
           <div className="mt-section-sm">
-            <DiscoveryCards />
+            <DiscoveryCards products={signature} />
           </div>
         </div>
       </section>

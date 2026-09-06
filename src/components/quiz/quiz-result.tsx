@@ -3,6 +3,8 @@
 import { useState, useTransition } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCheck } from "@fortawesome/free-solid-svg-icons/faCheck";
 import { ProductMedia } from "@/components/commerce/product-media";
 import { QuantitySelector } from "@/components/commerce/quantity-selector";
 import { buttonVariants } from "@/components/ui/button";
@@ -52,7 +54,7 @@ export function QuizResult({
         <h1 className="text-display-l">Nothing to recommend right now.</h1>
         <p className="mt-stack-lg text-body-l text-muted-foreground">
           Every coffee is out of stock at the moment. That is a real
-          answer, not an error — please check back.
+          answer, not an error. Please check back.
         </p>
         <Link
           href="/shop"
@@ -130,9 +132,11 @@ export function QuizResult({
           <ul className="mt-stack-md space-y-stack-sm text-body-m">
             {recommendation.reasons.map((reason) => (
               <li key={reason} className="flex gap-3">
-                <span aria-hidden className="text-accent">
-                  —
-                </span>
+                <FontAwesomeIcon
+                  icon={faCheck}
+                  aria-hidden
+                  className="mt-1 h-3 w-3 shrink-0 text-accent"
+                />
                 <span>{reason}</span>
               </li>
             ))}
@@ -160,8 +164,8 @@ export function QuizResult({
                on a subscription today. Saying so is better than routing
                them to a coffee they did not ask for. */
             <p className="mt-stack-md max-w-prose text-body-s text-muted-foreground">
-              {product.title} isn&apos;t available as a subscription yet —
-              this is a one-time order.
+              {product.title} isn&apos;t available as a subscription yet.
+              This is a one-time order.
             </p>
           ) : null}
 

@@ -1,4 +1,7 @@
+import Image from "next/image";
 import Link from "next/link";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowRight } from "@fortawesome/free-solid-svg-icons/faArrowRight";
 import { buttonVariants } from "@/components/ui/button";
 import { HOME } from "@/content/home";
 
@@ -10,23 +13,46 @@ import { HOME } from "@/content/home";
  * does not honour is an immediately visible broken promise. "A few
  * questions. About 30 seconds." is the promise, and it is one the quiz
  * can keep.
+ *
+ * Left-aligned beside real photography, not centered on an empty
+ * field: centered eyebrow-headline-CTA stacks are the template this
+ * page is moving away from.
  */
 export function CoffeeFinder() {
   return (
-    <section className="px-page-x py-section-lg">
-      <div className="mx-auto max-w-4xl text-center">
-        <h2 className="text-display-l">{HOME.finder.heading}</h2>
-        <div className="mt-stack-lg space-y-stack-xs text-body-l text-muted-foreground">
-          {HOME.finder.body.map((line) => (
-            <p key={line}>{line}</p>
-          ))}
+    <section className="px-page-x py-section-md">
+      <div className="mx-auto grid max-w-6xl items-center gap-stack-lg lg:grid-cols-2 lg:gap-16">
+        <div className="relative">
+          <Image
+            src="/brand/roast.jpg"
+            alt="Freshly roasted Yego coffee"
+            width={1000}
+            height={1500}
+            sizes="(min-width: 1024px) 45vw, 100vw"
+            loading="lazy"
+            className="aspect-[4/5] w-full rounded-sm object-cover"
+          />
         </div>
-        <Link
-          href={HOME.finder.cta.href}
-          className={`${buttonVariants({ size: "lg" })} mt-section-sm`}
-        >
-          {HOME.finder.cta.label} →
-        </Link>
+
+        <div>
+          <h2 className="text-display-l">{HOME.finder.heading}</h2>
+          <div className="mt-stack-lg space-y-stack-xs text-body-l text-muted-foreground">
+            {HOME.finder.body.map((line) => (
+              <p key={line}>{line}</p>
+            ))}
+          </div>
+          <Link
+            href={HOME.finder.cta.href}
+            className={`group ${buttonVariants({ size: "lg" })} mt-section-sm`}
+          >
+            {HOME.finder.cta.label}
+            <FontAwesomeIcon
+              icon={faArrowRight}
+              className="h-4 w-4 transition-transform duration-200 ease-(--ease-brand) group-hover:translate-x-1"
+              aria-hidden
+            />
+          </Link>
+        </div>
       </div>
     </section>
   );

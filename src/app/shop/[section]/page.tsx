@@ -4,7 +4,6 @@ import { notFound } from "next/navigation";
 import { ProductGrid } from "@/components/commerce/product-grid";
 import { RoastFilter } from "@/components/commerce/roast-filter";
 import { StoreUnavailable } from "@/components/commerce/store-unavailable";
-import { Contour } from "@/components/ui/contour";
 import { SHOP_SECTIONS } from "@/lib/catalog/collections";
 import {
   availableRoasts,
@@ -74,10 +73,9 @@ export default async function ShopSectionPage({
           <RoastFilter options={roasts} selected={selected} />
         </div>
 
-        <Contour
-          label={`${visible.length} of ${collection.products.length}`}
-          className="mt-stack-lg"
-        />
+        <p className="label text-muted-foreground mt-stack-lg">
+          {`${visible.length} of ${collection.products.length}`}
+        </p>
 
         {visible.length === 0 ? (
           <div className="mt-section-sm">

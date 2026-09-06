@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Contour } from "@/components/ui/contour";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowRight } from "@fortawesome/free-solid-svg-icons/faArrowRight";
 import { StoreUnavailable } from "@/components/commerce/store-unavailable";
 import { hasShopifyCredentials } from "@/lib/env";
 import { getPolicies } from "@/lib/shopify/storefront";
@@ -32,22 +33,31 @@ export default async function PoliciesPage() {
     <main className="px-page-x py-section-md">
       <div className="mx-auto max-w-4xl">
         <h1 className="text-display-l">Policies</h1>
-        <Contour label={`${policies.length}`} className="mt-section-sm" />
+        <p className="label text-muted-foreground mt-section-sm">
+          {`${policies.length} ${policies.length === 1 ? "document" : "documents"}`}
+        </p>
 
         {policies.length === 0 ? (
           <p className="mt-section-sm text-body-l text-muted-foreground">
             No policies are published yet.
           </p>
         ) : (
-          <ul className="mt-section-sm divide-y divide-border border-y border-border">
+          <ul className="mt-section-sm space-y-2">
             {policies.map((policy) => (
-              <li key={policy.handle}>
+              <li
+                key={policy.handle}
+                className="rounded-md bg-surface-elevated transition-all duration-200 ease-(--ease-brand) hover:-translate-y-px"
+              >
                 <Link
                   href={`/policies/${policy.handle}`}
-                  className="flex items-baseline justify-between gap-4 py-stack-md text-body-l transition-colors hover:text-accent"
+                  className="group flex items-baseline justify-between gap-4 px-stack-lg py-stack-md text-body-l transition-colors hover:text-accent"
                 >
                   {policy.title}
-                  <span aria-hidden>→</span>
+                  <FontAwesomeIcon
+                    icon={faArrowRight}
+                    aria-hidden
+                    className="h-3 w-3 self-center transition-transform duration-200 ease-(--ease-brand) group-hover:translate-x-1"
+                  />
                 </Link>
               </li>
             ))}

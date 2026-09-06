@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
-import { Archivo, Fraunces } from "next/font/google";
+import { Archivo, Source_Sans_3 } from "next/font/google";
 import { config } from "@fortawesome/fontawesome-svg-core";
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import "./globals.css";
+import { AnnouncementBar } from "@/components/layout/announcement-bar";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/components/layout/site-header";
 import { AnalyticsRoot } from "@/components/analytics/analytics-root";
@@ -13,18 +14,17 @@ import { env, getAnalyticsEnv } from "@/lib/env";
 // above instead and turn the injection off (§18).
 config.autoAddCss = false;
 
-const fraunces = Fraunces({
-  variable: "--font-fraunces",
-  subsets: ["latin"],
-  display: "swap",
-  axes: ["SOFT", "WONK", "opsz"],
-});
-
 const archivo = Archivo({
   variable: "--font-archivo",
   subsets: ["latin"],
   display: "swap",
   axes: ["wdth"],
+});
+
+const sourceSans = Source_Sans_3({
+  variable: "--font-source-sans",
+  subsets: ["latin"],
+  display: "swap",
 });
 
 /**
@@ -48,8 +48,12 @@ export const metadata: Metadata = {
     title: "Yego Coffee",
     description:
       "Family-owned Rwandan coffee, roasted in Somerville, Massachusetts.",
+    images: ["/brand/brew.jpg"],
   },
-  twitter: { card: "summary_large_image" },
+  twitter: {
+    card: "summary_large_image",
+    images: ["/brand/brew.jpg"],
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
@@ -59,9 +63,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html
       lang="en"
       data-surface="mist"
-      className={`${fraunces.variable} ${archivo.variable} h-full`}
+      className={`${archivo.variable} ${sourceSans.variable} h-full`}
     >
       <body className="flex min-h-full flex-col">
+        <AnnouncementBar />
         <SiteHeader />
         {children}
         <SiteFooter />
