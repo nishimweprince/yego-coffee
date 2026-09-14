@@ -4,7 +4,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { StoreUnavailable } from "@/components/commerce/store-unavailable";
 import { PageHeader } from "@/components/ui/page-header";
 import { Section } from "@/components/ui/section";
-import { PriceRange } from "@/components/commerce/product-price";
+import { PlanList } from "@/components/commerce/plan-list";
 import { YegoLine } from "@/components/ui/yego-line";
 import { HOME } from "@/content/home";
 import { COLLECTION_HANDLES } from "@/lib/catalog/collections";
@@ -107,26 +107,7 @@ export default async function SubscriptionsPage() {
           <h2 id="plans-heading" className="text-display-l">
             Plans
           </h2>
-          <ul className="mt-section-sm border-t border-border">
-            {plans.map((plan) => (
-              <li key={plan.handle} className="border-b border-border">
-                <Link
-                  href={`/products/${plan.handle}`}
-                  className="flex min-h-11 flex-wrap items-baseline justify-between gap-x-8 gap-y-stack-xs py-stack-md transition-colors hover:text-accent"
-                >
-                  <span className="text-body-l">{plan.title}</span>
-                  <span className="flex w-full items-baseline justify-between gap-6 sm:w-auto">
-                    {plan.cadences.length > 0 ? (
-                      <span className="label text-muted-foreground">
-                        {plan.cadences.join(" · ")}
-                      </span>
-                    ) : null}
-                    <PriceRange min={plan.minPrice} max={plan.maxPrice} />
-                  </span>
-                </Link>
-              </li>
-            ))}
-          </ul>
+          <PlanList plans={plans} className="mt-section-sm" />
 
           <ol className="mt-section-sm max-w-prose list-decimal space-y-stack-xs pl-5 text-body-m text-muted-foreground marker:text-muted-foreground">
             {HOME.subscription.steps.map((step) => (

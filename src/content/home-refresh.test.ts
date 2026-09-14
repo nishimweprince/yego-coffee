@@ -105,11 +105,13 @@ describe("design refresh — the quiet page", () => {
     }
   });
 
-  it("spends the Yego line once and the contour rule twice", () => {
+  it("answers shipping and cancellation with a Yego line, and rules twice", () => {
+    // One Yego line per question a customer asks: shipping beside the
+    // prices, cancellation beside the plans. Nowhere else.
     const files = SECTION_FILES.map(([, file]) => read(file));
     const count = (needle: string) =>
       files.reduce((n, source) => n + (source.match(needle) ? 1 : 0), 0);
-    expect(count("<YegoLine")).toBe(1);
+    expect(count("<YegoLine")).toBe(2);
     expect(count("<Contour")).toBe(2);
   });
 

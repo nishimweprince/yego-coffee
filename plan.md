@@ -6830,14 +6830,16 @@ links are a plain underline.
 `Section` (`src/components/ui/section.tsx`) is the one container: `page`
 (6xl) or `prose`. `PageHeader` is the one title recipe, with the
 breadcrumb markup the product page had. Contour rule at most twice per
-page; Yego line at most once.
+page; one Yego line per customer question answered (shipping beside the
+prices, cancellation beside the plans).
 
 Homepage: six sections on one ground. `SignatureCoffees` is removed — it
 showed the same three coffees the discovery cards had just shown, at
 the same prices — and `FinalCta` is removed because it repeated the
 hero's buttons a third time. The shipping Yego line moved from the
-closing CTA to sit under the prices; the cancellation terms sit beside
-the plans as plain text so the device is spent once.
+closing CTA to sit under the prices; the cancellation Yego line sits
+beside the plans. The plan rows are links that look like links
+(`PlanList`): arrow, linen hover fill, roast title.
 
 Footer columns are Shop / About / Help. The cart is not listed; it is a
 header icon on every page.

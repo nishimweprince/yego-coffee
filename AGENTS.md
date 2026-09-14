@@ -48,7 +48,8 @@ wins — §89 supersedes §1, §90 supersedes copy in §7–8, §93 supersedes
 - The contour rule (`<Contour />`) is the signature device, at most
   twice per page. Its label carries something true — a section name, a
   real place. Never invented sequence numbers. The Yego line
-  (`<YegoLine />`) appears at most once per page.
+  (`<YegoLine />`) answers a question a customer actually asks —
+  shipping, cancellation — one line per question, never as decoration.
 - The `.label` register is sentence case. No uppercase, no tracking.
 - One radius (`rounded-sm`); borders use `border-border`, never
   `border-foreground/NN`. Page wrappers are `<Section>`; page titles
