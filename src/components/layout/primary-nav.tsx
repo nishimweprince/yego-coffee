@@ -28,7 +28,7 @@ export function PrimaryNav() {
                 href={link.href}
                 aria-current={active ? "page" : undefined}
                 className={cn(
-                  "link-sweep label transition-colors hover:text-foreground",
+                  "link-sweep text-body-s font-medium transition-colors hover:text-foreground",
                   active ? "text-foreground" : "text-muted-foreground",
                 )}
               >

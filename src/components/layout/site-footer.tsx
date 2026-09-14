@@ -22,7 +22,7 @@ export function SiteFooter() {
 
       <div className="mt-stack-lg grid gap-stack-lg sm:grid-cols-2 lg:grid-cols-[1.2fr_1fr_1fr_1fr]">
         <div>
-          <p className="font-display text-h2">{BRAND.name}</p>
+          <p className="font-display text-h2 font-semibold">{BRAND.name}</p>
           <p className="mt-stack-xs text-body-s text-muted-foreground">
             {BRAND.shopAddress}
           </p>

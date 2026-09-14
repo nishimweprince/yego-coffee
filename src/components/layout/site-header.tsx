@@ -18,7 +18,7 @@ import { SearchTrigger } from "@/components/search/search-trigger";
 export function SiteHeader() {
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-background">
-      <div className="relative flex h-[72px] items-center justify-between gap-6 px-page-x">
+      <div className="relative flex h-16 items-center justify-between gap-6 px-page-x">
         <Link
           href="/"
           className="transition-opacity hover:opacity-80"
@@ -30,7 +30,7 @@ export function SiteHeader() {
             width={240}
             height={125}
             priority
-            className="h-10 w-auto"
+            className="h-9 w-auto"
           />
         </Link>
 

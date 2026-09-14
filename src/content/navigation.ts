@@ -49,6 +49,11 @@ export type NavGroup = {
 /**
  * Footer groups (§8.12). Every destination exists — a footer link
  * that 404s costs more trust than a shorter column.
+ *
+ * Grouped by what a visitor is trying to do: buy, learn, or get help.
+ * The cart is not listed — it is a header icon on every page, and a
+ * "Support" column that led with Cart and Search was a utility list
+ * wearing the wrong name.
  */
 export const FOOTER_GROUPS: NavGroup[] = [
   {
@@ -61,20 +66,19 @@ export const FOOTER_GROUPS: NavGroup[] = [
     ],
   },
   {
-    label: "Company",
+    label: "About",
     links: [
       { href: "/about", label: "Our Story" },
       { href: "/cafe", label: "Café" },
-      { href: "/contact", label: "Contact" },
       { href: "/journal", label: "Journal" },
+      { href: "/contact", label: "Contact" },
     ],
   },
   {
-    label: "Support",
+    label: "Help",
     links: [
-      { href: "/account", label: "Account" },
-      { href: "/cart", label: "Cart" },
       { href: "/policies", label: "Policies" },
+      { href: "/account", label: "Account" },
       { href: "/search", label: "Search" },
     ],
   },
