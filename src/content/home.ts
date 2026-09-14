@@ -76,7 +76,7 @@ export const HOME = {
   },
 
   statement: {
-    headline: "YEGO MEANS YES.",
+    headline: "Yego means yes.",
     body: [
       "A word of affirmation.",
       "A family's answer to rebuilding after loss.",

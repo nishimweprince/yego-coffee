@@ -462,9 +462,9 @@ html[data-chrome-solid] body:has(main[data-hero="video"]) [data-chrome] {
     pointer-events: none;
     background: linear-gradient(
       to top,
-      color-mix(in srgb, var(--background) 92%, transparent) 0%,
-      color-mix(in srgb, var(--background) 70%, transparent) 38%,
-      color-mix(in srgb, var(--background) 24%, transparent) 70%,
+      color-mix(in srgb, var(--background) 94%, transparent) 0%,
+      color-mix(in srgb, var(--background) 86%, transparent) 45%,
+      color-mix(in srgb, var(--background) 58%, transparent) 75%,
       color-mix(in srgb, var(--background) 55%, transparent) 100%
     );
   }

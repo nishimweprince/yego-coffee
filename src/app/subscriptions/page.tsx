@@ -115,7 +115,7 @@ export default async function SubscriptionsPage() {
                   className="flex min-h-11 flex-wrap items-baseline justify-between gap-x-8 gap-y-stack-xs py-stack-md transition-colors hover:text-accent"
                 >
                   <span className="text-body-l">{plan.title}</span>
-                  <span className="flex items-baseline gap-6">
+                  <span className="flex w-full items-baseline justify-between gap-6 sm:w-auto">
                     {plan.cadences.length > 0 ? (
                       <span className="label text-muted-foreground">
                         {plan.cadences.join(" · ")}

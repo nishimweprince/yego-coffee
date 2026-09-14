@@ -6745,3 +6745,109 @@ precisely this.
 
 Phase 6 cannot be signed off, and §103.2 records that this was known
 when the work was commissioned.
+
+---
+
+# 105. Design direction — Roastery (supersedes §89, §94.3 and the band structure of §90)
+
+Implemented 2026-09-14. Recorded so it is not re-litigated each session.
+
+## 105.1 What was wrong
+
+The storefront read as generated. A warm-cream ground (`#f1ede4`), five
+brand colours, a homepage that changed surface seven times (soil → paper
+→ soil → paper → wash → soil → ochre → paper → soil), uppercase tracked
+micro-labels on every section, 8.5rem fluid headlines, zero-padded
+`01/02/03` numerals, two components each described as "the signature
+device", and the same two CTAs repeated three times on one page. Inner
+routes drifted: `h1` was styled four ways, containers ran from
+`max-w-3xl` to `6xl`, borders were hand-mixed (`border-foreground/25`,
+`/30`, `/40`), chips were square while buttons were rounded.
+
+## 105.2 Owner decisions
+
+| Question | Answer |
+|---|---|
+| Accent | Roast brown, from the bean photography. Forest, ochre, sage and the gold ramp are gone. |
+| Dark surfaces | Footer only. The film hero keeps light type over dark footage because it is a photograph, not a coloured band. |
+| Homepage order | Story first: Hero → About → coffees → finder → subscriptions → café. |
+| Devices kept | Contour rule, Yego line, full-screen video hero. The uppercase label register is cut. |
+| Type | DM Sans only, weight 600 headings, capped scale. |
+| Header nav | The five items stay. |
+| Announcement bar | Kept, restyled. |
+| Scope | Every route. |
+
+## 105.3 Palette — "Roastery"
+
+Six values. Every semantic token resolves to one of them.
+
+```text
+paper   #FBFAF8   page ground
+white   #FFFFFF   cards, panels, inputs, image backdrops
+linen   #F3F0EB   the one tint: announcement bar, quiet fills
+ink     #1F1B17   text; the footer ground
+roast   #6B4A2E   the accent: primary fill, links, "Yego.", active states, focus ring
+cherry  #9D3B2E   destructive only — never brand
+```
+
+Measured in-browser, 2026-09-14:
+
+```text
+ink on paper             16.40:1
+roast on paper            7.61:1
+white on roast            7.94:1
+muted-foreground/paper    5.06:1
+paper on ink (footer)    16.40:1
+muted on ink (footer)     8.99:1
+rule on paper             1.83:1   non-text hairline; the contour strokes
+```
+
+Three surfaces: `mist` (paper, the page), `wash` (linen — the
+announcement bar and image backdrops, never a page section), `soil`
+(ink — the footer and the film hero, nowhere else). `ochre` is deleted.
+`src/content/screens.test.ts` asserts the allowlist.
+
+## 105.4 Type, shape, motion
+
+DM Sans throughout. Headings at weight 600; `display-xl` caps at 5rem
+and is the hero only; `display-l` is every page title and homepage
+section heading; `h1` is a detail title (product, order, policy). The
+`.label` register is 0.8125rem, weight 500, **sentence case** — no
+uppercase, no tracking anywhere. `.type-display` and `.type-utility` are
+gone. Manual `font-variation-settings` are gone; the browser handles
+optical size.
+
+One radius, 6px. Borders are `border-border`; hover and active are
+`border-foreground`. The choice-chip recipe lives in
+`src/components/ui/control.ts` and every picker uses it.
+
+The hero's rise-in is two stages (words, then actions). `link-sweep` is
+reserved for the primary nav, the account nav and the footer; inline
+links are a plain underline.
+
+## 105.5 Structure
+
+`Section` (`src/components/ui/section.tsx`) is the one container: `page`
+(6xl) or `prose`. `PageHeader` is the one title recipe, with the
+breadcrumb markup the product page had. Contour rule at most twice per
+page; Yego line at most once.
+
+Homepage: six sections on one ground. `SignatureCoffees` is removed — it
+showed the same three coffees the discovery cards had just shown, at
+the same prices — and `FinalCta` is removed because it repeated the
+hero's buttons a third time. The shipping Yego line moved from the
+closing CTA to sit under the prices; the cancellation terms sit beside
+the plans as plain text so the device is spent once.
+
+Footer columns are Shop / About / Help. The cart is not listed; it is a
+header icon on every page.
+
+## 105.6 Copy
+
+§90's copy is unchanged except one casing fix: the about page's
+statement headline is now "Yego means yes." rather than all caps — the
+words are the same, and an all-caps display heading was the one loud
+element left. A copy review against the quieter page is a follow-up
+for the owners; the headline fragments ("Come have one with us.",
+"Talk to a human.", "Never run out of good coffee.") are §90's and were
+left alone.
