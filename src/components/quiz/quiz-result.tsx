@@ -8,6 +8,7 @@ import { faCheck } from "@fortawesome/free-solid-svg-icons/faCheck";
 import { ProductMedia } from "@/components/commerce/product-media";
 import { QuantitySelector } from "@/components/commerce/quantity-selector";
 import { buttonVariants } from "@/components/ui/button";
+import { controlVariants } from "@/components/ui/control";
 import { Contour } from "@/components/ui/contour";
 import { addToCartAction } from "@/app/actions/cart";
 import { formatMoney } from "@/lib/formatting/money";
@@ -255,12 +256,9 @@ export function QuizResult({
                 });
                 onChange({ ...answers, cupsPerDay: cups });
               }}
-              className={cn(
-                "min-h-11 border px-4 text-body-s transition-colors",
-                answers.cupsPerDay === cups
-                  ? "border-foreground bg-foreground text-background"
-                  : "border-foreground/25 hover:border-foreground/60",
-              )}
+              className={controlVariants({
+                state: answers.cupsPerDay === cups ? "active" : "idle",
+              })}
             >
               {cups} {cups === 1 ? "cup" : "cups"} a day
             </button>

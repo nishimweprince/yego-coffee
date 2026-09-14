@@ -30,9 +30,9 @@ const buttonVariants = cva(
         primary:
           "bg-primary text-primary-foreground rounded-sm hover:bg-primary-hover",
         secondary:
-          "border border-foreground/30 text-foreground rounded-sm hover:border-foreground hover:bg-foreground/[0.04]",
+          "border border-rule text-foreground rounded-sm hover:border-foreground hover:bg-muted",
         ghost:
-          "text-foreground rounded-sm hover:bg-foreground/[0.06]",
+          "text-foreground rounded-sm hover:bg-muted",
         /* Editorial link: the rule grows from the leading edge, the
            way a pen underlines — not a fade-in. */
         link: [

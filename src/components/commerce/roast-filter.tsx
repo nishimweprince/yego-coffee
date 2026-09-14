@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { cn } from "@/lib/utils";
+import { controlVariants } from "@/components/ui/control";
 import { roastParamValue, type Roast } from "@/lib/catalog/facets";
 import { track } from "@/lib/analytics/analytics";
 
@@ -56,12 +56,9 @@ export function RoastFilter({
             type="button"
             aria-pressed={active}
             onClick={() => toggle(option.value)}
-            className={cn(
-              "min-h-11 border px-4 text-body-s transition-colors",
-              active
-                ? "border-foreground bg-foreground text-background"
-                : "border-foreground/25 hover:border-foreground/60",
-            )}
+            className={controlVariants({
+              state: active ? "active" : "idle",
+            })}
           >
             {option.label}
           </button>

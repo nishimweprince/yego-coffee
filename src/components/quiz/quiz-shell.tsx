@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Contour } from "@/components/ui/contour";
 import { buttonVariants } from "@/components/ui/button";
+import { controlMark, controlVariants } from "@/components/ui/control";
 import { QuizResult } from "./quiz-result";
 import { buildRecommendation } from "@/lib/quiz/recommendation";
 import {
@@ -133,12 +134,10 @@ export function QuizShell({
                 type="button"
                 aria-pressed={answers.cupsPerDay === n}
                 onClick={() => set("cupsPerDay", n)}
-                className={cn(
-                  "h-13 w-13 border text-body-m tabular-nums transition-colors",
-                  answers.cupsPerDay === n
-                    ? "border-foreground bg-foreground text-background"
-                    : "border-foreground/25 hover:border-foreground/60",
-                )}
+                className={controlVariants({
+                  shape: "square",
+                  state: answers.cupsPerDay === n ? "active" : "idle",
+                })}
               >
                 {n}
               </button>
@@ -272,25 +271,15 @@ function Choices({
             role="radio"
             aria-checked={checked}
             onClick={() => onSelect(option.value)}
-            className={cn(
-              "group flex min-h-32 flex-col justify-between rounded-sm border p-stack-md text-left transition-colors",
-              checked
-                ? "border-foreground bg-foreground text-background"
-                : "border-foreground/20 hover:border-foreground/60 hover:bg-foreground/[0.03]",
-            )}
+            className={controlVariants({
+              shape: "card",
+              state: checked ? "active" : "idle",
+            })}
           >
             {/* The mark is what made these read as choices rather than
                 as four empty outlined boxes: the state is visible
                 before you hover, and it reads as a control. */}
-            <span
-              aria-hidden
-              className={cn(
-                "block h-3 w-3 rounded-full border transition-colors",
-                checked
-                  ? "border-background bg-background"
-                  : "border-foreground/40 group-hover:border-foreground",
-              )}
-            />
+            <span aria-hidden className={controlMark(checked, checked)} />
             <span className="font-display text-h3">{option.label}</span>
           </button>
         );

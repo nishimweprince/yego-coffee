@@ -2,6 +2,7 @@
 
 import { formatMoneyCompact } from "@/lib/formatting/money";
 import { cn } from "@/lib/utils";
+import { controlMark, controlVariants } from "@/components/ui/control";
 import type { SubscriptionOptionModel } from "@/lib/shopify/types";
 
 /**
@@ -61,11 +62,11 @@ export function DeliverySelector({
             <label
               key={choice.id ?? "one-time"}
               className={cn(
-                "flex min-h-11 cursor-pointer items-center justify-between gap-4 border px-4 py-3 transition-colors",
-                "has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-(--ring)",
-                checked
-                  ? "border-foreground"
-                  : "border-foreground/25 hover:border-foreground/60",
+                "cursor-pointer",
+                controlVariants({
+                  shape: "row",
+                  state: checked ? "outlined" : "idle",
+                }),
               )}
             >
               <span className="flex items-center gap-3">
@@ -76,15 +77,7 @@ export function DeliverySelector({
                   checked={checked}
                   onChange={() => onSelect(choice.id)}
                 />
-                <span
-                  aria-hidden
-                  className={cn(
-                    "block h-3 w-3 shrink-0 rounded-full border",
-                    checked
-                      ? "border-foreground bg-foreground"
-                      : "border-foreground/40",
-                  )}
-                />
+                <span aria-hidden className={controlMark(checked)} />
                 <span className="text-body-m">{choice.label}</span>
               </span>
 

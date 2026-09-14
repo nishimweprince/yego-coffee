@@ -41,7 +41,4 @@ export function Field({
   );
 }
 
-export const inputClassName =
-  "min-h-11 border border-foreground/25 bg-background px-3 text-body-m " +
-  "transition-colors hover:border-foreground/40 focus:border-foreground " +
-  "focus:outline-none aria-[invalid=true]:border-destructive";
+export { inputClassName } from "@/components/ui/control";

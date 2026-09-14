@@ -99,7 +99,7 @@ export default async function CartPage() {
           ))}
         </ul>
 
-        <div className="border-t border-foreground/20 pt-stack-lg">
+        <div className="border-t border-border pt-stack-lg">
           <div className="flex items-baseline justify-between">
             <span className="text-body-m">Subtotal</span>
             <span className="type-figure text-price">

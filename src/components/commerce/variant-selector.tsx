@@ -2,6 +2,7 @@
 
 import { isOptionValueAvailable } from "@/lib/shopify/variants";
 import { cn } from "@/lib/utils";
+import { controlVariants } from "@/components/ui/control";
 import type { ProductOptionModel, ProductVariantModel } from "@/lib/shopify/types";
 
 /**
@@ -53,13 +54,14 @@ export function VariantSelector({
                 <label
                   key={value}
                   className={cn(
-                    "relative inline-flex min-h-11 cursor-pointer items-center border px-4 text-body-s transition-colors",
-                    "has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-(--ring)",
-                    checked
-                      ? "border-foreground bg-foreground text-background"
-                      : "border-foreground/25 hover:border-foreground/60",
-                    !available &&
-                      "cursor-not-allowed text-muted-foreground line-through opacity-50",
+                    "relative cursor-pointer",
+                    controlVariants({
+                      state: !available
+                        ? "disabled"
+                        : checked
+                          ? "active"
+                          : "idle",
+                    }),
                   )}
                 >
                   <input
