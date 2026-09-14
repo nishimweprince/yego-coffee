@@ -98,7 +98,7 @@ export function SearchPanel({ onClose }: { onClose: () => void }) {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex justify-center bg-soil-900/40 px-page-x pt-[10vh]"
+      className="fixed inset-0 z-50 flex justify-center bg-ink/40 px-page-x pt-[10vh]"
       onMouseDown={(event) => {
         if (event.target === event.currentTarget) onClose();
       }}

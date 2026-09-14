@@ -97,22 +97,6 @@ describe("screens — the buying path answers questions where they are asked", (
   });
 });
 
-describe("screens — inner pages carry the band system", () => {
-  it("gives every major screen more than one ground", () => {
-    // The terraced surfaces stopped at the homepage, which is why the
-    // inner pages still read as the generic recipe.
-    for (const file of [
-      "src/app/shop/page.tsx",
-      "src/app/about/page.tsx",
-      "src/app/quiz/page.tsx",
-      "src/app/cart/page.tsx",
-      "src/components/product/related-products.tsx",
-    ]) {
-      expect(read(file), file).toMatch(/data-surface="(soil|wash|ochre)"/);
-    }
-  });
-});
-
 describe("screens — the contour leads its content", () => {
   it("defaults to a leading label", () => {
     // A trailing label above a section puts the words a full container

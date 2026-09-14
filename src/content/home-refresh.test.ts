@@ -81,14 +81,7 @@ describe("design refresh — homepage structure", () => {
   });
 });
 
-describe("design refresh — the terraced page", () => {
-  /**
-   * The homepage's rhythm is carried by the [data-surface] bands, not
-   * by decoration. Two adjacent sections sharing a ground is exactly
-   * the flat-field monotony this refresh removed, so it is worth a
-   * guard: the only permitted repeat is Hero into About, which read as
-   * one opening movement by design.
-   */
+describe("design refresh — the quiet page", () => {
   const SECTION_FILES: Array<[marker: string, file: string]> = [
     ["<Hero", "src/components/home/hero.tsx"],
     ["<HomeAbout", "src/components/home/home-about.tsx"],
@@ -99,25 +92,6 @@ describe("design refresh — the terraced page", () => {
     ["<SubscriptionBlock", "src/components/home/subscription-block.tsx"],
     ["<FinalCta", "src/components/home/final-cta.tsx"],
   ];
-
-  const surfaceOf = (file: string) =>
-    read(file).match(/data-surface="([a-z]+)"/)?.[1] ?? "mist";
-
-  it("never repeats a ground on adjacent sections", () => {
-    const surfaces = SECTION_FILES.map(([, file]) => surfaceOf(file));
-
-    for (let i = 1; i < surfaces.length; i += 1) {
-      expect(
-        surfaces[i],
-        `${SECTION_FILES[i][0]} repeats the ground above it`,
-      ).not.toBe(surfaces[i - 1]);
-    }
-  });
-
-  it("saturates exactly one band, at the commitment moment", () => {
-    const ochre = SECTION_FILES.filter(([, file]) => surfaceOf(file) === "ochre");
-    expect(ochre.map(([marker]) => marker)).toEqual(["<SubscriptionBlock"]);
-  });
 
   it("drops the decorative eyebrow from every home section", () => {
     for (const [, file] of SECTION_FILES) {
@@ -196,17 +170,12 @@ describe("design refresh — one typeface", () => {
     }
   });
 
-  it("never varies a width axis, because DM Sans has none", () => {
+  it("never sets a variation axis by hand", () => {
     // The previous system separated its registers with Archivo's width
-    // axis. On this face "wdth" is silently ignored, so a leftover
-    // setting would read as a register that simply stopped working.
-    const declarations = css()
-      .split("\n")
-      .filter((line) => line.includes("font-variation-settings"));
-    expect(declarations.length).toBeGreaterThan(0);
-    for (const declaration of declarations) {
-      expect(declaration).not.toContain("wdth");
-    }
+    // axis, and after that with manual optical-size settings. DM Sans
+    // has no width axis and the browser handles optical size on its
+    // own, so any font-variation-settings line is a leftover.
+    expect(css()).not.toContain("font-variation-settings");
   });
 });
 

@@ -53,7 +53,6 @@ const twMerge = extendTailwindMerge({
             "primary-hover",
             "ring",
             "success",
-            "warning",
             "destructive",
           ],
         },

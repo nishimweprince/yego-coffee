@@ -84,7 +84,7 @@ export function ProductGallery({
         </button>
         <span
           aria-hidden
-          className="pointer-events-none absolute right-3 bottom-3 flex h-9 w-9 items-center justify-center rounded-full bg-soil-900/70 text-mist-100"
+          className="pointer-events-none absolute right-3 bottom-3 flex h-9 w-9 items-center justify-center rounded-full bg-ink/70 text-paper"
         >
           <FontAwesomeIcon icon={faMagnifyingGlassPlus} className="h-4 w-4" />
         </span>
@@ -117,7 +117,8 @@ export function ProductGallery({
 
       {viewerOpen ? (
         <div
-          className="fixed inset-0 z-50 flex flex-col bg-soil-900/90 px-page-x py-stack-lg"
+          data-surface="soil"
+          className="fixed inset-0 z-50 flex flex-col bg-ink/90 px-page-x py-stack-lg"
           onMouseDown={(event) => {
             if (event.target === event.currentTarget) setViewerOpen(false);
           }}
@@ -129,7 +130,7 @@ export function ProductGallery({
             className="mx-auto flex h-full w-full max-w-6xl flex-col"
           >
             <div className="flex items-center justify-between">
-              <p className="label text-mist-100/70">
+              <p className="label text-muted-foreground">
                 {active + 1} of {images.length}
               </p>
               <button
@@ -137,7 +138,7 @@ export function ProductGallery({
                 type="button"
                 onClick={() => setViewerOpen(false)}
                 aria-label="Close image viewer"
-                className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-full text-mist-100 transition-colors hover:text-sun-500"
+                className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-full text-foreground transition-colors hover:text-muted-foreground"
               >
                 <FontAwesomeIcon icon={faXmark} className="h-5 w-5" />
               </button>
@@ -157,7 +158,7 @@ export function ProductGallery({
                     type="button"
                     onClick={() => step(-1)}
                     aria-label="Previous photo"
-                    className="absolute top-1/2 left-0 inline-flex min-h-11 min-w-11 -translate-y-1/2 items-center justify-center rounded-full bg-soil-900/70 text-mist-100 transition-colors hover:text-sun-500"
+                    className="absolute top-1/2 left-0 inline-flex min-h-11 min-w-11 -translate-y-1/2 items-center justify-center rounded-full bg-ink/70 text-foreground transition-colors hover:text-muted-foreground"
                   >
                     <FontAwesomeIcon
                       icon={faChevronLeft}
@@ -168,7 +169,7 @@ export function ProductGallery({
                     type="button"
                     onClick={() => step(1)}
                     aria-label="Next photo"
-                    className="absolute top-1/2 right-0 inline-flex min-h-11 min-w-11 -translate-y-1/2 items-center justify-center rounded-full bg-soil-900/70 text-mist-100 transition-colors hover:text-sun-500"
+                    className="absolute top-1/2 right-0 inline-flex min-h-11 min-w-11 -translate-y-1/2 items-center justify-center rounded-full bg-ink/70 text-foreground transition-colors hover:text-muted-foreground"
                   >
                     <FontAwesomeIcon
                       icon={faChevronRight}
@@ -191,8 +192,8 @@ export function ProductGallery({
                     className={cn(
                       "h-2 rounded-full transition-all duration-300 ease-(--ease-brand)",
                       index === active
-                        ? "w-6 bg-mist-100"
-                        : "w-2 bg-mist-100/50 hover:bg-mist-100/80",
+                        ? "w-6 bg-foreground"
+                        : "w-2 bg-foreground/50 hover:bg-foreground/80",
                     )}
                   />
                 ))}

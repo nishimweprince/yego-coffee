@@ -164,7 +164,7 @@ export function CartDrawer() {
             type="button"
             aria-label="Close cart"
             onClick={close}
-            className="absolute inset-0 bg-soil-900/50"
+            className="absolute inset-0 bg-ink/50"
           />
 
           <div

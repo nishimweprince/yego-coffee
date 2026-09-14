@@ -3,123 +3,89 @@
 /* ============================================================
    Yego Coffee — design tokens.
 
-   Three typefaces, each with a job, and a page that descends
-   through surface bands rather than sitting on one flat field.
-   Origin colours behave as accents: forest for action, ochre as
-   a field at the commitment moment, ink for the dark bands.
+   One typeface, one accent, one light ground. The page is paper
+   from top to bottom; the only dark surfaces are the footer and
+   the film hero, which is a photograph rather than a coloured
+   band. Everything else is separated by whitespace and, at most
+   twice per page, the contour rule.
    ============================================================ */
 
 @theme {
   /* -- Typeface ---------------------------------------------
-     One family, DM Sans, in three registers.
+     One family, DM Sans, in three registers separated by weight,
+     size and colour rather than by family or case:
 
-     The roles are still distinct — they are separated by weight,
-     size, tracking and case rather than by family:
+       display  600, tracked slightly tight
+       body     400
+       label    500, small, sentence case, muted
 
-       display  700, tracked tight
-       body     400, normal tracking
-       utility  700, small, uppercase, tracked wide
-
-     DM Sans is variable on optical size and weight only. It has no
-     width axis, so nothing here may vary width — that was the
-     previous system's main device and it does nothing on this face.
-
-     The role names stay so every component keeps working through the
-     same three hooks if a second family ever returns. */
+     DM Sans is variable on optical size and weight only. There is no
+     width axis, and optical sizing is left to the browser. The role
+     names stay so every component keeps working through the same
+     hooks if a second family ever returns. */
   --font-display: var(--font-dm-sans), ui-sans-serif, system-ui, sans-serif;
   --font-body: var(--font-dm-sans), ui-sans-serif, system-ui, sans-serif;
   --font-utility: var(--font-dm-sans), ui-sans-serif, system-ui, sans-serif;
   --font-sans: var(--font-dm-sans), ui-sans-serif, system-ui, sans-serif;
 
-  /* -- Brand palette ----------------------------------------
-     Paper is a cooled chalk: the previous #f7f7f2 pushed a yellow
-     cast into four photographs that are the brand's best asset. */
-  --color-paper: #f1ede4;
-  --color-ink: #1c211d;
-  --color-forest: #315b46;
-  --color-sage-wash: #e5e6dc;
-  --color-ochre: #8a5b12;
+  /* -- Brand palette — "Roastery" ----------------------------
+     Six values. Paper is a hair warm so the photographs do not go
+     cold against it; roast is pulled from the beans in those same
+     photographs and is the only chromatic accent. Cherry is for
+     errors and never for brand. */
+  --color-paper: #fbfaf8;
+  --color-white: #ffffff;
+  --color-linen: #f3f0eb;
+  --color-ink: #1f1b17;
+  --color-roast: #6b4a2e;
   --color-cherry: #9d3b2e;
 
-  /* The ochre *field*. Distinct from --color-ochre, which stays the
-     dark rule-and-ring value that may never carry text on a light
-     ground (2.4:1). This one is a background: ink on it measures
-     5.87:1, so the commitment band can be saturated and still read. */
-  --color-ochre-field: #c8912a;
-
-  /* Compatibility ramps keep existing utility classes stable while
-     every semantic assignment resolves to the brand palette. */
-  --color-soil-900: var(--color-ink);
-  --color-soil-800: var(--color-ink);
-  --color-soil-700: color-mix(in srgb, var(--color-ink) 92%, white);
-  --color-soil-600: color-mix(in srgb, var(--color-ink) 78%, white);
-
-  --color-terrace-700: color-mix(in srgb, var(--color-forest) 88%, black);
-  --color-terrace-600: var(--color-forest);
-  --color-terrace-500: color-mix(in srgb, var(--color-forest) 88%, white);
-  --color-terrace-400: color-mix(in srgb, var(--color-forest) 76%, white);
-
-  --color-sage-600: color-mix(in srgb, var(--color-ink) 68%, var(--color-paper));
-  --color-sage-400: color-mix(in srgb, var(--color-ink) 38%, var(--color-paper));
-  --color-sage-200: var(--color-sage-wash);
-
-  --color-mist-300: var(--color-sage-wash);
-  --color-mist-200: var(--color-paper);
-  --color-mist-100: #ffffff;
-
-  --color-sun-500: var(--color-ochre);
-  --color-sun-600: var(--color-ochre);
-
-  --color-cherry-600: var(--color-cherry);
-
   /* -- Type scale -------------------------------------------
-     Display sizes are fluid; text sizes are fixed for rhythm.
-     One display-xl per page, and it is allowed to be large. */
-  --text-display-xl: clamp(3.25rem, 1.1rem + 8vw, 8.5rem);
-  --text-display-xl--line-height: 0.92;
-  --text-display-xl--letter-spacing: -0.035em;
+     Display sizes are fluid but capped; text sizes are fixed. One
+     display-xl per site — the film hero. */
+  --text-display-xl: clamp(2.75rem, 1.75rem + 3.5vw, 5rem);
+  --text-display-xl--line-height: 1;
+  --text-display-xl--letter-spacing: -0.025em;
 
-  --text-display-l: clamp(2.25rem, 1.45rem + 3vw, 4rem);
-  --text-display-l--line-height: 0.98;
-  --text-display-l--letter-spacing: -0.03em;
+  --text-display-l: clamp(2rem, 1.5rem + 1.6vw, 3rem);
+  --text-display-l--line-height: 1.08;
+  --text-display-l--letter-spacing: -0.02em;
 
-  --text-h1: clamp(1.875rem, 1.35rem + 1.8vw, 2.75rem);
-  --text-h1--line-height: 1.06;
-  --text-h1--letter-spacing: -0.02em;
+  --text-h1: clamp(1.75rem, 1.4rem + 1vw, 2.25rem);
+  --text-h1--line-height: 1.15;
+  --text-h1--letter-spacing: -0.015em;
 
-  --text-h2: clamp(1.5rem, 1.15rem + 1.1vw, 2rem);
-  --text-h2--line-height: 1.12;
-  --text-h2--letter-spacing: -0.015em;
+  --text-h2: 1.5rem;
+  --text-h2--line-height: 1.2;
+  --text-h2--letter-spacing: -0.01em;
 
-  --text-h3: 1.25rem;
-  --text-h3--line-height: 1.3;
-  --text-h3--letter-spacing: -0.01em;
+  --text-h3: 1.125rem;
+  --text-h3--line-height: 1.35;
+  --text-h3--letter-spacing: 0;
 
-  /* The lede. A serif reading face carries a larger opening
-     paragraph than the old sans did without shouting. */
-  --text-lede: clamp(1.25rem, 1.05rem + 0.6vw, 1.5rem);
-  --text-lede--line-height: 1.45;
+  --text-lede: 1.25rem;
+  --text-lede--line-height: 1.5;
 
-  --text-body-l: 1.1875rem;
+  --text-body-l: 1.125rem;
   --text-body-l--line-height: 1.6;
 
   --text-body-m: 1rem;
-  --text-body-m--line-height: 1.62;
+  --text-body-m--line-height: 1.6;
 
   --text-body-s: 0.875rem;
-  --text-body-s--line-height: 1.55;
+  --text-body-s--line-height: 1.5;
 
   --text-caption: 0.8125rem;
   --text-caption--line-height: 1.45;
 
-  /* Label: the utility register — eyebrows, meta, data.
-     Condensed and tracked out, set in Archivo's width axis. */
-  --text-label: 0.6875rem;
-  --text-label--line-height: 1;
-  --text-label--letter-spacing: 0.09em;
+  /* Label: the small register — eyebrows, meta, roast names, data.
+     Sentence case, weight 500, no tracking. */
+  --text-label: 0.8125rem;
+  --text-label--line-height: 1.3;
+  --text-label--letter-spacing: 0;
 
-  --text-price: 1.0625rem;
-  --text-price--line-height: 1.2;
+  --text-price: 1rem;
+  --text-price--line-height: 1.3;
   --text-price--letter-spacing: 0;
 
   /* -- Semantic spacing ------------------------------------- */
@@ -132,10 +98,13 @@
   --spacing-stack-md: 1.5rem;
   --spacing-stack-lg: 2.5rem;
 
-  /* -- Shape ------------------------------------------------ */
-  --radius-sm: 4px;
-  --radius-md: 8px;
-  --radius-lg: 8px;
+  /* -- Shape ------------------------------------------------
+     One radius. Three names remain so existing utilities resolve,
+     but they are the same value: a chip, a card and a button share
+     one corner. */
+  --radius-sm: 6px;
+  --radius-md: 6px;
+  --radius-lg: 6px;
 
   /* -- Motion ----------------------------------------------- */
   --ease-brand: cubic-bezier(0.22, 0.61, 0.36, 1);
@@ -146,12 +115,12 @@
    Semantic layer.
 
    Assignments live on [data-surface] rather than a global dark
-   theme. This brand needs full-bleed bands inside a light page
-   far more than it needs a user-toggled dark mode — so inversion
-   is a surface context you nest, not a document state.
+   theme. Three surfaces:
 
-   The page descends through these: chalk, soil, chalk, wash,
-   soil, ochre, chalk. No two adjacent sections share a ground.
+     mist   paper   the page. Everything.
+     wash   linen   the announcement bar, image backdrops, skeletons.
+                    Never a page section.
+     soil   ink     the footer, and the film hero. Nowhere else.
    ============================================================ */
 
 :root,
@@ -159,19 +128,37 @@
   --background: var(--color-paper);
   --foreground: var(--color-ink);
   --surface: var(--color-paper);
-  --surface-elevated: #ffffff;
-  --muted: var(--color-sage-wash);
-  --muted-foreground: color-mix(in srgb, var(--color-ink) 68%, var(--color-paper));
-  --border: color-mix(in srgb, var(--color-ink) 16%, var(--color-paper));
-  --rule: color-mix(in srgb, var(--color-ink) 32%, var(--color-paper));
-  --accent: var(--color-forest);
-  --accent-foreground: var(--color-paper);
-  --primary: var(--color-forest);
-  --primary-hover: var(--color-terrace-700);
-  --primary-foreground: var(--color-paper);
-  --ring: var(--color-ochre);
-  --success: var(--color-forest);
-  --warning: var(--color-ochre);
+  --surface-elevated: var(--color-white);
+  --muted: var(--color-linen);
+  --muted-foreground: color-mix(in srgb, var(--color-ink) 64%, var(--color-paper));
+  --border: color-mix(in srgb, var(--color-ink) 12%, var(--color-paper));
+  --rule: color-mix(in srgb, var(--color-ink) 28%, var(--color-paper));
+  --accent: var(--color-roast);
+  --accent-foreground: var(--color-white);
+  --primary: var(--color-roast);
+  --primary-hover: color-mix(in srgb, var(--color-roast) 85%, black);
+  --primary-foreground: var(--color-white);
+  --ring: var(--color-roast);
+  --success: var(--color-roast);
+  --destructive: var(--color-cherry);
+}
+
+[data-surface="wash"] {
+  --background: var(--color-linen);
+  --foreground: var(--color-ink);
+  --surface: var(--color-linen);
+  --surface-elevated: var(--color-white);
+  --muted: var(--color-paper);
+  --muted-foreground: color-mix(in srgb, var(--color-ink) 64%, var(--color-linen));
+  --border: color-mix(in srgb, var(--color-ink) 12%, var(--color-linen));
+  --rule: color-mix(in srgb, var(--color-ink) 28%, var(--color-linen));
+  --accent: var(--color-roast);
+  --accent-foreground: var(--color-white);
+  --primary: var(--color-roast);
+  --primary-hover: color-mix(in srgb, var(--color-roast) 85%, black);
+  --primary-foreground: var(--color-white);
+  --ring: var(--color-roast);
+  --success: var(--color-roast);
   --destructive: var(--color-cherry);
 }
 
@@ -180,62 +167,18 @@
   --foreground: var(--color-paper);
   --surface: var(--color-ink);
   --surface-elevated: color-mix(in srgb, var(--color-ink) 92%, white);
-  --muted: color-mix(in srgb, var(--color-ink) 82%, white);
+  --muted: color-mix(in srgb, var(--color-ink) 84%, white);
   --muted-foreground: color-mix(in srgb, var(--color-paper) 72%, var(--color-ink));
-  --border: color-mix(in srgb, var(--color-paper) 20%, var(--color-ink));
+  --border: color-mix(in srgb, var(--color-paper) 18%, var(--color-ink));
   --rule: color-mix(in srgb, var(--color-paper) 36%, var(--color-ink));
   --accent: var(--color-paper);
   --accent-foreground: var(--color-ink);
   --primary: var(--color-paper);
-  --primary-hover: var(--color-sage-wash);
+  --primary-hover: var(--color-white);
   --primary-foreground: var(--color-ink);
   --ring: var(--color-paper);
   --success: var(--color-paper);
-  --warning: var(--color-paper);
-  --destructive: var(--color-paper);
-}
-
-[data-surface="wash"] {
-  --background: var(--color-sage-wash);
-  --foreground: var(--color-ink);
-  --surface: var(--color-sage-wash);
-  --surface-elevated: var(--color-paper);
-  --muted: var(--color-paper);
-  --muted-foreground: color-mix(in srgb, var(--color-ink) 68%, var(--color-sage-wash));
-  --border: color-mix(in srgb, var(--color-ink) 16%, var(--color-sage-wash));
-  --rule: color-mix(in srgb, var(--color-ink) 32%, var(--color-sage-wash));
-  --accent: var(--color-forest);
-  --accent-foreground: var(--color-paper);
-  --primary: var(--color-forest);
-  --primary-hover: var(--color-terrace-700);
-  --primary-foreground: var(--color-paper);
-  --ring: var(--color-ochre);
-  --success: var(--color-forest);
-  --warning: var(--color-ochre);
-  --destructive: var(--color-cherry);
-}
-
-/* The commitment band. Used once per page, where the visitor is
-   asked to start a subscription. Everything on it is ink: forest
-   on ochre measures 2.78:1 and would be unreadable. */
-[data-surface="ochre"] {
-  --background: var(--color-ochre-field);
-  --foreground: var(--color-ink);
-  --surface: var(--color-ochre-field);
-  --surface-elevated: color-mix(in srgb, var(--color-ochre-field) 88%, white);
-  --muted: color-mix(in srgb, var(--color-ink) 12%, var(--color-ochre-field));
-  --muted-foreground: color-mix(in srgb, var(--color-ink) 85%, var(--color-ochre-field));
-  --border: color-mix(in srgb, var(--color-ink) 24%, var(--color-ochre-field));
-  --rule: color-mix(in srgb, var(--color-ink) 42%, var(--color-ochre-field));
-  --accent: var(--color-ink);
-  --accent-foreground: var(--color-ochre-field);
-  --primary: var(--color-ink);
-  --primary-hover: color-mix(in srgb, var(--color-ink) 88%, white);
-  --primary-foreground: var(--color-paper);
-  --ring: var(--color-ink);
-  --success: var(--color-ink);
-  --warning: var(--color-ink);
-  --destructive: var(--color-cherry);
+  --destructive: color-mix(in srgb, var(--color-cherry) 60%, var(--color-paper));
 }
 
 /* ============================================================
@@ -246,10 +189,6 @@
    @layer components no matter how specific it is — inside the
    layer these overrides lost to the announcement bar's own
    data-surface and the bar stayed opaque over the video.
-   ============================================================ */
-
-/* ----------------------------------------------------------
-   Chrome over film.
 
    On a page whose hero is a full-screen video, the announcement bar
    and the header float on the footage instead of sitting on a bar
@@ -261,7 +200,8 @@
    Once the visitor scrolls past the film the chrome returns as a
    fixed, solid bar: wayfinding matters more than the effect the
    moment the picture is gone.
-   ---------------------------------------------------------- */
+   ============================================================ */
+
 /* Boxless by default, so the announcement bar and the header stay
    direct flex children of <body> and keep the behaviour they have
    always had: the bar scrolls away, the header sticks. The wrapper
@@ -345,7 +285,6 @@ html[data-chrome-solid] body:has(main[data-hero="video"]) [data-chrome] {
   --color-primary-foreground: var(--primary-foreground);
   --color-ring: var(--ring);
   --color-success: var(--success);
-  --color-warning: var(--warning);
   --color-destructive: var(--destructive);
 }
 
@@ -370,18 +309,14 @@ html[data-chrome-solid] body:has(main[data-hero="video"]) [data-chrome] {
     color: var(--foreground);
   }
 
-  /* Headings take the display face at a reading width. The two
-     display sizes narrow it further below — width is a deliberate
-     contrast between registers, not one constant applied to
-     everything. */
   h1,
   h2,
   h3,
   h4 {
     font-family: var(--font-display);
-    font-variation-settings: "opsz" 32;
-    font-weight: 700;
+    font-weight: 600;
     letter-spacing: -0.015em;
+    text-wrap: balance;
   }
 
   /* Tailwind v4's Preflight leaves buttons at the browser default
@@ -419,46 +354,34 @@ html[data-chrome-solid] body:has(main[data-hero="video"]) [data-chrome] {
   }
 
   ::selection {
-    background-color: var(--color-ochre-field);
-    color: var(--color-ink);
+    background-color: var(--color-roast);
+    color: var(--color-white);
   }
 }
 
 @layer components {
   /* ----------------------------------------------------------
-     Type registers.
+     The small register.
 
-     Three faces, three jobs. `.type-display` narrows Bricolage's
-     width axis and opens its optical size for the one or two
-     headlines a page sets large; `.type-utility` is Archivo held
-     condensed so labels, prices and data read as a different
-     voice from either the headline or the copy.
+     `.label` is the one class for eyebrows, meta, roast names and
+     data. Sentence case: an uppercase, tracked-out micro-label on
+     every section is the loudest tell of a templated page, and it
+     asked the reader to decode a second voice for no information.
      ---------------------------------------------------------- */
-  .type-display {
-    font-family: var(--font-display);
-    font-variation-settings: "opsz" 40;
-    font-weight: 700;
-    letter-spacing: -0.035em;
-  }
-
-  .type-utility,
   .label {
     font-family: var(--font-utility);
-    font-variation-settings: "opsz" 9;
-    font-weight: 700;
+    font-weight: 500;
     font-size: var(--text-label);
     line-height: var(--text-label--line-height);
     letter-spacing: var(--text-label--letter-spacing);
-    text-transform: uppercase;
   }
 
-  /* Prices and other figures: the utility face, unshouted. */
+  /* Prices and other figures: tabular, medium weight, unshouted. */
   .type-figure {
     font-family: var(--font-utility);
-    font-weight: 700;
+    font-weight: 500;
     font-variant-numeric: tabular-nums;
     letter-spacing: 0;
-    text-transform: none;
   }
 
   /* ----------------------------------------------------------
@@ -469,9 +392,10 @@ html[data-chrome-solid] body:has(main[data-hero="video"]) [data-chrome] {
      contour rather than a single hairline: two strokes, unequal,
      the way elevation reads on a map.
 
-     Used only where it marks a true transition. The label slot
-     carries something verified — a place, a section name. It
-     never carries an invented altitude or sequence number.
+     At most twice per page, and only where it marks a true
+     transition. The label slot carries something verified — a
+     place, a section name. It never carries an invented altitude
+     or sequence number.
      ---------------------------------------------------------- */
   .contour {
     display: flex;
@@ -517,9 +441,7 @@ html[data-chrome-solid] body:has(main[data-hero="video"]) [data-chrome] {
     font-size: var(--text-label);
     line-height: var(--text-label--line-height);
     letter-spacing: var(--text-label--letter-spacing);
-    font-variation-settings: "opsz" 9;
-    font-weight: 700;
-    text-transform: uppercase;
+    font-weight: 500;
     color: var(--muted-foreground);
   }
 
@@ -528,8 +450,8 @@ html[data-chrome-solid] body:has(main[data-hero="video"]) [data-chrome] {
 
      A full-screen video needs the words to hold against whatever
      frame happens to be playing, without dimming the footage into
-     grey. The scrim is weighted to the bottom, where the type sits,
-     and clears through the middle so the picture stays a picture.
+     grey. One scrim, weighted to the bottom where the type sits,
+     clearing through the middle so the picture stays a picture.
      Built from the band's own --background, so it follows the
      surface rather than hard-coding black.
      ---------------------------------------------------------- */
@@ -538,57 +460,20 @@ html[data-chrome-solid] body:has(main[data-hero="video"]) [data-chrome] {
     position: absolute;
     inset: 0;
     pointer-events: none;
-    background:
-      /* Behind the type, which is set low and to the left. */
-      linear-gradient(
-        to right,
-        color-mix(in srgb, var(--background) 62%, transparent) 0%,
-        color-mix(in srgb, var(--background) 30%, transparent) 55%,
-        transparent 100%
-      ),
-      /* Bottom for the words, top for the chrome, open in between. */
-      linear-gradient(
-        to top,
-        color-mix(in srgb, var(--background) 94%, transparent) 0%,
-        color-mix(in srgb, var(--background) 80%, transparent) 34%,
-        color-mix(in srgb, var(--background) 40%, transparent) 66%,
-        color-mix(in srgb, var(--background) 72%, transparent) 100%
-      );
-  }
-
-  /* ----------------------------------------------------------
-     Band scrim.
-
-     A full-bleed photograph that carries type needs the type to stay
-     legible without flattening the image into a grey rectangle. The
-     scrim is built from the band's own --background, so it inverts
-     correctly with the surface it sits on: heaviest behind the text,
-     clearing toward the open side of the frame.
-
-     Wide viewports only. On a phone there is no open side — a scrim
-     that covers the text column covers the whole photograph, and the
-     band becomes a dark rectangle with the image hidden underneath.
-     Narrow layouts stack the picture above the words instead.
-     ---------------------------------------------------------- */
-  @media (min-width: 64rem) {
-    .band-scrim::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(
-        to right,
-        var(--background) 0%,
-        color-mix(in srgb, var(--background) 85%, transparent) 42%,
-        color-mix(in srgb, var(--background) 20%, transparent) 100%
-      );
-    }
+    background: linear-gradient(
+      to top,
+      color-mix(in srgb, var(--background) 92%, transparent) 0%,
+      color-mix(in srgb, var(--background) 70%, transparent) 38%,
+      color-mix(in srgb, var(--background) 24%, transparent) 70%,
+      color-mix(in srgb, var(--background) 55%, transparent) 100%
+    );
   }
 
   /* ----------------------------------------------------------
      Sweep underline for navigation links.
      The rule grows from the leading edge on hover and retreats
-     the same way — the same pen-underline language as the button
-     link variant, as a class any nav link can share.
+     the same way. Reserved for the primary nav and the footer;
+     inline links in copy use a plain underline.
      ---------------------------------------------------------- */
   .link-sweep {
     position: relative;
@@ -616,10 +501,9 @@ html[data-chrome-solid] body:has(main[data-hero="video"]) [data-chrome] {
 /* ============================================================
    Motion — one orchestrated moment.
 
-   The hero arrives: the headline rises a line at a time and the
-   photograph wipes in from the band edge. Nothing else on the
-   site animates on load, so this reads as the page opening
-   rather than as decoration scattered down it.
+   The hero arrives: the headline rises, then the actions. Nothing
+   else on the site animates on load, so this reads as the page
+   opening rather than as decoration scattered down it.
    ============================================================ */
 
 @keyframes yego-rise {

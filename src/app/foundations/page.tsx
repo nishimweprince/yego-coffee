@@ -10,34 +10,27 @@ export const metadata: Metadata = {
 
 type Swatch = { token: string; value: string; role: string };
 
-const brandRamp: Swatch[] = [
-  { token: "soil-900", value: "--color-soil-900", role: "Deepest ground" },
-  { token: "soil-800", value: "--color-soil-800", role: "Dark surface, body text" },
-  { token: "soil-700", value: "--color-soil-700", role: "Raised dark surface" },
-  { token: "soil-600", value: "--color-soil-600", role: "Dark border" },
-  { token: "terrace-700", value: "--color-terrace-700", role: "Accent, pressed" },
-  { token: "terrace-600", value: "--color-terrace-600", role: "Accent on light" },
-  { token: "terrace-500", value: "--color-terrace-500", role: "Success on dark" },
-  { token: "sage-600", value: "--color-sage-600", role: "Secondary text" },
-  { token: "sage-400", value: "--color-sage-400", role: "Rules, secondary on dark" },
-  { token: "sage-200", value: "--color-sage-200", role: "Quiet fills" },
-  { token: "mist-300", value: "--color-mist-300", role: "Border on light" },
-  { token: "mist-200", value: "--color-mist-200", role: "Page ground" },
-  { token: "mist-100", value: "--color-mist-100", role: "Raised light surface" },
-  { token: "sun-500", value: "--color-sun-500", role: "Accent on dark" },
-  { token: "sun-600", value: "--color-sun-600", role: "Warning" },
-  { token: "cherry-600", value: "--color-cherry-600", role: "Destructive, limited" },
+/** The whole palette. Six values; every semantic token resolves to one. */
+const palette: Swatch[] = [
+  { token: "paper", value: "--color-paper", role: "Page ground" },
+  { token: "white", value: "--color-white", role: "Cards, panels, inputs, image backdrops" },
+  { token: "linen", value: "--color-linen", role: "The one tint: announcement bar, quiet fills" },
+  { token: "ink", value: "--color-ink", role: "Text; the footer ground" },
+  { token: "roast", value: "--color-roast", role: "The accent: buttons, links, active states" },
+  { token: "cherry", value: "--color-cherry", role: "Destructive only" },
 ];
 
 const typeScale: Array<{ name: string; className: string; note: string }> = [
-  { name: "Display XL", className: "text-display-xl font-display", note: "Hero only. One per page." },
-  { name: "Display L", className: "text-display-l font-display", note: "Section statements." },
-  { name: "Heading 1", className: "text-h1 font-display", note: "Page titles." },
-  { name: "Heading 2", className: "text-h2 font-display", note: "Section titles." },
+  { name: "Display XL", className: "text-display-xl font-display", note: "The film hero. Once per site." },
+  { name: "Display L", className: "text-display-l font-display", note: "Page titles and homepage section headings." },
+  { name: "Heading 1", className: "text-h1 font-display", note: "Detail titles: product, order, policy." },
+  { name: "Heading 2", className: "text-h2 font-display", note: "Section titles inside a page." },
   { name: "Heading 3", className: "text-h3 font-display", note: "Card and block titles." },
-  { name: "Body L", className: "text-body-l", note: "Editorial lead paragraphs." },
+  { name: "Lede", className: "text-lede text-muted-foreground", note: "The opening paragraph under a title." },
+  { name: "Body L", className: "text-body-l", note: "Editorial paragraphs." },
   { name: "Body M", className: "text-body-m", note: "Default reading size." },
-  { name: "Body S", className: "text-body-s", note: "Dense UI, captions in flow." },
+  { name: "Body S", className: "text-body-s", note: "Dense UI, nav, captions in flow." },
+  { name: "Label", className: "label text-muted-foreground", note: "Meta, roast names, data. Sentence case." },
   { name: "Caption", className: "text-caption text-muted-foreground", note: "Image credits, footnotes." },
 ];
 
@@ -47,28 +40,28 @@ export default function FoundationsPage() {
   return (
     <main className="px-page-x pb-section-lg">
       {/* The thesis. What a reader should take away before the swatches. */}
-      <header className="mx-auto max-w-5xl pt-section-md">
+      <header className="mx-auto max-w-6xl pt-section-md">
         <p className="label text-muted-foreground">Yego Coffee · Design foundations</p>
-        <h1 className="mt-stack-lg text-display-l font-display max-w-[16ch]">
-          Designed from the hillside, not the roastery.
+        <h1 className="mt-stack-lg max-w-[18ch] text-display-l">
+          One ground, one accent, one typeface.
         </h1>
-        <p className="mt-stack-md max-w-[58ch] text-body-l text-muted-foreground">
-          Specialty coffee brands almost all design from the roasted bean:
-          cream grounds, brown type, a terracotta accent. Yego&rsquo;s story
-          starts at the other end of the chain, on a Rwandan hillside where
-          the coffee grows. So the palette comes from there instead: volcanic
-          soil, highland mist, terraced green, and the gold of the sun on the
-          flag.
+        <p className="mt-stack-md max-w-prose text-body-l text-muted-foreground">
+          The page is paper from top to bottom. The only dark surfaces are
+          the footer and the film hero, which is a photograph rather than a
+          coloured band. The accent is the brown of the roasted bean in
+          Yego&rsquo;s own photographs, and it is the only colour the
+          interface adds. Everything else is whitespace, one small register
+          for meta, and — at most twice per page — the contour rule.
         </p>
       </header>
 
-      <section className="mx-auto mt-section-md max-w-5xl">
+      <section className="mx-auto mt-section-md max-w-6xl">
         <Contour label="Colour" />
-        <div className="mt-stack-lg grid grid-cols-2 gap-px bg-border sm:grid-cols-3 lg:grid-cols-4">
-          {brandRamp.map((swatch) => (
+        <div className="mt-stack-lg grid grid-cols-2 gap-px bg-border sm:grid-cols-3 lg:grid-cols-6">
+          {palette.map((swatch) => (
             <div key={swatch.token} className="bg-surface-elevated p-4">
               <div
-                className="h-16 w-full rounded-sm border border-foreground/10"
+                className="h-16 w-full rounded-sm border border-border"
                 style={{ backgroundColor: `var(${swatch.value})` }}
               />
               <p className="mt-stack-sm font-mono text-caption">{swatch.token}</p>
@@ -79,22 +72,21 @@ export default function FoundationsPage() {
           ))}
         </div>
 
-        <p className="mt-stack-lg max-w-[58ch] text-body-s text-muted-foreground">
-          <strong className="text-foreground">One hard rule:</strong> sun-500
-          never carries text on a light ground. It measures 1.85:1 against
-          mist-200. That is fine as a fill, a rule or a focus ring, and
-          unreadable as a word. On soil it reaches 7.8:1 and becomes the accent.
+        <p className="mt-stack-lg max-w-prose text-body-s text-muted-foreground">
+          <strong className="text-foreground">Two hard rules:</strong> roast
+          is the only chromatic accent, and cherry is for errors, never for
+          brand. Roast on paper measures about 7.5:1 and white on roast about
+          7.9:1, so it can carry text, fills and the focus ring alike.
         </p>
       </section>
 
-      <section className="mx-auto mt-section-md max-w-5xl">
+      <section className="mx-auto mt-section-md max-w-6xl">
         <Contour label="Type" />
-        <p className="mt-stack-lg max-w-[58ch] text-body-m text-muted-foreground">
-          Fraunces sets the editorial voice with its wonk axis on. The
-          display face should read made by hand, not machined, for a
-          business four decades into one family. Archivo carries everything structural, and
-          its width axis gives the label register its condensed, tracked-out
-          form.
+        <p className="mt-stack-lg max-w-prose text-body-m text-muted-foreground">
+          DM Sans throughout. Headings sit at weight 600 and are capped at
+          5rem; the small register is sentence case at weight 500. The
+          registers are told apart by size, weight and colour, never by
+          case or tracking.
         </p>
 
         <div className="mt-stack-lg divide-y divide-border border-y border-border">
@@ -115,31 +107,25 @@ export default function FoundationsPage() {
             </div>
           ))}
         </div>
-
-        <div className="mt-stack-lg">
-          <p className="label text-muted-foreground">Label register</p>
-          <p className="label mt-stack-sm">
-            Nyamasheke · Western Province · Washed
-          </p>
-        </div>
       </section>
 
-      <section className="mx-auto mt-section-md max-w-5xl">
+      <section className="mx-auto mt-section-md max-w-6xl">
         <Contour label="Surface" />
-        <p className="mt-stack-lg max-w-[58ch] text-body-m text-muted-foreground">
+        <p className="mt-stack-lg max-w-prose text-body-m text-muted-foreground">
           Inversion is a surface context you nest, not a document-level dark
-          mode. This storefront needs full-bleed dark sections inside a light
-          page far more than it needs a user-facing theme toggle, so semantic
-          tokens reassign on <code className="font-mono text-body-s">[data-surface]</code>.
+          mode. Semantic tokens reassign on{" "}
+          <code className="font-mono text-body-s">[data-surface]</code>.
+          Three exist: mist is the page, wash is the one tint, soil is the
+          footer and the film hero. No page section uses wash or soil.
         </p>
 
-        <div className="mt-stack-lg grid gap-px bg-border md:grid-cols-2">
-          {(["mist", "soil"] as const).map((surface) => (
+        <div className="mt-stack-lg grid gap-px bg-border md:grid-cols-3">
+          {(["mist", "wash", "soil"] as const).map((surface) => (
             <div key={surface} data-surface={surface} className="p-8">
               <p className="label text-muted-foreground">
                 data-surface=&quot;{surface}&quot;
               </p>
-              <h2 className="mt-stack-md text-h2 font-display">
+              <h2 className="mt-stack-md text-h2">
                 Coffee worth slowing down for.
               </h2>
               <p className="mt-stack-sm text-body-m text-muted-foreground">
@@ -159,7 +145,7 @@ export default function FoundationsPage() {
         </div>
       </section>
 
-      <section className="mx-auto mt-section-md max-w-5xl">
+      <section className="mx-auto mt-section-md max-w-6xl">
         <Contour label="Primitives" />
 
         <div className="mt-stack-lg space-y-8">
@@ -194,12 +180,12 @@ export default function FoundationsPage() {
         </div>
       </section>
 
-      <section className="mx-auto mt-section-md max-w-5xl">
+      <section className="mx-auto mt-section-md max-w-6xl">
         <Contour label="System" />
         <dl className="mt-stack-lg grid gap-px bg-border sm:grid-cols-3">
           <div className="bg-surface-elevated p-5">
-            <dt className="label text-muted-foreground">Phase</dt>
-            <dd className="mt-stack-sm text-body-m">Foundation · plan.md §75</dd>
+            <dt className="label text-muted-foreground">Direction</dt>
+            <dd className="mt-stack-sm text-body-m">Roastery · plan.md §105</dd>
           </div>
           <div className="bg-surface-elevated p-5">
             <dt className="label text-muted-foreground">Shopify Storefront</dt>

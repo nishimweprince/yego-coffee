@@ -40,12 +40,19 @@ wins — §89 supersedes §1, §90 supersedes copy in §7–8, §93 supersedes
   tailwind-merge config in `src/lib/utils.ts`.** It cannot classify
   custom names on its own and will silently drop one of two `text-*`
   classes. `utils.test.ts` guards this.
-- **`sun-500` never carries text on a light ground** — 1.85:1 against
-  mist-200. Fill, rule and focus ring only. On soil it is the accent.
-- Dark sections use `data-surface="soil"`, not a global dark mode.
-- The contour rule (`<Contour />`) is the signature device. Its label
-  carries something true — a section name, a real altitude. Never
-  invented sequence numbers.
+- **`roast` is the only chromatic accent; `cherry` is destructive
+  only.** Six palette values, no more (§105).
+- Three surfaces, no global dark mode. `soil` appears on the footer and
+  the film hero only; `wash` is the announcement bar and image
+  backdrops, never a page section. Every other section sits on paper.
+- The contour rule (`<Contour />`) is the signature device, at most
+  twice per page. Its label carries something true — a section name, a
+  real place. Never invented sequence numbers. The Yego line
+  (`<YegoLine />`) appears at most once per page.
+- The `.label` register is sentence case. No uppercase, no tracking.
+- One radius (`rounded-sm`); borders use `border-border`, never
+  `border-foreground/NN`. Page wrappers are `<Section>`; page titles
+  are `<PageHeader>`; choice chips use `controlVariants`.
 - Button size `sm` (36px) is for dense UI. Primary mobile CTAs use `md`
   or `lg` (§42).
 
