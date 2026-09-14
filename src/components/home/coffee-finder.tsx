@@ -4,7 +4,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { HOME } from "@/content/home";
 
 /**
- * The coffee finder, on the wash band.
+ * The coffee finder.
  *
  * No question count. The count moved as the quiz was right-sized, and
  * a number here that the quiz does not honour is an immediately
@@ -17,12 +17,12 @@ import { HOME } from "@/content/home";
  */
 export function CoffeeFinder() {
   return (
-    <section data-surface="wash" className="px-page-x py-section-md">
+    <section className="px-page-x py-section-md">
       <div className="mx-auto grid max-w-6xl items-center gap-stack-lg lg:grid-cols-2 lg:gap-16">
         <div className="order-2">
           <Image
             src="/brand/brew.jpg"
-            alt="A cup of Yego coffee being brewed"
+            alt="Beans pouring from the roaster at Yego Coffee"
             width={1000}
             height={1500}
             sizes="(min-width: 1024px) 45vw, 100vw"
@@ -32,15 +32,15 @@ export function CoffeeFinder() {
         </div>
 
         <div className="order-1">
-          <h2 className="type-display text-display-l">{HOME.finder.heading}</h2>
-          <div className="mt-stack-lg space-y-stack-xs text-lede text-muted-foreground">
+          <h2 className="max-w-[18ch] text-display-l">{HOME.finder.heading}</h2>
+          <div className="mt-stack-md space-y-stack-xs text-lede text-muted-foreground">
             {HOME.finder.body.map((line) => (
               <p key={line}>{line}</p>
             ))}
           </div>
           <Link
             href={HOME.finder.cta.href}
-            className={`${buttonVariants({ size: "lg" })} mt-section-sm`}
+            className={`${buttonVariants({ size: "lg" })} mt-stack-lg`}
           >
             {HOME.finder.cta.label}
           </Link>

@@ -1,10 +1,8 @@
 import { CafeBlock } from "@/components/home/cafe-block";
 import { CoffeeFinder } from "@/components/home/coffee-finder";
 import { DiscoveryCards } from "@/components/home/discovery-cards";
-import { FinalCta } from "@/components/home/final-cta";
 import { Hero } from "@/components/home/hero";
 import { HomeAbout } from "@/components/home/home-about";
-import { SignatureCoffees } from "@/components/home/signature-coffees";
 import { SubscriptionBlock } from "@/components/home/subscription-block";
 import { HOME } from "@/content/home";
 import { COLLECTION_HANDLES } from "@/lib/catalog/collections";
@@ -14,20 +12,19 @@ import { hasShopifyCredentials } from "@/lib/env";
 import { getCollection, getProduct } from "@/lib/shopify/storefront";
 
 /**
- * The homepage — Hero, About, Discovery, showcase, finder, café,
- * subscriptions, closing call to action, in that order.
+ * The homepage — Hero, About, the coffees, the finder, subscriptions,
+ * the café, in that order (§105).
  *
- * The page descends through surface bands rather than sitting on one
- * flat field: chalk for the opening movement, soil for Discovery,
- * chalk again for the lineup, wash for the finder, soil for the café,
- * and ochre once — at the subscription band, where the visitor is
- * asked to commit.
+ * Six sections on one light ground. The only dark surfaces are the
+ * film hero, which is a photograph, and the footer. Sections are told
+ * apart by whitespace and, twice, the contour rule — not by a change
+ * of colour under each one.
  *
  * Everything commercial on this page is read from Shopify at render
  * time: no price, title or availability is duplicated into content.
  * The two reassurances are excerpts of the store's own policy
  * documents, so shipping cost and cancellation terms reach a visitor
- * beside the buttons rather than only on /policies.
+ * beside the prices and the plans rather than only on /policies.
  */
 export default async function HomePage() {
   if (!hasShopifyCredentials()) {
@@ -48,11 +45,16 @@ export default async function HomePage() {
     getReassurances(),
   ]);
 
-  // The signature section features the coffees, not the 5 lb Bag: that
-  // is a format of the same three roasts, and repeating them reads as
-  // a longer catalogue than Yego has.
-  const signature = (coffee?.products ?? []).filter((p) =>
-    Object.hasOwn(HOME.signature.descriptors, p.handle),
+  // The cards feature the coffees, not the 5 lb Bag: that is a format
+  // of the same three roasts, and repeating them reads as a longer
+  // catalogue than Yego has.
+  const featuredHandles = new Set(
+    HOME.discovery.cards.flatMap((card) =>
+      card.productHandle ? [card.productHandle] : [],
+    ),
+  );
+  const lineup = (coffee?.products ?? []).filter((p) =>
+    featuredHandles.has(p.handle),
   );
 
   // Cadence lives on the variant's allocation, which only the detail
@@ -73,20 +75,16 @@ export default async function HomePage() {
 
       <HomeAbout />
 
-      <DiscoveryCards products={signature} />
-
-      <SignatureCoffees products={signature} />
+      <DiscoveryCards products={lineup} shipping={reassurances.shipping} />
 
       <CoffeeFinder />
-
-      <CafeBlock />
 
       <SubscriptionBlock
         plans={plans}
         cancellation={reassurances.cancellation}
       />
 
-      <FinalCta shipping={reassurances.shipping} />
+      <CafeBlock />
     </main>
   );
 }

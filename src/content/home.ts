@@ -6,14 +6,18 @@
  * by price, title or image: those come from Shopify at render time
  * (§57, §2.1).
  *
- * Two of §90's sections are absent, deliberately:
+ * Four of §90's sections are absent, deliberately:
  *
+ *   §90.03 signature coffees — it showed the same three coffees the
+ *     discovery cards had just shown, with the same prices (§105).
  *   §90.08 social proof — §90 requires verifiable sources and §71
  *     forbids fabricating testimonials. There are none to show yet.
  *   §90.09 journal — the three named entries are unwritten, and the
  *     journal itself is Phase 7.
+ *   §90.10 closing call to action — it repeated the hero's two
+ *     buttons a third time (§105).
  *
- * Both are omitted rather than stubbed. An empty testimonial carousel
+ * All are omitted rather than stubbed. An empty testimonial carousel
  * says the brand has no customers.
  */
 
@@ -69,24 +73,6 @@ export const HOME = {
       },
       { label: "Surprise Me", productHandle: null, quizAnswer: "unsure" },
     ] satisfies DiscoveryCard[],
-  },
-
-  signature: {
-    heading: "Signature coffees",
-    /**
-     * §90.03's descriptors, keyed by handle. The list of coffees comes
-     * from Shopify's `roasted-coffee` collection — this only supplies
-     * the editorial line, and a coffee without one still renders.
-     *
-     * §90.03 lists "Light Roast" and "Gatare" separately; they are the
-     * same product (§96.3), so there are three descriptors, not four.
-     * Each is consistent with the product's own Shopify description.
-     */
-    descriptors: {
-      "medium-roast": "everyday, balanced",
-      "dark-roast": "bold, roasty",
-      "light-roast": "limited, single-origin story coffee",
-    } as Record<string, string>,
   },
 
   statement: {
@@ -153,14 +139,5 @@ export const HOME = {
       "Manage it from your account",
     ],
     cta: { label: "Start a subscription", href: "/subscriptions" },
-  },
-
-  finalCta: {
-    headline: "Your next coffee is waiting.",
-    primaryCta: { label: "Find my coffee", href: "/quiz" },
-    secondaryCta: {
-      label: "See subscription options",
-      href: "/subscriptions",
-    },
   },
 } as const;

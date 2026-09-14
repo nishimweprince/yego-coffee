@@ -22,10 +22,11 @@ const FILM = {
  * film" rules in globals.css), so nothing is stacked on top of the
  * picture and the viewport belongs to one image.
  *
- * `data-surface="soil"` is what makes this work as a system rather than
- * as a special case: every token beneath it inverts, so the buttons,
- * rules and muted text are already correct against a dark frame
- * without a single hard-coded colour.
+ * `data-surface="soil"` because the type sits on dark footage: this is
+ * a photograph, not a coloured band, and it is one of only two places
+ * the site inverts (the other is the footer). Every token beneath it
+ * follows, so the buttons, rules and muted text are already correct
+ * against the frame without a single hard-coded colour.
  *
  * The still is server-rendered and is the LCP element. The film is a
  * client island layered over it, skipped entirely under reduced
@@ -52,23 +53,21 @@ export function Hero() {
 
       <div className="relative z-10 px-page-x pt-40 pb-section-md">
         <div className="mx-auto w-full max-w-6xl">
-          <h1 className="rise-in type-display max-w-[13ch] text-display-xl">
+          <h1 className="rise-in max-w-[16ch] text-display-xl">
             {HOME.hero.headline}
           </h1>
 
-          <p
-            className="rise-in mt-stack-lg max-w-prose text-lede"
-            style={{ "--rise-delay": "120ms" } as React.CSSProperties}
-          >
+          <p className="rise-in mt-stack-md max-w-prose text-lede">
             {HOME.hero.body}
           </p>
 
           {/* Links, not buttons: these navigate. The button styling
               comes from the shared variants so a CTA cannot drift from
-              the system. Size lg per §42. */}
+              the system. Size lg per §42. The actions arrive a beat
+              after the words — the page's one animated moment. */}
           <div
-            className="rise-in mt-section-sm flex flex-wrap items-center gap-stack-md"
-            style={{ "--rise-delay": "240ms" } as React.CSSProperties}
+            className="rise-in mt-stack-lg flex flex-wrap items-center gap-stack-sm"
+            style={{ "--rise-delay": "160ms" } as React.CSSProperties}
           >
             <Link
               href={HOME.hero.primaryCta.href}
@@ -84,14 +83,11 @@ export function Hero() {
             </Link>
           </div>
 
-          {/* Verified facts only: ownership, roastery, market. Set as a
-              ruled row in the utility face so they read as provenance
+          {/* Verified facts only: ownership, roastery, market. A ruled
+              row in the small register, so they read as provenance
               rather than as a feature list with ticks. */}
-          <div
-            className="rise-in mt-section-sm flex flex-wrap items-end justify-between gap-stack-md border-t border-rule pt-stack-md"
-            style={{ "--rise-delay": "340ms" } as React.CSSProperties}
-          >
-            <ul className="flex flex-wrap gap-x-6 gap-y-stack-sm">
+          <div className="mt-section-sm flex flex-wrap items-end justify-between gap-stack-md border-t border-rule pt-stack-md">
+            <ul className="flex flex-wrap gap-x-6 gap-y-stack-xs">
               {HOME.hero.trust.map((item) => (
                 <li key={item} className="label text-muted-foreground">
                   {item}
@@ -103,7 +99,7 @@ export function Hero() {
                 picture, and moves the reader there. */}
             <a
               href="#home-about-heading"
-              className="link-sweep label inline-flex items-center gap-2 text-muted-foreground transition-colors hover:text-foreground"
+              className="label inline-flex items-center gap-2 text-muted-foreground underline-offset-4 transition-colors hover:text-foreground hover:underline"
             >
               <FontAwesomeIcon icon={faArrowDown} className="h-3 w-3" aria-hidden />
               Our story

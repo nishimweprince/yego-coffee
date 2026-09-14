@@ -1,14 +1,15 @@
 import Image from "next/image";
+import { Contour } from "@/components/ui/contour";
 import { CAFE } from "@/content/cafe";
 import { HOME } from "@/content/home";
 
 /**
- * The café — a full-bleed band.
+ * The café — the last thing on the page, and the one place on it.
  *
- * The photograph runs the width of the viewport and the address is set
- * over it, because this section's job is to put a real street address
- * in front of someone who might walk there. Boxed at 45vw beside a
- * paragraph, it read as decoration.
+ * Photograph beside the address, on the same ground as everything
+ * above. This section's job is to put a real street address in front
+ * of someone who might walk there, and the contour rule carries that
+ * place name: the second and last time it appears on the page.
  *
  * Address and directions only. A phone number and opening hours belong
  * here too, but neither has been confirmed by the owners, and this is
@@ -20,31 +21,16 @@ import { HOME } from "@/content/home";
  */
 export function CafeBlock() {
   return (
-    <section
-      aria-labelledby="cafe-heading"
-      data-surface="soil"
-      className="band-scrim relative isolate overflow-hidden"
-    >
-      {/* Stacked on a phone, where the photograph needs its own space
-          to be seen at all; behind the type from lg up, where the frame
-          is wide enough for the words to sit in one half of it. */}
-      <Image
-        src="/brand/cup.jpg"
-        alt="A cup of coffee at the Yego Coffee café"
-        width={1000}
-        height={1500}
-        sizes="100vw"
-        loading="lazy"
-        className="h-64 w-full object-cover sm:h-80 lg:absolute lg:inset-0 lg:-z-10 lg:h-full"
-      />
+    <section aria-labelledby="cafe-heading" className="px-page-x py-section-md">
+      <div className="mx-auto max-w-6xl">
+        <Contour label={`${CAFE.locality}, ${CAFE.region}`} />
 
-      <div className="relative z-10 px-page-x py-section-md lg:py-section-lg">
-        <div className="mx-auto max-w-6xl">
-          <div className="max-w-[34rem]">
-            <h2 id="cafe-heading" className="type-display text-display-l">
+        <div className="mt-section-sm grid items-center gap-stack-lg lg:grid-cols-2 lg:gap-16">
+          <div>
+            <h2 id="cafe-heading" className="max-w-[16ch] text-display-l">
               {HOME.cafe.heading}
             </h2>
-            <p className="mt-stack-md text-lede">
+            <p className="mt-stack-md max-w-prose text-lede text-muted-foreground">
               Our roastery and café in Somerville. Come taste the lineup
               before you subscribe.
             </p>
@@ -59,11 +45,21 @@ export function CafeBlock() {
               href={CAFE.directionsUrl}
               target="_blank"
               rel="noreferrer"
-              className="link-sweep mt-stack-lg inline-block label"
+              className="mt-stack-md inline-block text-body-m font-medium text-accent underline underline-offset-4 hover:text-foreground"
             >
               Get directions
             </a>
           </div>
+
+          <Image
+            src="/brand/cup.jpg"
+            alt="A cup of coffee at the Yego Coffee café"
+            width={1000}
+            height={1500}
+            sizes="(min-width: 1024px) 45vw, 100vw"
+            loading="lazy"
+            className="aspect-[4/3] w-full rounded-sm object-cover"
+          />
         </div>
       </div>
     </section>

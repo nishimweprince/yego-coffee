@@ -52,11 +52,9 @@ describe("design refresh — homepage structure", () => {
       "<Hero",
       "<HomeAbout",
       "<DiscoveryCards",
-      "<SignatureCoffees",
       "<CoffeeFinder",
-      "<CafeBlock",
       "<SubscriptionBlock",
-      "<FinalCta",
+      "<CafeBlock",
     ].map((marker) => {
       // Last occurrence: the no-credential fallback above renders a
       // subset of the same sections, so the full order reads from the
@@ -68,6 +66,9 @@ describe("design refresh — homepage structure", () => {
     expect([...order].sort((a, b) => a - b)).toEqual(order);
     expect(page).not.toContain("BrandStatement");
     expect(page).not.toContain("HeroSlides");
+    // Both repeated something already on the page (§105).
+    expect(page).not.toContain("SignatureCoffees");
+    expect(page).not.toContain("FinalCta");
   });
 
   it("keeps the hero a Server Component with no carousel", () => {
@@ -86,12 +87,31 @@ describe("design refresh — the quiet page", () => {
     ["<Hero", "src/components/home/hero.tsx"],
     ["<HomeAbout", "src/components/home/home-about.tsx"],
     ["<DiscoveryCards", "src/components/home/discovery-cards.tsx"],
-    ["<SignatureCoffees", "src/components/home/signature-coffees.tsx"],
     ["<CoffeeFinder", "src/components/home/coffee-finder.tsx"],
-    ["<CafeBlock", "src/components/home/cafe-block.tsx"],
     ["<SubscriptionBlock", "src/components/home/subscription-block.tsx"],
-    ["<FinalCta", "src/components/home/final-cta.tsx"],
+    ["<CafeBlock", "src/components/home/cafe-block.tsx"],
   ];
+
+  it("sits on one ground: only the film hero carries a surface", () => {
+    for (const [marker, file] of SECTION_FILES) {
+      const surfaces = read(file).match(/data-surface="[a-z]+"/g) ?? [];
+      if (marker === "<Hero") {
+        expect(new Set(surfaces), marker).toEqual(
+          new Set(['data-surface="soil"']),
+        );
+      } else {
+        expect(surfaces, marker).toEqual([]);
+      }
+    }
+  });
+
+  it("spends the Yego line once and the contour rule twice", () => {
+    const files = SECTION_FILES.map(([, file]) => read(file));
+    const count = (needle: string) =>
+      files.reduce((n, source) => n + (source.match(needle) ? 1 : 0), 0);
+    expect(count("<YegoLine")).toBe(1);
+    expect(count("<Contour")).toBe(2);
+  });
 
   it("drops the decorative eyebrow from every home section", () => {
     for (const [, file] of SECTION_FILES) {
@@ -106,7 +126,6 @@ describe("design refresh — the quiet page", () => {
     expect(home).not.toContain("/collections/subscriptions");
     expect(HOME.hero.primaryCta.href).toBe("/subscriptions");
     expect(HOME.subscription.cta.href).toBe("/subscriptions");
-    expect(HOME.finalCta.secondaryCta.href).toBe("/subscriptions");
   });
 });
 
