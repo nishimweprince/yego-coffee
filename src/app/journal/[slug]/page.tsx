@@ -51,7 +51,7 @@ export default async function ArticlePage({
           ),
         }}
       />
-      <article className="mx-auto max-w-3xl">
+      <article className="mx-auto max-w-prose">
         <nav aria-label="Breadcrumb">
           <Link
             href="/journal"

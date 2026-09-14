@@ -19,7 +19,7 @@ export const metadata: Metadata = {
 export default function SignInFailedPage() {
   return (
     <main className="px-page-x py-section-lg">
-      <div className="mx-auto max-w-3xl">
+      <div className="mx-auto max-w-prose">
         <h1 className="text-display-l">Sign-in didn&apos;t complete.</h1>
         <Contour className="mt-section-sm" />
         <p className="mt-section-sm max-w-prose text-body-l text-muted-foreground">

@@ -50,8 +50,8 @@ export default async function JournalPage() {
 
   return (
     <main className="px-page-x py-section-md">
-      <div className="mx-auto max-w-5xl">
-        <h1 className="type-display text-display-l">Journal</h1>
+      <div className="mx-auto max-w-6xl">
+        <h1 className="text-display-l">Journal</h1>
 
         {articles.length === 0 ? (
           <p className="mt-section-sm text-lede text-muted-foreground">
@@ -89,7 +89,7 @@ export default async function JournalPage() {
                       {lead.excerpt}
                     </p>
                   ) : null}
-                  <span className="link-sweep mt-stack-lg inline-block label text-accent">
+                  <span className="mt-stack-lg inline-block text-body-m font-medium text-accent underline underline-offset-4 hover:text-foreground">
                     Read it
                   </span>
                 </div>

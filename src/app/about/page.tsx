@@ -48,7 +48,7 @@ export default async function AboutPage() {
             </figcaption>
           </figure>
           <div>
-            <h1 className="type-display text-display-l">
+            <h1 className="text-display-l">
               {HOME.statement.headline}
             </h1>
             <div className="mt-stack-lg max-w-prose space-y-stack-xs text-lede text-muted-foreground">
@@ -69,18 +69,17 @@ export default async function AboutPage() {
       {story?.bodyHtml ? (
         <section
           aria-label="Our story"
-          data-surface="wash"
           className="px-page-x py-section-md"
         >
           <div
-            className="mx-auto max-w-[54ch] space-y-stack-md text-body-l [&_a]:underline [&_strong]:text-foreground"
+            className="mx-auto max-w-prose space-y-stack-md text-body-l [&_a]:underline [&_strong]:text-foreground"
             dangerouslySetInnerHTML={{ __html: story.bodyHtml }}
           />
         </section>
       ) : null}
 
       <section className="px-page-x py-section-md">
-        <div className="mx-auto max-w-4xl">
+        <div className="mx-auto max-w-6xl">
           <Contour label="The facts" />
           <dl className="mt-section-sm grid gap-x-8 gap-y-stack-lg sm:grid-cols-2">
             <div>
@@ -102,7 +101,7 @@ export default async function AboutPage() {
             <div>
               <dt className="label text-muted-foreground">Where to find us</dt>
               <dd className="mt-stack-xs text-body-l">
-                <Link href="/cafe" className="underline-offset-4 hover:underline">
+                <Link href="/cafe" className="underline underline-offset-4 hover:text-accent">
                   {BRAND.shopAddress}
                 </Link>
               </dd>
@@ -114,12 +113,12 @@ export default async function AboutPage() {
       {/* The story ended on a definition list and stopped. Someone who
           reads to the bottom of this page is the most persuaded
           visitor on the site and had nowhere to go. */}
-      <section data-surface="soil" className="px-page-x py-section-md">
-        <div className="mx-auto max-w-4xl">
-          <h2 className="type-display max-w-[16ch] text-display-l">
+      <section className="px-page-x pb-section-md">
+        <div className="mx-auto max-w-6xl border-t border-border pt-section-sm">
+          <h2 className="max-w-[24ch] text-h1">
             Taste what four decades of it turned into.
           </h2>
-          <div className="mt-section-sm flex flex-wrap items-center gap-stack-md">
+          <div className="mt-stack-lg flex flex-wrap items-center gap-stack-sm">
             <Link href="/shop" className={buttonVariants({ size: "lg" })}>
               See the coffee
             </Link>

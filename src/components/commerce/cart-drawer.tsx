@@ -244,7 +244,7 @@ export function CartDrawer() {
                 <Link
                   href="/cart"
                   onClick={close}
-                  className="link-sweep mt-stack-md inline-block label text-muted-foreground"
+                  className="mt-stack-md inline-block text-body-s text-muted-foreground underline underline-offset-4 hover:text-foreground"
                 >
                   View full cart
                 </Link>

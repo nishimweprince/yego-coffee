@@ -67,7 +67,7 @@ export default function CafePage() {
           </figure>
 
           <div>
-            <h1 className="type-display text-display-l">
+            <h1 className="text-display-l">
               Come have one with us.
             </h1>
             {/* The same claim the homepage café block already makes,
@@ -83,7 +83,7 @@ export default function CafePage() {
 
       {/* The practical half on its own ground: someone reading this far
           is deciding whether to travel, and the address is the answer. */}
-      <section data-surface="wash" className="px-page-x py-section-md">
+      <section className="px-page-x py-section-md">
         <div className="mx-auto max-w-6xl">
           <Contour label="Somerville" />
 
@@ -99,7 +99,7 @@ export default function CafePage() {
                 href={CAFE.directionsUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="link-sweep mt-stack-lg inline-block label text-accent"
+                className="mt-stack-lg inline-block text-body-m font-medium text-accent underline underline-offset-4 hover:text-foreground"
               >
                 Get directions
               </a>
@@ -109,7 +109,7 @@ export default function CafePage() {
               <h2 className="label text-muted-foreground">Get in touch</h2>
               <a
                 href={`mailto:${BRAND.email}`}
-                className="mt-stack-md inline-block text-body-l underline-offset-4 hover:underline"
+                className="mt-stack-md inline-block text-body-l underline underline-offset-4 hover:text-accent"
               >
                 {BRAND.email}
               </a>
@@ -128,7 +128,7 @@ export default function CafePage() {
                   outward-facing surface (§91). The link is the offer. */}
               <Link
                 href="/shop"
-                className="link-sweep mt-stack-md inline-block text-body-l"
+                className="mt-stack-md inline-block text-body-l underline underline-offset-4 hover:text-accent"
               >
                 See what we roast
               </Link>

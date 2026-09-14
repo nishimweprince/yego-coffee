@@ -97,6 +97,69 @@ describe("screens — the buying path answers questions where they are asked", (
   });
 });
 
+describe("screens — one ground, one recipe (§105)", () => {
+  const SOURCE = [...walk("src/app"), ...walk("src/components")].filter(
+    (file) => !file.endsWith(".test.tsx"),
+  );
+
+  /**
+   * The only places a surface may change. The film hero and the footer
+   * invert to ink; the announcement bar is the one linen strip; the
+   * rest declare `mist` because they open from chrome that may be
+   * transparent over the film (see "panels that open from the chrome").
+   */
+  const SURFACE_FILES = new Set([
+    "src/app/layout.tsx",
+    "src/app/foundations/page.tsx",
+    "src/components/layout/announcement-bar.tsx",
+    "src/components/layout/site-footer.tsx",
+    "src/components/layout/mobile-nav.tsx",
+    "src/components/home/hero.tsx",
+    "src/components/commerce/cart-drawer.tsx",
+    "src/components/search/search-panel.tsx",
+    "src/components/product/product-gallery.tsx",
+  ]);
+
+  it("changes surface only in the chrome, the film hero and the footer", () => {
+    const offenders = SOURCE.filter(
+      (file) => !SURFACE_FILES.has(file) && /data-surface=/.test(read(file)),
+    );
+    expect(offenders).toEqual([]);
+  });
+
+  it("never reaches past the token system", () => {
+    // Each of these was a way a page drifted from the rest: a second
+    // display register, hand-mixed borders, a second corner radius, an
+    // uppercase label, a raw palette ramp.
+    const banned = [
+      /type-display/,
+      /type-utility/,
+      /border-foreground\/\d/,
+      /rounded-md/,
+      /\buppercase\b/,
+      /\btracking-/,
+      /(bg|text|border)-(soil|terrace|sage|mist|sun)-\d/,
+    ];
+    const offenders: string[] = [];
+    for (const file of SOURCE) {
+      const source = read(file);
+      for (const pattern of banned) {
+        if (pattern.test(source)) offenders.push(`${file}: ${pattern}`);
+      }
+    }
+    expect(offenders).toEqual([]);
+  });
+
+  it("lays every page out at one of two widths", () => {
+    // `page` (6xl) for columns, `prose` for a reading measure. Dialogs
+    // set their own width and are not pages.
+    const offenders = walk("src/app").filter((file) =>
+      /max-w-[2345]xl/.test(read(file)),
+    );
+    expect(offenders).toEqual([]);
+  });
+});
+
 describe("screens — the contour leads its content", () => {
   it("defaults to a leading label", () => {
     // A trailing label above a section puts the words a full container

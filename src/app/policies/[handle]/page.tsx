@@ -27,7 +27,7 @@ export default async function PolicyPage({
 
   return (
     <main className="px-page-x py-section-md">
-      <div className="mx-auto max-w-3xl">
+      <div className="mx-auto max-w-prose">
         <nav aria-label="Breadcrumb">
           <Link
             href="/policies"

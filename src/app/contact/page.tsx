@@ -31,14 +31,14 @@ export default function ContactPage() {
           />
         </figure>
         <div>
-          <h1 className="type-display text-display-l">Talk to a human.</h1>
+          <h1 className="text-display-l">Talk to a human.</h1>
           <p className="mt-stack-lg max-w-prose text-body-l text-muted-foreground">
             Questions about an order or a subscription: write to us,
             or come have one with us in Somerville.
           </p>
           <a
             href={`mailto:${BRAND.email}`}
-            className="link-sweep mt-section-sm inline-block text-body-l text-foreground"
+            className="mt-section-sm inline-block text-body-l underline underline-offset-4 hover:text-accent"
           >
             {BRAND.email}
           </a>
@@ -54,7 +54,7 @@ export default function ContactPage() {
               href={CAFE.directionsUrl}
               target="_blank"
               rel="noreferrer"
-              className="link-sweep mt-stack-lg inline-block label text-accent"
+              className="mt-stack-lg inline-block text-body-m font-medium text-accent underline underline-offset-4 hover:text-foreground"
             >
               Get directions
             </a>

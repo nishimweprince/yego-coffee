@@ -31,7 +31,7 @@ export default async function PoliciesPage() {
 
   return (
     <main className="px-page-x py-section-md">
-      <div className="mx-auto max-w-4xl">
+      <div className="mx-auto max-w-6xl">
         <h1 className="text-display-l">Policies</h1>
         <p className="label text-muted-foreground mt-section-sm">
           {`${policies.length} ${policies.length === 1 ? "document" : "documents"}`}

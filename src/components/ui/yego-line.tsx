@@ -35,12 +35,12 @@ export function YegoLine({
       <p className="label text-muted-foreground">{reassurance.question}</p>
 
       <div className="mt-stack-sm flex flex-wrap items-baseline gap-x-4 gap-y-stack-xs">
-        <p className="type-display text-h1 text-accent">Yego.</p>
+        <p className="font-display text-h1 font-semibold text-accent">Yego.</p>
         <p className="max-w-prose flex-1 text-body-m text-muted-foreground">
           {reassurance.html}{" "}
           <Link
             href={reassurance.href}
-            className="text-foreground underline underline-offset-4"
+            className="text-foreground underline underline-offset-4 hover:text-accent"
           >
             Read the full policy
             {/* Several of these can appear on one page; the document

@@ -12,7 +12,7 @@ import { Contour } from "@/components/ui/contour";
 export default function NotFound() {
   return (
     <main className="px-page-x py-section-lg">
-      <div className="mx-auto max-w-3xl">
+      <div className="mx-auto max-w-prose">
         <h1 className="text-display-l">This page doesn&apos;t exist.</h1>
         <Contour label="404" className="mt-section-sm" />
         <p className="mt-section-sm max-w-prose text-body-l text-muted-foreground">

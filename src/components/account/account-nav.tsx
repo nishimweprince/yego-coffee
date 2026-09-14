@@ -43,7 +43,7 @@ export function AccountNav() {
                   href={link.href}
                   aria-current={active ? "page" : undefined}
                   className={cn(
-                    "label whitespace-nowrap transition-colors",
+                    "link-sweep whitespace-nowrap text-body-s font-medium transition-colors",
                     active
                       ? "text-foreground"
                       : "text-muted-foreground hover:text-foreground",
@@ -59,7 +59,7 @@ export function AccountNav() {
         <form action="/account/logout" method="post">
           <button
             type="submit"
-            className="label whitespace-nowrap text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
+            className="whitespace-nowrap text-body-s text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
           >
             Sign out
           </button>
