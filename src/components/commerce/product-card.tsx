@@ -45,7 +45,7 @@ export function ProductCard({
           title={product.title}
           priority={priority}
           sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
-          className="rounded-md bg-surface-elevated"
+          className="rounded-sm bg-surface-elevated"
         />
       </Link>
 

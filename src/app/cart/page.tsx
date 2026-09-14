@@ -45,7 +45,7 @@ export default async function CartPage() {
       <main>
         <section className="px-page-x py-section-md">
           <div className="mx-auto max-w-6xl">
-            <h1 className="type-display text-display-l">Your cart is empty</h1>
+            <h1 className="text-display-l">Your cart is empty</h1>
             <p className="mt-stack-md max-w-prose text-lede text-muted-foreground">
               Pick a roast below, or answer three questions and we will
               match you to one.
@@ -65,11 +65,7 @@ export default async function CartPage() {
         </section>
 
         {lineup.length > 0 ? (
-          <section
-            aria-label="The lineup"
-            data-surface="wash"
-            className="px-page-x py-section-md"
-          >
+          <section aria-label="The lineup" className="px-page-x pb-section-md">
             <div className="mx-auto max-w-6xl">
               <Contour label="The lineup" />
               <ProductGrid
@@ -86,8 +82,8 @@ export default async function CartPage() {
 
   return (
     <main className="px-page-x py-section-md">
-      <div className="mx-auto max-w-4xl">
-        <h1 className="type-display text-display-l">Cart</h1>
+      <div className="mx-auto max-w-6xl">
+        <h1 className="text-display-l">Cart</h1>
         <Contour
           label={`${cart.totalQuantity} ${cart.totalQuantity === 1 ? "item" : "items"}`}
           className="mt-section-sm"

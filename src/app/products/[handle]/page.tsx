@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ProductPurchaseForm } from "@/components/commerce/product-purchase-form";
 import { ProductGallery } from "@/components/product/product-gallery";
 import { StoreUnavailable } from "@/components/commerce/store-unavailable";
 import { RelatedProducts } from "@/components/product/related-products";
 import { Contour } from "@/components/ui/contour";
+import { PageHeader } from "@/components/ui/page-header";
 import { YegoLine } from "@/components/ui/yego-line";
 import { getReassurances } from "@/lib/content/reassurance";
 import { COLLECTION_HANDLES } from "@/lib/catalog/collections";
@@ -104,38 +104,21 @@ export default async function ProductPage({
         }}
       />
       <div className="mx-auto max-w-6xl px-page-x py-section-md">
-        <nav aria-label="Breadcrumb">
-          <ol className="flex flex-wrap items-center gap-2">
-            <li>
-              <Link
-                href="/shop"
-                className="label text-muted-foreground hover:text-foreground"
-              >
-                Shop
-              </Link>
-            </li>
-            <li aria-hidden className="label text-muted-foreground">
-              /
-            </li>
-            <li>
-              <span aria-current="page" className="label text-foreground">
-                {product.title}
-              </span>
-            </li>
-          </ol>
-        </nav>
-
         {/* The gallery is the column that sticks, not the buy column.
             The other way round left the picture ending half a screen
             above the text beside it, with a column of nothing under
             it. */}
-        <div className="mt-stack-lg grid items-start gap-section-sm lg:grid-cols-2 lg:gap-16">
-          <div className="lg:sticky lg:top-28">
+        <div className="grid items-start gap-section-sm lg:grid-cols-2 lg:gap-16">
+          <div className="lg:sticky lg:top-24">
             <ProductGallery images={gallery} title={product.title} />
           </div>
 
           <div>
-            <h1 className="text-h1">{product.title}</h1>
+            <PageHeader
+              title={product.title}
+              size="h1"
+              breadcrumb={[{ href: "/shop", label: "Shop" }]}
+            />
 
             {/* Roast is the one fact about a coffee that is not already
                 a control on this page, so it sits with the name rather

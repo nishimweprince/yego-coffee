@@ -51,7 +51,7 @@ export function QuizResult({
 
   if (!recommendation) {
     return (
-      <div className="mx-auto max-w-3xl py-section-md">
+      <div className="mx-auto max-w-prose py-section-md">
         <h1 className="text-display-l">Nothing to recommend right now.</h1>
         <p className="mt-stack-lg text-body-l text-muted-foreground">
           Every coffee is out of stock at the moment. That is a real
@@ -109,7 +109,7 @@ export function QuizResult({
   }
 
   return (
-    <div className="mx-auto max-w-5xl py-section-sm">
+    <div className="py-section-sm">
       <Contour label="Your match" />
 
       <div className="mt-section-sm grid gap-section-sm lg:grid-cols-2 lg:gap-16">

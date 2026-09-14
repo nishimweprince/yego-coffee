@@ -113,7 +113,7 @@ export function SearchPanel({ onClose }: { onClose: () => void }) {
         aria-modal="true"
         aria-label="Search"
         data-surface="mist"
-        className="h-fit w-full max-w-2xl border border-border bg-surface-elevated"
+        className="h-fit w-full max-w-2xl rounded-sm border border-border bg-surface-elevated"
       >
         <form
           onSubmit={(event) => {

@@ -3,6 +3,8 @@ import Link from "next/link";
 import { ProductGrid } from "@/components/commerce/product-grid";
 import { RoastFilter } from "@/components/commerce/roast-filter";
 import { StoreUnavailable } from "@/components/commerce/store-unavailable";
+import { PageHeader } from "@/components/ui/page-header";
+import { Section } from "@/components/ui/section";
 import { SHOP_SECTIONS } from "@/lib/catalog/collections";
 import {
   availableRoasts,
@@ -30,9 +32,9 @@ export default async function ShopPage({
 }: PageProps<"/shop">) {
   if (!hasShopifyCredentials()) {
     return (
-      <main className="px-page-x py-section-md">
+      <Section as="div">
         <StoreUnavailable detail="Storefront credentials are not configured." />
-      </main>
+      </Section>
     );
   }
 
@@ -52,12 +54,11 @@ export default async function ShopPage({
 
   return (
     <main>
-      <section className="px-page-x py-section-md">
-        <div className="mx-auto max-w-6xl">
-          <h1 className="type-display text-display-l">Coffee</h1>
-          <p className="mt-stack-md max-w-prose text-lede text-muted-foreground">
-            Grown in Rwanda. Roasted in Somerville.
-          </p>
+      <Section>
+          <PageHeader
+            title="Coffee"
+            lede="Grown in Rwanda. Roasted in Somerville."
+          />
 
           <div className="mt-section-sm flex flex-wrap items-center justify-between gap-stack-md">
             <RoastFilter options={roasts} selected={selected} />
@@ -76,7 +77,7 @@ export default async function ShopPage({
               <p className="text-lede">No coffee matches that roast.</p>
               <Link
                 href="/shop"
-                className="mt-stack-md inline-block text-body-m text-accent underline-offset-4 hover:underline"
+                className="mt-stack-md inline-block text-body-m text-accent underline underline-offset-4 hover:text-foreground"
               >
                 Show every coffee
               </Link>
@@ -86,24 +87,17 @@ export default async function ShopPage({
               <ProductGrid products={visible} />
             </div>
           )}
-        </div>
-      </section>
+      </Section>
 
       {merch && merch.products.length > 0 ? (
-        <section
-          aria-labelledby="merch-heading"
-          data-surface="wash"
-          className="px-page-x py-section-md"
-        >
-          <div className="mx-auto max-w-6xl">
-            <h2 id="merch-heading" className="type-display text-display-l">
+        <Section aria-labelledby="merch-heading" className="pt-0">
+            <h2 id="merch-heading" className="text-display-l">
               Merch
             </h2>
             <div className="mt-section-sm">
               <ProductGrid products={merch.products} priorityCount={0} />
             </div>
-          </div>
-        </section>
+        </Section>
       ) : null}
     </main>
   );

@@ -216,7 +216,7 @@ export function QuizShell({
   const step = steps[Math.min(index, steps.length - 1)];
 
   return (
-    <div className="mx-auto max-w-3xl py-section-sm">
+    <div className="mx-auto max-w-prose py-section-sm">
       {/* The progress indicator counts the steps this run will ask —
           answering "I'm not sure" adds one, and the total moves with it
           rather than lying about where the customer is (§9.3). */}

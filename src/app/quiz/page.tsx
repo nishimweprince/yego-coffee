@@ -52,7 +52,7 @@ export default async function QuizPage({ searchParams }: PageProps<"/quiz">) {
   ]);
 
   return (
-    <main data-surface="wash" className="px-page-x py-section-md">
+    <main className="px-page-x py-section-md">
       <div className="mx-auto grid max-w-6xl items-stretch gap-stack-md lg:grid-cols-[1fr_0.7fr] lg:gap-16">
         <QuizShell
           coffees={coffees.filter((p) => p !== null)}
@@ -66,7 +66,7 @@ export default async function QuizPage({ searchParams }: PageProps<"/quiz">) {
             fill
             sizes="(min-width: 1024px) 30vw, 0px"
             loading="lazy"
-            className="rounded-md object-cover"
+            className="rounded-sm object-cover"
           />
         </div>
       </div>

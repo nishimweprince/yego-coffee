@@ -19,11 +19,7 @@ export function RelatedProducts({
   if (products.length === 0) return null;
 
   return (
-    <section
-      aria-label={heading}
-      data-surface="wash"
-      className="px-page-x py-section-md"
-    >
+    <section aria-label={heading} className="px-page-x py-section-md">
       <div className="mx-auto max-w-6xl">
         <Contour label={heading} />
         <ProductGrid

@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
 import { StoreUnavailable } from "@/components/commerce/store-unavailable";
+import { PageHeader } from "@/components/ui/page-header";
+import { Section } from "@/components/ui/section";
 import { PriceRange } from "@/components/commerce/product-price";
 import { YegoLine } from "@/components/ui/yego-line";
 import { HOME } from "@/content/home";
@@ -39,9 +41,9 @@ export const metadata: Metadata = {
 export default async function SubscriptionsPage() {
   if (!hasShopifyCredentials()) {
     return (
-      <main className="px-page-x py-section-md">
+      <Section as="div">
         <StoreUnavailable detail="Storefront credentials are not configured." />
-      </main>
+      </Section>
     );
   }
 
@@ -84,11 +86,8 @@ export default async function SubscriptionsPage() {
 
   return (
     <main>
-      <section className="px-page-x py-section-md">
-        <div className="mx-auto max-w-5xl">
-          <h1 className="type-display max-w-[14ch] text-display-l">
-            {HOME.subscription.heading}
-          </h1>
+      <Section>
+        <PageHeader title={HOME.subscription.heading}>
           <ul className="mt-stack-lg flex max-w-prose flex-wrap gap-x-6 gap-y-stack-xs">
             {HOME.subscription.benefits.map((benefit) => (
               <li key={benefit} className="label text-muted-foreground">
@@ -96,26 +95,21 @@ export default async function SubscriptionsPage() {
               </li>
             ))}
           </ul>
+        </PageHeader>
 
-          <YegoLine
-            reassurance={reassurances.cancellation}
-            className="mt-section-sm"
-          />
-        </div>
-      </section>
+        <YegoLine
+          reassurance={reassurances.cancellation}
+          className="mt-section-sm"
+        />
+      </Section>
 
-      <section
-        aria-labelledby="plans-heading"
-        data-surface="wash"
-        className="px-page-x py-section-md"
-      >
-        <div className="mx-auto max-w-5xl">
-          <h2 id="plans-heading" className="type-display text-display-l">
+      <Section aria-labelledby="plans-heading" className="pt-0">
+          <h2 id="plans-heading" className="text-display-l">
             Plans
           </h2>
-          <ul className="mt-section-sm border-t border-rule">
+          <ul className="mt-section-sm border-t border-border">
             {plans.map((plan) => (
-              <li key={plan.handle} className="border-b border-rule">
+              <li key={plan.handle} className="border-b border-border">
                 <Link
                   href={`/products/${plan.handle}`}
                   className="flex min-h-11 flex-wrap items-baseline justify-between gap-x-8 gap-y-stack-xs py-stack-md transition-colors hover:text-accent"
@@ -134,22 +128,17 @@ export default async function SubscriptionsPage() {
             ))}
           </ul>
 
-          <ol className="mt-section-md grid gap-stack-lg sm:grid-cols-3">
-            {HOME.subscription.steps.map((step, index) => (
-              <li key={step} className="flex items-baseline gap-3">
-                <span className="type-figure text-muted-foreground">
-                  {String(index + 1).padStart(2, "0")}
-                </span>
-                <p className="text-body-m">{step}</p>
+          <ol className="mt-section-sm max-w-prose list-decimal space-y-stack-xs pl-5 text-body-m text-muted-foreground marker:text-muted-foreground">
+            {HOME.subscription.steps.map((step) => (
+              <li key={step} className="pl-1">
+                {step}
               </li>
             ))}
           </ol>
-        </div>
-      </section>
+      </Section>
 
-      <section className="px-page-x py-section-md">
-        <div className="mx-auto max-w-5xl">
-          <h2 className="type-display text-display-l">What you get</h2>
+      <Section className="pt-0">
+          <h2 className="text-display-l">What you get</h2>
           <ul className="mt-section-sm max-w-prose space-y-stack-md text-body-l">
             <li>Freshly roasted coffee on your schedule.</li>
             <li>Skip, change or cancel according to the terms below.</li>
@@ -165,7 +154,7 @@ export default async function SubscriptionsPage() {
             cancellationComplete ? (
               <section
                 aria-labelledby="cancellation-heading"
-                className="mt-section-md border-t border-rule pt-stack-lg"
+                className="mt-section-md border-t border-border pt-stack-lg"
               >
                 <h2
                   id="cancellation-heading"
@@ -182,7 +171,7 @@ export default async function SubscriptionsPage() {
                 ))}
                 <Link
                   href={`/policies/${cancellation.handle}`}
-                  className="link-sweep mt-stack-lg inline-block label text-accent"
+                  className="mt-stack-lg inline-block text-body-m font-medium text-accent underline underline-offset-4 hover:text-foreground"
                 >
                   Read the full cancellation policy
                 </Link>
@@ -203,8 +192,7 @@ export default async function SubscriptionsPage() {
               Find my coffee
             </Link>
           </div>
-        </div>
-      </section>
+      </Section>
     </main>
   );
 }

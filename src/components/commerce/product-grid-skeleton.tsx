@@ -23,7 +23,7 @@ export function ProductGridSkeleton({
     >
       {Array.from({ length: count }, (_, index) => (
         <div key={index} className="animate-pulse">
-          <div className="aspect-square rounded-md bg-muted" />
+          <div className="aspect-square rounded-sm bg-muted" />
           <div className="mt-stack-md flex items-baseline justify-between gap-4">
             <div className="h-5 w-2/3 rounded-sm bg-muted" />
             <div className="h-5 w-1/4 rounded-sm bg-muted" />

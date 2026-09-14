@@ -8,7 +8,7 @@ import { Contour } from "@/components/ui/contour";
  */
 export function StoreUnavailable({ detail }: { detail?: string }) {
   return (
-    <div className="mx-auto max-w-2xl py-section-md">
+    <div className="mx-auto max-w-prose py-section-md">
       <p className="label text-destructive">Store unavailable</p>
       <h1 className="mt-stack-md text-h1">
         We can&rsquo;t load the shop right now.

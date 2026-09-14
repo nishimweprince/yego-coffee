@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import { PageHeader } from "@/components/ui/page-header";
+import { Section } from "@/components/ui/section";
 import { notFound } from "next/navigation";
 import { ProductGrid } from "@/components/commerce/product-grid";
 import { StoreUnavailable } from "@/components/commerce/store-unavailable";
@@ -44,22 +45,13 @@ export default async function CollectionPage({
   if (!collection) notFound();
 
   return (
-    <main className="px-page-x py-section-md">
-      <div className="mx-auto max-w-6xl">
-        <nav aria-label="Breadcrumb">
-          <Link
-            href="/shop"
-            className="label text-muted-foreground hover:text-foreground"
-          >
-            Shop
-          </Link>
-        </nav>
-        <h1 className="mt-stack-sm text-display-l">{collection.title}</h1>
-        {collection.description ? (
-          <p className="mt-stack-md max-w-prose text-body-l text-muted-foreground">
-            {collection.description}
-          </p>
-        ) : null}
+    <main>
+      <Section>
+        <PageHeader
+          title={collection.title}
+          lede={collection.description || undefined}
+          breadcrumb={[{ href: "/shop", label: "Shop" }]}
+        />
 
         <Contour
           label={`${collection.products.length} ${
@@ -71,7 +63,7 @@ export default async function CollectionPage({
         <div className="mt-section-sm">
           <ProductGrid products={collection.products} />
         </div>
-      </div>
+      </Section>
     </main>
   );
 }

@@ -4,6 +4,8 @@ import { notFound } from "next/navigation";
 import { ProductGrid } from "@/components/commerce/product-grid";
 import { RoastFilter } from "@/components/commerce/roast-filter";
 import { StoreUnavailable } from "@/components/commerce/store-unavailable";
+import { PageHeader } from "@/components/ui/page-header";
+import { Section } from "@/components/ui/section";
 import { SHOP_SECTIONS } from "@/lib/catalog/collections";
 import {
   availableRoasts,
@@ -37,9 +39,9 @@ export default async function ShopSectionPage({
 
   if (!hasShopifyCredentials()) {
     return (
-      <main className="px-page-x py-section-md">
+      <Section as="div">
         <StoreUnavailable detail="Storefront credentials are not configured." />
-      </main>
+      </Section>
     );
   }
 
@@ -52,22 +54,13 @@ export default async function ShopSectionPage({
   const roasts = availableRoasts(collection.products);
 
   return (
-    <main className="px-page-x py-section-md">
-      <div className="mx-auto max-w-6xl">
-        <nav aria-label="Breadcrumb">
-          <Link
-            href="/shop"
-            className="label text-muted-foreground hover:text-foreground"
-          >
-            Shop
-          </Link>
-        </nav>
-        <h1 className="mt-stack-sm text-display-l">{collection.title}</h1>
-        {collection.description ? (
-          <p className="mt-stack-md max-w-prose text-body-l text-muted-foreground">
-            {collection.description}
-          </p>
-        ) : null}
+    <main>
+      <Section>
+        <PageHeader
+          title={collection.title}
+          lede={collection.description || undefined}
+          breadcrumb={[{ href: "/shop", label: "Shop" }]}
+        />
 
         <div className="mt-section-sm">
           <RoastFilter options={roasts} selected={selected} />
@@ -82,7 +75,7 @@ export default async function ShopSectionPage({
             <p className="text-body-l">Nothing matches that roast.</p>
             <Link
               href={`/shop/${section.slug}`}
-              className="mt-stack-sm inline-block text-body-m text-accent underline-offset-4 hover:underline"
+              className="mt-stack-sm inline-block text-body-m text-accent underline underline-offset-4 hover:text-foreground"
             >
               Clear the filter
             </Link>
@@ -92,7 +85,7 @@ export default async function ShopSectionPage({
             <ProductGrid products={visible} />
           </div>
         )}
-      </div>
+      </Section>
     </main>
   );
 }

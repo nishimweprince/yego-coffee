@@ -43,7 +43,7 @@ export default async function SearchPage({
         {!query ? (
           <p className="mt-stack-md text-body-l text-muted-foreground">
             Search from the header, or press{" "}
-            <kbd className="border border-border px-1.5 py-0.5 text-body-s">
+            <kbd className="rounded-sm border border-border px-1.5 py-0.5 text-body-s">
               /
             </kbd>{" "}
             anywhere.
@@ -67,7 +67,7 @@ export default async function SearchPage({
                 </p>
                 <Link
                   href="/shop"
-                  className="mt-stack-md inline-block text-body-m text-accent underline-offset-4 hover:underline"
+                  className="mt-stack-md inline-block text-body-m text-accent underline underline-offset-4 hover:text-foreground"
                 >
                   See everything
                 </Link>
