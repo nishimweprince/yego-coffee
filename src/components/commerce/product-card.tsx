@@ -14,6 +14,10 @@ import type { ProductCardModel } from "@/lib/shopify/types";
  * when you click — it previously carried a title and a price inside one
  * undifferentiated link.
  *
+ * One hover for the whole card: the photo leans in, the title turns
+ * roast and the action's border darkens together, so the card reads
+ * as one destination rather than three separate links.
+ *
  * There is deliberately **no add-to-cart here.** Every product in this
  * catalogue carries a real choice: the three coffees are sold whole
  * bean or ground, Gatare in two sizes, the 5 lb Bag in three roasts.
@@ -44,6 +48,7 @@ export function ProductCard({
           image={product.featuredImage}
           title={product.title}
           priority={priority}
+          zoomOnHover
           sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
           className="rounded-sm bg-surface-elevated"
         />
@@ -68,7 +73,7 @@ export function ProductCard({
             href={href}
             className={cn(
               buttonVariants({ variant: "secondary", size: "sm" }),
-              "mt-stack-md",
+              "mt-stack-md group-hover:border-foreground",
             )}
           >
             Choose options

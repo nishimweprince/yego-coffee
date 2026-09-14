@@ -20,8 +20,8 @@ export function ProductMedia({
   priority?: boolean;
   sizes?: string;
   className?: string;
-  /** Lean into the product photo on hover. Product pages only —
-   * cards stay still so grids do not shimmer as the pointer crosses. */
+  /** Lean into the product photo on hover — on the photo itself, or
+   * on any ancestor `.group`, so a whole card is one hover target. */
   zoomOnHover?: boolean;
 }) {
   if (!image) {
@@ -54,7 +54,7 @@ export function ProductMedia({
         className={cn(
           "object-cover",
           zoomOnHover &&
-            "transition-transform duration-500 ease-(--ease-brand) group-hover/zoom:scale-105",
+            "transition-transform duration-500 ease-(--ease-brand) group-hover/zoom:scale-105 group-hover:scale-[1.04] group-focus-within:scale-[1.04]",
         )}
       />
     </div>

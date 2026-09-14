@@ -16,7 +16,9 @@ import type { ProductCardModel } from "@/lib/shopify/types";
  * taxonomy: the flavour a visitor recognises, then the coffee's real
  * name, its roast, and its price. A card either leads to the coffee it
  * describes, or opens the quiz with that preference already answered
- * (the quiz reads `?flavour=`).
+ * (the quiz reads `?flavour=`). A card is one hover target: the photo
+ * leans in and the flavour name turns roast, the same move as the
+ * shop's cards.
  *
  * The shipping answer sits under the prices, because "what will
  * delivery cost me" is the question that stops a first order. It is
@@ -65,6 +67,7 @@ export function DiscoveryCards({
                       <ProductMedia
                         image={product.featuredImage}
                         title={product.title}
+                        zoomOnHover
                         sizes="(min-width: 1024px) 25vw, 50vw"
                         className="bg-surface-elevated"
                       />

@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import Image from "next/image";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronLeft } from "@fortawesome/free-solid-svg-icons/faChevronLeft";
@@ -19,6 +20,12 @@ import type { ShopifyImage } from "@/lib/shopify/types";
  * strip, Escape or backdrop click to leave. Focus moves into the
  * dialog on open and returns to the photo on close; the page behind
  * stops scrolling while the viewer is up.
+ *
+ * The viewer is portalled to <body>. The gallery column is sticky,
+ * and a sticky element is a stacking context: a fixed, z-50 viewer
+ * rendered inside it sat beneath the size and grind pickers in the
+ * column beside it, and beneath the sticky header, no matter what
+ * z-index it carried.
  */
 export function ProductGallery({
   images,
@@ -115,10 +122,10 @@ export function ProductGallery({
         </div>
       ) : null}
 
-      {viewerOpen ? (
+      {viewerOpen && typeof document !== "undefined" ? createPortal(
         <div
           data-surface="soil"
-          className="fixed inset-0 z-50 flex flex-col bg-ink/90 px-page-x py-stack-lg"
+          className="fixed inset-0 z-[60] flex flex-col bg-ink/90 px-page-x py-stack-lg"
           onMouseDown={(event) => {
             if (event.target === event.currentTarget) setViewerOpen(false);
           }}
@@ -200,7 +207,8 @@ export function ProductGallery({
               </div>
             ) : null}
           </div>
-        </div>
+        </div>,
+        document.body,
       ) : null}
     </div>
   );
