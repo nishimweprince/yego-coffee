@@ -293,6 +293,15 @@ html[data-chrome-solid] body:has(main[data-hero="video"]) [data-chrome] {
     border-color: var(--border);
   }
 
+  /* In-page moves glide; the sticky header is 64px, and the padding
+     keeps an anchored heading from landing underneath it. Route
+     changes are exempt — see data-scroll-behavior on <html>. Stilled
+     under reduced motion below. */
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 5.5rem;
+  }
+
   body {
     background-color: var(--background);
     color: var(--foreground);
@@ -499,11 +508,13 @@ html[data-chrome-solid] body:has(main[data-hero="video"]) [data-chrome] {
 }
 
 /* ============================================================
-   Motion — one orchestrated moment.
+   Motion — one idea.
 
-   The hero arrives: the headline rises, then the actions. Nothing
-   else on the site animates on load, so this reads as the page
-   opening rather than as decoration scattered down it.
+   The hero arrives: the headline rises, then the actions. Moving to
+   another page is the same gesture, once: the page being left fades,
+   the page arriving rises the same half-line. Nothing else on the
+   site animates on load, so it reads as the page opening rather than
+   as decoration scattered down it.
    ============================================================ */
 
 @keyframes yego-rise {
@@ -535,6 +546,35 @@ html[data-chrome-solid] body:has(main[data-hero="video"]) [data-chrome] {
   }
 }
 
+/* Route transitions — drawn by app/template.tsx. The browser's own
+   whole-document crossfade is switched off so only the page content
+   moves; the chrome, which lives outside the template, holds still. */
+::view-transition {
+  pointer-events: none;
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+}
+
+::view-transition-old(.page-leave) {
+  animation: yego-fade-out 120ms var(--ease-exit) both;
+}
+
+::view-transition-new(.page-arrive) {
+  animation: yego-rise 360ms var(--ease-brand) 60ms both;
+}
+
+@keyframes yego-fade-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
 @layer components {
   .rise-in {
     animation: yego-rise 700ms var(--ease-brand) both;
@@ -555,5 +595,12 @@ html[data-chrome-solid] body:has(main[data-hero="video"]) [data-chrome] {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+
+  ::view-transition-old(*),
+  ::view-transition-new(*),
+  ::view-transition-group(*) {
+    animation-duration: 0s !important;
+    animation-delay: 0s !important;
   }
 }

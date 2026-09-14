@@ -65,6 +65,11 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html
       lang="en"
       data-surface="mist"
+      // In-page anchors scroll smoothly (globals.css); this attribute
+      // asks Next to suspend that for route changes, so a new page
+      // opens at its top instead of gliding up from wherever the last
+      // one was scrolled to.
+      data-scroll-behavior="smooth"
       className={`${dmSans.variable} h-full`}
     >
       <body className="flex min-h-full flex-col">

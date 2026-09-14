@@ -6853,3 +6853,18 @@ element left. A copy review against the quieter page is a follow-up
 for the owners; the headline fragments ("Come have one with us.",
 "Talk to a human.", "Never run out of good coffee.") are §90's and were
 left alone.
+
+## 105.7 Scrolling and moving between pages
+
+In-page anchors glide (`scroll-behavior: smooth` on `<html>`, with
+`scroll-padding-top` for the sticky header); `data-scroll-behavior`
+asks Next to suspend that on route changes so a new page opens at its
+top rather than gliding up from wherever the last one was scrolled.
+
+Moving between pages is the hero's gesture, once: `src/app/template.tsx`
+wraps every route in a React `ViewTransition` whose exit fades the old
+page in 120ms and whose enter rises the new one the same half-line the
+headline rises on load (`::view-transition-*` rules in globals.css).
+No slides and no direction — the navigation is flat, so left and right
+would encode nothing true. The browser's whole-document crossfade is
+switched off so the chrome holds still. Reduced motion zeroes it.
