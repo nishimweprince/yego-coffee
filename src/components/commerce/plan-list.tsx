@@ -42,7 +42,7 @@ export function PlanList({
               <span className="flex w-full items-baseline justify-between gap-6 sm:w-auto">
                 {plan.cadences.length > 0 ? (
                   <span className="label text-muted-foreground">
-                    {plan.cadences.join(" · ")}
+                    {plan.cadences.join(", ")}
                   </span>
                 ) : null}
                 <PriceRange min={plan.minPrice} max={plan.maxPrice} />

@@ -1,0 +1,82 @@
+/**
+ * The brand photography (plan.md §106.4).
+ *
+ * Every photograph here is Yego's own, processed once from the owners'
+ * originals (2400px long edge, metadata stripped). Pages import from
+ * this file rather than hard-coding a path, so a reshoot is one edit.
+ *
+ * Several of these show bags labelled with coffee names the store does
+ * not sell. They are editorial only — never a product image — and the
+ * alt text describes the scene without naming a coffee, so nothing
+ * here implies a SKU that does not exist (§93.5). images.test.ts
+ * guards that.
+ */
+export type BrandImage = {
+  src: string;
+  alt: string;
+  width: number;
+  height: number;
+};
+
+export const IMAGES = {
+  founders: {
+    src: "/brand/founders.jpg",
+    alt: "Fatuma and Francois Tuyishime, the family behind Yego Coffee",
+    width: 2400,
+    height: 1601,
+  },
+  cafeCounter: {
+    src: "/brand/cafe-counter.jpg",
+    alt: "Fatuma and Francois Tuyishime behind the café counter",
+    width: 2400,
+    height: 1601,
+  },
+  roasterLoring: {
+    src: "/brand/roaster-loring.jpg",
+    alt: "Beans turning in the drum of the Loring roaster",
+    width: 1365,
+    height: 2048,
+  },
+  roasterBeans: {
+    src: "/brand/roaster-beans.jpg",
+    alt: "Freshly roasted beans pouring from the roaster into the cooling tray",
+    width: 1365,
+    height: 2048,
+  },
+  basket: {
+    src: "/brand/agaseke-basket.jpg",
+    alt: "Close-up of a black and natural woven basket on the café wall",
+    width: 1600,
+    height: 2400,
+  },
+  bagsOnBurlap: {
+    src: "/brand/bags-on-burlap.jpg",
+    alt: "Yego Coffee bags laid on burlap coffee sacks",
+    width: 1200,
+    height: 1600,
+  },
+  bagsTrio: {
+    src: "/brand/bags-trio.jpg",
+    alt: "Three Yego Coffee bags standing on a reflective surface",
+    width: 1200,
+    height: 1600,
+  },
+  bagsLineup: {
+    src: "/brand/bags-lineup.jpg",
+    alt: "A row of Yego Coffee bags, each with the gorilla illustration",
+    width: 1600,
+    height: 1200,
+  },
+  bagFilling: {
+    src: "/brand/bag-filling.jpg",
+    alt: "Scooping freshly roasted beans into a Yego Coffee bag",
+    width: 1200,
+    height: 1600,
+  },
+  roasterPortrait: {
+    src: "/brand/roaster-portrait.jpg",
+    alt: "A member of the Yego team filling a bag beside the roaster",
+    width: 1200,
+    height: 1600,
+  },
+} as const satisfies Record<string, BrandImage>;

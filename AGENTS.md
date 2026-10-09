@@ -12,7 +12,7 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 Full specification: `plan.md`. Where sections conflict, the later one
 wins — §89 supersedes §1, §90 supersedes copy in §7–8, §93 supersedes
-§9.2 and §12.1.
+§9.2 and §12.1, §106 supersedes parts of §105.
 
 ## Non-negotiables
 
@@ -41,7 +41,8 @@ wins — §89 supersedes §1, §90 supersedes copy in §7–8, §93 supersedes
   custom names on its own and will silently drop one of two `text-*`
   classes. `utils.test.ts` guards this.
 - **`roast` is the only chromatic accent; `cherry` is destructive
-  only.** Six palette values, no more (§105).
+  only.** Six palette values, no more (§105). Primary buttons are
+  ink, not roast — roast is kept for links, "Yego." and focus (§106).
 - Three surfaces, no global dark mode. `soil` appears on the footer and
   the film hero only; `wash` is the announcement bar and image
   backdrops, never a page section. Every other section sits on paper.
@@ -51,7 +52,12 @@ wins — §89 supersedes §1, §90 supersedes copy in §7–8, §93 supersedes
   (`<YegoLine />`) answers a question a customer actually asks —
   shipping, cancellation — one line per question, never as decoration.
 - The `.label` register is sentence case. No uppercase, no tracking.
-- One radius (`rounded-sm`); borders use `border-border`, never
+- Brand photography lives in `src/content/images.ts`; never hard-code a
+  `/brand/` path. Bag photos are editorial only, and alt text never
+  names a coffee the store does not sell (§106).
+- Two radii, by role (§106): `rounded-control` (4px) for buttons and
+  chips, `rounded-sm` (2px) for every surface — images, cards,
+  inputs. Headings are weight 500. Borders use `border-border`, never
   `border-foreground/NN`. Page wrappers are `<Section>`; page titles
   are `<PageHeader>`; choice chips use `controlVariants`.
 - Button size `sm` (36px) is for dense UI. Primary mobile CTAs use `md`

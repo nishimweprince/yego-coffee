@@ -30,6 +30,11 @@ describe("cn", () => {
       "text-muted-foreground",
     );
   });
+
+  it("collapses the surface and control radii into one corner", () => {
+    expect(cn("rounded-sm", "rounded-control")).toBe("rounded-control");
+    expect(cn("rounded-control", "rounded-sm")).toBe("rounded-sm");
+  });
 });
 
 describe("token registration", () => {

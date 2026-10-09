@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
 import { HOME } from "@/content/home";
+import { IMAGES } from "@/content/images";
 
 /**
  * The coffee finder.
@@ -21,10 +22,8 @@ export function CoffeeFinder() {
       <div className="mx-auto grid max-w-6xl items-center gap-stack-lg lg:grid-cols-2 lg:gap-16">
         <div className="order-2">
           <Image
-            src="/brand/brew.jpg"
-            alt="Beans pouring from the roaster at Yego Coffee"
-            width={1000}
-            height={1500}
+            {...IMAGES.bagsOnBurlap}
+            alt={IMAGES.bagsOnBurlap.alt}
             sizes="(min-width: 1024px) 45vw, 100vw"
             loading="lazy"
             className="aspect-[16/10] w-full rounded-sm object-cover"

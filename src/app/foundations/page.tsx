@@ -15,8 +15,8 @@ const palette: Swatch[] = [
   { token: "paper", value: "--color-paper", role: "Page ground" },
   { token: "white", value: "--color-white", role: "Cards, panels, inputs, image backdrops" },
   { token: "linen", value: "--color-linen", role: "The one tint: announcement bar, quiet fills" },
-  { token: "ink", value: "--color-ink", role: "Text; the footer ground" },
-  { token: "roast", value: "--color-roast", role: "The accent: buttons, links, active states" },
+  { token: "ink", value: "--color-ink", role: "Text, primary buttons; the footer ground" },
+  { token: "roast", value: "--color-roast", role: "The accent: links, \"Yego.\", the focus ring" },
   { token: "cherry", value: "--color-cherry", role: "Destructive only" },
 ];
 
@@ -75,16 +75,17 @@ export default function FoundationsPage() {
         <p className="mt-stack-lg max-w-prose text-body-s text-muted-foreground">
           <strong className="text-foreground">Two hard rules:</strong> roast
           is the only chromatic accent, and cherry is for errors, never for
-          brand. Roast on paper measures about 7.5:1 and white on roast about
-          7.9:1, so it can carry text, fills and the focus ring alike.
+          brand. Buttons are ink, so the accent is kept for the few things
+          that should catch the eye. Roast on paper measures about 7.5:1, so
+          it carries link text and the focus ring alike.
         </p>
       </section>
 
       <section className="mx-auto mt-section-md max-w-6xl">
         <Contour label="Type" />
         <p className="mt-stack-lg max-w-prose text-body-m text-muted-foreground">
-          DM Sans throughout. Headings sit at weight 600 and are capped at
-          5rem; the small register is sentence case at weight 500. The
+          DM Sans throughout. Headings sit at weight 500 and are capped at
+          4.5rem; the small register is sentence case at weight 500. The
           registers are told apart by size, weight and colour, never by
           case or tracking.
         </p>

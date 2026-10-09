@@ -2,10 +2,13 @@ import { describe, expect, it } from "vitest";
 import { controlMark, controlVariants, inputClassName } from "./control";
 
 describe("controlVariants", () => {
-  it("draws every shape with the same corner and the token border", () => {
+  it("rounds by role and draws the token border", () => {
+    // Small controls take the control corner; the tall answer card is
+    // a surface and takes the surface corner. Exactly one each.
+    const corner = { chip: "rounded-control", square: "rounded-control", row: "rounded-control", card: "rounded-sm" } as const;
     for (const shape of ["chip", "square", "row", "card"] as const) {
       const classes = controlVariants({ shape });
-      expect(classes).toContain("rounded-sm");
+      expect(classes.match(/\brounded-\S+/g)).toEqual([corner[shape]]);
       expect(classes).toContain("border-border");
       expect(classes).not.toMatch(/border-foreground\/\d/);
     }

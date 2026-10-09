@@ -93,7 +93,8 @@ describe("screens — the buying path answers questions where they are asked", (
     const pdp = read("src/app/products/[handle]/page.tsx");
     expect(pdp).not.toContain("ProductFacts");
     expect(pdp).not.toContain('label="Specification"');
-    expect(pdp).toContain("ROAST_LABELS");
+    // Roast still sits with the name, unless the name already says it.
+    expect(pdp).toContain("roastNote(product)");
   });
 });
 
@@ -129,13 +130,13 @@ describe("screens — one ground, one recipe (§105)", () => {
 
   it("never reaches past the token system", () => {
     // Each of these was a way a page drifted from the rest: a second
-    // display register, hand-mixed borders, a second corner radius, an
+    // display register, hand-mixed borders, a third corner radius, an
     // uppercase label, a raw palette ramp.
     const banned = [
       /type-display/,
       /type-utility/,
       /border-foreground\/\d/,
-      /rounded-md/,
+      /rounded-(md|lg|xl)\b/,
       /\buppercase\b/,
       /\btracking-/,
       /(bg|text|border)-(soil|terrace|sage|mist|sun)-\d/,
@@ -170,9 +171,9 @@ describe("screens — the contour leads its content", () => {
   });
 
   it("keeps trailing labels only where they sign off", () => {
-    expect(read("src/components/layout/site-footer.tsx")).toContain(
-      'align="end"',
-    );
+    // The footer's sign-off repeated the address beneath it and was cut
+    // (§107); the quiz's progress label is the one trailing label left.
+    expect(read("src/components/layout/site-footer.tsx")).not.toContain("<Contour");
     expect(read("src/components/quiz/quiz-shell.tsx")).toContain('align="end"');
   });
 });

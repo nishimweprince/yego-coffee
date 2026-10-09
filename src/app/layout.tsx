@@ -6,6 +6,7 @@ import "./globals.css";
 import { AnnouncementBar } from "@/components/layout/announcement-bar";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/components/layout/site-header";
+import { IMAGES } from "@/content/images";
 import { ChromeScroll } from "@/components/layout/chrome-scroll";
 import { AnalyticsRoot } from "@/components/analytics/analytics-root";
 import { env, getAnalyticsEnv } from "@/lib/env";
@@ -50,11 +51,11 @@ export const metadata: Metadata = {
     title: "Yego Coffee",
     description:
       "Family-owned Rwandan coffee, roasted in Somerville, Massachusetts.",
-    images: ["/brand/brew.jpg"],
+    images: [IMAGES.bagsLineup.src],
   },
   twitter: {
     card: "summary_large_image",
-    images: ["/brand/brew.jpg"],
+    images: [IMAGES.bagsLineup.src],
   },
 };
 

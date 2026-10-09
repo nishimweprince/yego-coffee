@@ -6,8 +6,9 @@ import { cn } from "@/lib/utils";
  * Button (plan.md §17.6).
  *
  * shadcn's structure — cva variants, asChild-free for now — with the
- * visual language replaced entirely. Corners are softly rounded
- * (--radius-sm), carrying some of the warmth alongside the typeface.
+ * visual language replaced entirely. Corners use the control radius
+ * (--radius-control, 4px), a step softer than the 2px surfaces around
+ * them, so a button reads as something to press.
  * Interaction is communicated by colour and rule changes, not floating
  * shadows or movement. This keeps actions tactile without turning every
  * link into a card-like object.
@@ -25,14 +26,14 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        /* Green on every surface. Following --accent would turn this
-           gold on dark, where white text measures 1.85:1. */
+        /* Ink on paper, paper on the dark surfaces. Kept off --accent
+           so roast stays rare enough to mean something (§106). */
         primary:
-          "bg-primary text-primary-foreground rounded-sm hover:bg-primary-hover",
+          "bg-primary text-primary-foreground rounded-control hover:bg-primary-hover",
         secondary:
-          "border border-rule text-foreground rounded-sm hover:border-foreground hover:bg-muted",
+          "border border-rule text-foreground rounded-control hover:border-foreground hover:bg-muted",
         ghost:
-          "text-foreground rounded-sm hover:bg-muted",
+          "text-foreground rounded-control hover:bg-muted",
         /* Editorial link: the rule grows from the leading edge, the
            way a pen underlines — not a fade-in. */
         link: [

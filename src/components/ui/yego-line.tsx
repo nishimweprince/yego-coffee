@@ -35,7 +35,7 @@ export function YegoLine({
       <p className="label text-muted-foreground">{reassurance.question}</p>
 
       <div className="mt-stack-sm flex flex-wrap items-baseline gap-x-4 gap-y-stack-xs">
-        <p className="font-display text-h1 font-semibold text-accent">Yego.</p>
+        <p className="font-display text-h1 font-medium text-accent">Yego.</p>
         <p className="max-w-prose flex-1 text-body-m text-muted-foreground">
           {reassurance.html}{" "}
           <Link

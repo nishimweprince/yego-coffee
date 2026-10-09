@@ -16,6 +16,11 @@ import { extendTailwindMerge } from "tailwind-merge";
  */
 const twMerge = extendTailwindMerge({
   extend: {
+    // `rounded-control` (--radius-control) is a custom name too; without
+    // this, `cn("rounded-sm", "rounded-control")` keeps both.
+    theme: {
+      radius: ["control"],
+    },
     classGroups: {
       "font-size": [
         {

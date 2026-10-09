@@ -2,6 +2,7 @@ import Image from "next/image";
 import { Contour } from "@/components/ui/contour";
 import { CAFE } from "@/content/cafe";
 import { HOME } from "@/content/home";
+import { IMAGES } from "@/content/images";
 
 /**
  * The café — the last thing on the page, and the one place on it.
@@ -52,10 +53,8 @@ export function CafeBlock() {
           </div>
 
           <Image
-            src="/brand/cup.jpg"
-            alt="A cup of coffee at the Yego Coffee café"
-            width={1000}
-            height={1500}
+            {...IMAGES.cafeCounter}
+            alt={IMAGES.cafeCounter.alt}
             sizes="(min-width: 1024px) 45vw, 100vw"
             loading="lazy"
             className="aspect-[4/3] w-full rounded-sm object-cover"

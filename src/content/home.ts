@@ -23,10 +23,8 @@
 
 export type DiscoveryCard = {
   label: string;
-  /** Handle of the coffee this card leads to, or null for the quiz. */
-  productHandle: string | null;
-  /** Prefills the quiz's flavour step (§9.2, §93.2). */
-  quizAnswer: string;
+  /** Handle of the coffee this card leads to. */
+  productHandle: string;
 };
 
 export const HOME = {
@@ -35,8 +33,6 @@ export const HOME = {
     body: "Pick your roast and delivery rhythm. We roast in Somerville and ship it fresh, so the good coffee never runs out.",
     primaryCta: { label: "Start a subscription", href: "/subscriptions" },
     secondaryCta: { label: "Find my coffee", href: "/quiz" },
-    /** Verified facts only (§88): ownership, roastery, market. */
-    trust: ["Family owned", "Roasted in Somerville", "Ships across the US"],
   },
 
   about: {
@@ -51,27 +47,16 @@ export const HOME = {
   discovery: {
     heading: "How do you take your coffee?",
     /**
-     * §90.02's cards. Three lead to a real coffee; the fourth opens the
-     * quiz. §90.02 maps "Bright & Complex" to Gatare, which is the
-     * `light-roast` handle — they are one product (§96.3).
+     * One card per coffee. §90.02's fourth card opened the quiz; the
+     * finder section directly below does that with a photograph, so
+     * the card was a second door to the same room (§107). §90.02 maps
+     * "Bright & Complex" to Gatare, which is the `light-roast` handle —
+     * they are one product (§96.3).
      */
     cards: [
-      {
-        label: "Bright & Complex",
-        productHandle: "light-roast",
-        quizAnswer: "bright",
-      },
-      {
-        label: "Rich & Chocolatey",
-        productHandle: "dark-roast",
-        quizAnswer: "rich",
-      },
-      {
-        label: "Smooth & Balanced",
-        productHandle: "medium-roast",
-        quizAnswer: "smooth",
-      },
-      { label: "Surprise Me", productHandle: null, quizAnswer: "unsure" },
+      { label: "Bright & Complex", productHandle: "light-roast" },
+      { label: "Rich & Chocolatey", productHandle: "dark-roast" },
+      { label: "Smooth & Balanced", productHandle: "medium-roast" },
     ] satisfies DiscoveryCard[],
   },
 
@@ -131,13 +116,9 @@ export const HOME = {
       "Tell us how often you brew",
       "We roast, pack, and send it",
     ],
-    /** Factual reassurances: cadences exist in the store, the account
-     * page manages subscriptions, every bag is roasted before it ships. */
-    benefits: [
-      "Monthly or every two months",
-      "Roasted before it ships",
-      "Manage it from your account",
-    ],
+    /** Factual only: cadences exist in the store, the account page
+     * manages subscriptions, every bag is roasted before it ships. */
+    lede: "Monthly or every two months, roasted before it ships, and managed from your account.",
     cta: { label: "Start a subscription", href: "/subscriptions" },
   },
 } as const;

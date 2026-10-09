@@ -7,6 +7,7 @@ import { BRAND } from "@/content/brand";
 import { HOME } from "@/content/home";
 import { hasShopifyCredentials } from "@/lib/env";
 import { getPage } from "@/lib/shopify/storefront";
+import { IMAGES } from "@/content/images";
 
 export const metadata: Metadata = {
   title: "Our story",
@@ -35,10 +36,8 @@ export default async function AboutPage() {
         <div className="mx-auto grid max-w-6xl items-center gap-stack-lg lg:grid-cols-2 lg:gap-16">
           <figure>
             <Image
-              src="/brand/founders.jpg"
-              alt="Fatuma and Francois Tuyishime, the family behind Yego Coffee"
-              width={1500}
-              height={1000}
+              {...IMAGES.founders}
+              alt={IMAGES.founders.alt}
               sizes="(min-width: 1024px) 45vw, 100vw"
               priority
               className="aspect-[3/2] w-full rounded-sm object-cover"
@@ -77,6 +76,41 @@ export default async function AboutPage() {
           />
         </section>
       ) : null}
+
+      {/* The roastery, shown rather than described: three photographs,
+          unequal on purpose so they read as a set and not a grid of
+          cards. One caption, because the machine's name is printed on
+          it; the others need none. */}
+      <section aria-label="The roastery" className="px-page-x py-section-md">
+        <div className="mx-auto grid max-w-6xl grid-cols-2 gap-stack-md lg:grid-cols-12 lg:gap-stack-lg">
+          <figure className="col-span-2 lg:col-span-5">
+            <Image
+              {...IMAGES.roasterLoring}
+              alt={IMAGES.roasterLoring.alt}
+              sizes="(min-width: 1024px) 40vw, 100vw"
+              loading="lazy"
+              className="aspect-[4/5] w-full rounded-sm object-cover"
+            />
+            <figcaption className="mt-stack-sm label text-muted-foreground">
+              The Loring roaster
+            </figcaption>
+          </figure>
+          <Image
+            {...IMAGES.roasterBeans}
+            alt={IMAGES.roasterBeans.alt}
+            sizes="(min-width: 1024px) 32vw, 50vw"
+            loading="lazy"
+            className="aspect-[3/4] w-full rounded-sm object-cover lg:col-span-4 lg:mt-section-sm"
+          />
+          <Image
+            {...IMAGES.basket}
+            alt={IMAGES.basket.alt}
+            sizes="(min-width: 1024px) 24vw, 50vw"
+            loading="lazy"
+            className="aspect-[3/4] w-full rounded-sm object-cover lg:col-span-3 lg:self-end"
+          />
+        </div>
+      </section>
 
       <section className="px-page-x py-section-md">
         <div className="mx-auto max-w-6xl">

@@ -16,20 +16,21 @@ import { cva, type VariantProps } from "class-variance-authority";
  */
 export const controlVariants = cva(
   [
-    "rounded-sm border transition-colors",
+    "border transition-colors",
     "has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-ring",
   ],
   {
     variants: {
       shape: {
         /** A short toggle: roast, size, grind, cups. */
-        chip: "inline-flex min-h-11 items-center px-4 text-body-s",
+        chip: "inline-flex min-h-11 rounded-control items-center px-4 text-body-s",
         /** A single figure. */
-        square: "grid h-12 w-12 place-items-center text-body-m tabular-nums",
+        square: "grid h-12 w-12 rounded-control place-items-center text-body-m tabular-nums",
         /** A full-width option with a radio mark and a price. */
-        row: "flex min-h-11 items-center justify-between gap-4 px-4 py-3",
-        /** A tall answer with a headline. */
-        card: "group flex min-h-32 flex-col justify-between p-stack-md text-left",
+        row: "flex min-h-11 rounded-control items-center justify-between gap-4 px-4 py-3",
+        /** A tall answer with a headline. Large enough to read as a
+            surface, so it takes the surface corner. */
+        card: "group flex min-h-32 flex-col justify-between rounded-sm p-stack-md text-left",
       },
       state: {
         idle: "border-border hover:border-foreground",

@@ -9,7 +9,7 @@ import { PageHeader } from "@/components/ui/page-header";
 import { YegoLine } from "@/components/ui/yego-line";
 import { getReassurances } from "@/lib/content/reassurance";
 import { COLLECTION_HANDLES } from "@/lib/catalog/collections";
-import { ROAST_LABELS, roastsOf } from "@/lib/catalog/facets";
+import { roastNote } from "@/lib/catalog/facets";
 import { env } from "@/lib/env";
 import { breadcrumbJsonLd, productJsonLd } from "@/lib/seo/structured-data";
 import { hasShopifyCredentials } from "@/lib/env";
@@ -62,7 +62,7 @@ export default async function ProductPage({
   ]);
   const related = (coffee?.products ?? []).filter((p) => p.handle !== handle);
 
-  const roasts = roastsOf(product);
+  const roast = roastNote(product);
 
   const hero = product.media[0] ?? product.featuredImage;
 
@@ -124,9 +124,9 @@ export default async function ProductPage({
                 a control on this page, so it sits with the name rather
                 than in a specification block that repeated the size and
                 grind pickers word for word. */}
-            {roasts.length > 0 ? (
+            {roast ? (
               <p className="mt-stack-sm label text-muted-foreground">
-                {roasts.map((roast) => ROAST_LABELS[roast]).join(" · ")} roast
+                {roast} roast
               </p>
             ) : null}
 

@@ -48,10 +48,8 @@ export default async function HomePage() {
   // The cards feature the coffees, not the 5 lb Bag: that is a format
   // of the same three roasts, and repeating them reads as a longer
   // catalogue than Yego has.
-  const featuredHandles = new Set(
-    HOME.discovery.cards.flatMap((card) =>
-      card.productHandle ? [card.productHandle] : [],
-    ),
+  const featuredHandles = new Set<string>(
+    HOME.discovery.cards.map((card) => card.productHandle),
   );
   const lineup = (coffee?.products ?? []).filter((p) =>
     featuredHandles.has(p.handle),

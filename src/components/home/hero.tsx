@@ -1,7 +1,5 @@
 import Image from "next/image";
 import Link from "next/link";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowDown } from "@fortawesome/free-solid-svg-icons/faArrowDown";
 import { buttonVariants } from "@/components/ui/button";
 import { HeroVideo } from "@/components/home/hero-video";
 import { HOME } from "@/content/home";
@@ -31,6 +29,10 @@ const FILM = {
  * The still is server-rendered and is the LCP element. The film is a
  * client island layered over it, skipped entirely under reduced
  * motion — see HeroVideo. Everything below the video is static.
+ *
+ * A headline, one sentence and two actions — nothing else. The trust
+ * row and scroll cue that sat under the buttons repeated what the
+ * about section says one scroll later (§107).
  */
 export function Hero() {
   return (
@@ -81,29 +83,6 @@ export function Hero() {
             >
               {HOME.hero.secondaryCta.label}
             </Link>
-          </div>
-
-          {/* Verified facts only: ownership, roastery, market. A ruled
-              row in the small register, so they read as provenance
-              rather than as a feature list with ticks. */}
-          <div className="mt-section-sm flex flex-wrap items-end justify-between gap-stack-md border-t border-rule pt-stack-md">
-            <ul className="flex flex-wrap gap-x-6 gap-y-stack-xs">
-              {HOME.hero.trust.map((item) => (
-                <li key={item} className="label text-muted-foreground">
-                  {item}
-                </li>
-              ))}
-            </ul>
-
-            {/* Says what is below the fold on a screen that is entirely
-                picture, and moves the reader there. */}
-            <a
-              href="#home-about-heading"
-              className="label inline-flex items-center gap-2 text-muted-foreground underline-offset-4 transition-colors hover:text-foreground hover:underline"
-            >
-              <FontAwesomeIcon icon={faArrowDown} className="h-3 w-3" aria-hidden />
-              Our story
-            </a>
           </div>
         </div>
       </div>

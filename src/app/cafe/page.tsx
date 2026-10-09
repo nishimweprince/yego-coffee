@@ -5,6 +5,7 @@ import { Contour } from "@/components/ui/contour";
 import { BRAND } from "@/content/brand";
 import { CAFE } from "@/content/cafe";
 import { assertCafeDetailsAreReal } from "@/lib/content/cafe-guard";
+import { IMAGES } from "@/content/images";
 
 export const metadata: Metadata = {
   title: "Café",
@@ -56,10 +57,8 @@ export default function CafePage() {
         <div className="mx-auto grid max-w-6xl items-center gap-stack-lg lg:grid-cols-2 lg:gap-16">
           <figure className="overflow-hidden rounded-sm">
             <Image
-              src="/brand/cup.jpg"
-              alt="A cup of coffee at the Yego Coffee café"
-              width={1000}
-              height={1500}
+              {...IMAGES.cafeCounter}
+              alt={IMAGES.cafeCounter.alt}
               sizes="(min-width: 1024px) 45vw, 100vw"
               priority
               className="aspect-[4/5] w-full object-cover"

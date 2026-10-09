@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { ProductGrid } from "@/components/commerce/product-grid";
 import { RoastFilter } from "@/components/commerce/roast-filter";
 import { StoreUnavailable } from "@/components/commerce/store-unavailable";
 import { PageHeader } from "@/components/ui/page-header";
 import { Section } from "@/components/ui/section";
+import { IMAGES } from "@/content/images";
 import { SHOP_SECTIONS } from "@/lib/catalog/collections";
 import {
   availableRoasts,
@@ -58,6 +60,18 @@ export default async function ShopPage({
           <PageHeader
             title="Coffee"
             lede="Grown in Rwanda. Roasted in Somerville."
+          />
+
+          {/* Atmosphere, not merchandise: the bags in this photograph
+              are not the products below, so it carries no link. The
+              source is 1600px wide, so it is never asked to fill more
+              than the 6xl container. */}
+          <Image
+            {...IMAGES.bagsLineup}
+            alt={IMAGES.bagsLineup.alt}
+            sizes="(min-width: 1152px) 1152px, 100vw"
+            priority
+            className="mt-section-sm aspect-[21/9] w-full rounded-sm object-cover"
           />
 
           <div className="mt-section-sm flex flex-wrap items-center justify-between gap-stack-md">

@@ -105,14 +105,16 @@ describe("design refresh — the quiet page", () => {
     }
   });
 
-  it("answers shipping and cancellation with a Yego line, and rules twice", () => {
+  it("answers shipping and cancellation with a Yego line, and rules once", () => {
     // One Yego line per question a customer asks: shipping beside the
     // prices, cancellation beside the plans. Nowhere else.
     const files = SECTION_FILES.map(([, file]) => read(file));
     const count = (needle: string) =>
       files.reduce((n, source) => n + (source.match(needle) ? 1 : 0), 0);
     expect(count("<YegoLine")).toBe(2);
-    expect(count("<Contour")).toBe(2);
+    // The contour is allowed twice per page; the home page now uses it
+    // once, on the café's place name (§107).
+    expect(count("<Contour")).toBe(1);
   });
 
   it("drops the decorative eyebrow from every home section", () => {

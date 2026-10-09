@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import { QuizShell } from "@/components/quiz/quiz-shell";
 import { StoreUnavailable } from "@/components/commerce/store-unavailable";
+import { IMAGES } from "@/content/images";
 import { SUBSCRIPTION_PRODUCT_FOR_COFFEE } from "@/content/subscription";
 import { COLLECTION_HANDLES } from "@/lib/catalog/collections";
 import { hasShopifyCredentials } from "@/lib/env";
@@ -61,8 +62,8 @@ export default async function QuizPage({ searchParams }: PageProps<"/quiz">) {
         />
         <div className="relative hidden min-h-[28rem] lg:block">
           <Image
-            src="/brand/roast.jpg"
-            alt="Freshly roasted Yego coffee"
+            src={IMAGES.bagFilling.src}
+            alt={IMAGES.bagFilling.alt}
             fill
             sizes="(min-width: 1024px) 30vw, 0px"
             loading="lazy"

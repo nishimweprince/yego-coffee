@@ -6868,3 +6868,80 @@ headline rises on load (`::view-transition-*` rules in globals.css).
 No slides and no direction — the navigation is flat, so left and right
 would encode nothing true. The browser's whole-document crossfade is
 switched off so the chrome holds still. Reduced motion zeroes it.
+
+
+# 106. Relaxed Roastery (supersedes §105.2 accent, §105.3 primary, §105.4 weight and radius)
+
+Implemented 2026-10-09. The owners asked for a calmer, more grown-up
+site, with queencitycollectivecoffee.com as the reference for colour,
+boldness, corners and restraint. Recorded so it is not re-litigated.
+
+## 106.1 What the reference actually differs on
+
+Read from QCC's live theme: page `#FBFAF9` (Yego's paper is already
+`#FBFAF8`), headings at weight 500, black buttons, 5px button corners
+and 2px everywhere else, and near-black bands in the page body. Yego
+already had one sans and no uppercase. So this is four moves, not a
+redesign. QCC's uppercase section headings are **not** adopted.
+
+## 106.2 Owner decisions
+
+| Question | Answer |
+|---|---|
+| Primary | Ink. Buttons and active states are ink on paper; roast stays the single accent for links, "Yego." and the focus ring. |
+| Type | DM Sans stays. Headings 600 → 500; `display-xl` caps at 4.5rem, `display-l` at 2.75rem. |
+| Radius | Two, by role: `--radius-control` 4px (buttons, chips, squares, rows), `--radius-sm` 2px (images, cards, panels, inputs, the quiz answer card). `rounded-md/lg/xl` are banned. |
+| Dark bands | None. Paper everywhere; soil stays footer and film hero only. The full-height video hero stays; the owners are sourcing a new video. |
+| Bag photos | Editorial only, never a product image. Visible bag names are acceptable; alt text never names a coffee the store does not sell. |
+| Stock images | `cup.jpg` and `roast.jpg` were not Yego's own and are gone. |
+
+## 106.3 Photography
+
+Source: the owners' `Docs/Images` folder. Each chosen photo was
+processed once to a 2400px long edge, JPEG q80, with all metadata
+stripped. They're catalogued in `src/content/images.ts` and guarded by
+`images.test.ts`, which checks that each file exists, that its alt is
+non-empty, and that no alt names an unsold coffee.
+
+The bags in these photos are labelled Isuku, Malayika, Ukuri, Zuba,
+Hobe and Heritage. The store sells Medium, Dark and Gatare (§103.1),
+and none of those bag names is a SKU.
+
+| Slot | Image |
+|---|---|
+| Home about, /about lead | `founders.jpg` |
+| /about roastery set (new) | `roaster-loring.jpg`, `roaster-beans.jpg`, `agaseke-basket.jpg` |
+| Home finder | `bags-on-burlap.jpg` |
+| Home subscriptions (new) | `bags-trio.jpg` |
+| Home café, /cafe | `cafe-counter.jpg` |
+| Quiz | `bag-filling.jpg` |
+| Contact | `roaster-portrait.jpg` |
+| Shop header (new), OG image | `bags-lineup.jpg` |
+
+The café shot with the menu board was dropped. It is the same frame as
+the founders photograph, so /cafe would have repeated /about.
+
+Held in reserve and not committed: the second roaster-pour shot, the
+two near-duplicate burlap flat-lays, and the single-bag studio shots.
+
+
+# 107. Minimal pass — cutting what repeats
+
+Implemented 2026-10-09, after §106. The aim was a more minimal site,
+with less that reads as generated. The test for every element was
+whether it says something the reader has not just been told. Each cut
+below failed that test.
+
+| Cut | Why |
+|---|---|
+| Hero trust row ("Family owned", "Roasted in Somerville", "Ships across the US") and the "Our story" scroll cue | The about section says all three one scroll later. The hero is now a headline, one sentence and two actions. |
+| Home about fact rail (Origin / Roastery / Ownership) and its contour | It restated the paragraphs beside it as labels. /about keeps the facts list. The home page now uses the contour once, on the café. |
+| The fourth discovery card ("Surprise Me", an outlined box with a search icon) | The finder section directly below opens the quiz with a photograph. The lineup is three cards for three coffees. |
+| Roast label under a product whose name already says it | "Dark Roast" over "Dark". `roastNote()` in `facets.ts` prints the roast only when the title does not carry it, so "5 lb Bag" still shows "Dark, Medium, Light". |
+| "Choose options" button on every product card | The whole card already links to the product. A grid of identical outlined buttons was template chrome. "Sold out" moves into the meta line. |
+| Middle-dot meta strings (`A · B · C`) | Customer-facing joins are commas. |
+| /subscriptions benefits label row, "What you get" list and the pasted cancellation policy | Shipping and cancellation are each answered once with a Yego line beside the plans, and each links to the full policy. The benefits became one plain lede sentence. |
+| Footer contour sign-off ("Somerville, Massachusetts") | It repeated the address printed directly beneath it. |
+
+Kept deliberately: the plan-row arrows (§105.5), the Yego lines (one per
+customer question), the full-height film hero, and both hero actions.

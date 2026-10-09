@@ -3,6 +3,7 @@ import {
   availableRoasts,
   filterByRoast,
   parseRoastParam,
+  roastNote,
   roastParamValue,
   roastsOf,
 } from "./facets";
@@ -153,5 +154,22 @@ describe("query string round-trip", () => {
 
   it("omits the parameter entirely when nothing is selected", () => {
     expect(roastParamValue([])).toBeNull();
+  });
+});
+
+describe("roastNote", () => {
+  it("is silent when the name already carries the roast", () => {
+    expect(roastNote({ ...card("dark-roast", ["dark"]), title: "Dark Roast" })).toBeNull();
+  });
+
+  it("names the roasts a title does not", () => {
+    expect(
+      roastNote({ ...card("5-lb-bag", ["dark", "medium", "light"]), title: "5 lb Bag" }),
+    ).toBe("Dark, Medium, Light");
+    expect(roastNote({ ...card("light-roast", ["light"]), title: "Gatare Anaerobic Process." })).toBe("Light");
+  });
+
+  it("is silent when there is no roast at all", () => {
+    expect(roastNote({ ...card("mug"), title: "Yego 12 oz Mugs" })).toBeNull();
   });
 });

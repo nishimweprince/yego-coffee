@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { BRAND } from "@/content/brand";
 import { FOOTER_GROUPS } from "@/content/navigation";
-import { Contour } from "@/components/ui/contour";
 
 /**
  * Footer (plan.md §8.12), carrying only confirmed facts (§88).
@@ -17,12 +16,11 @@ import { Contour } from "@/components/ui/contour";
 export function SiteFooter() {
   return (
     <footer data-surface="soil" className="mt-auto px-page-x py-section-sm">
-      {/* A sign-off, not a heading: it trails. */}
-      <Contour label="Somerville, Massachusetts" align="end" />
-
-      <div className="mt-stack-lg grid gap-stack-lg sm:grid-cols-2 lg:grid-cols-[1.2fr_1fr_1fr_1fr]">
+      {/* No contour sign-off: its label repeated the address printed
+          directly beneath it (§107). */}
+      <div className="grid gap-stack-lg sm:grid-cols-2 lg:grid-cols-[1.2fr_1fr_1fr_1fr]">
         <div>
-          <p className="font-display text-h2 font-semibold">{BRAND.name}</p>
+          <p className="font-display text-h2 font-medium">{BRAND.name}</p>
           <p className="mt-stack-xs text-body-s text-muted-foreground">
             {BRAND.shopAddress}
           </p>

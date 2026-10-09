@@ -52,6 +52,20 @@ export function roastsOf(
   return [...new Set([...fromTags, ...fromOptions])];
 }
 
+/**
+ * The roast line under a product's name, or null when the name already
+ * says it. "Dark Roast" over "Dark" repeats itself; "5 lb Bag" over
+ * "Dark, Medium, Light" tells you something (§107).
+ */
+export function roastNote(
+  product: ProductCardModel | ProductDetailModel,
+): string | null {
+  const roasts = roastsOf(product);
+  const title = product.title.toLowerCase();
+  if (roasts.length === 0 || roasts.every((r) => title.includes(r))) return null;
+  return roasts.map((r) => ROAST_LABELS[r]).join(", ");
+}
+
 /** Products matching any selected roast. No selection matches all. */
 export function filterByRoast<T extends ProductCardModel>(
   products: T[],

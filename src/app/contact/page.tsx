@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import { BRAND } from "@/content/brand";
 import { CAFE } from "@/content/cafe";
+import { IMAGES } from "@/content/images";
 
 export const metadata: Metadata = {
   title: "Contact",
@@ -21,10 +22,8 @@ export default function ContactPage() {
       <div className="mx-auto grid max-w-6xl items-center gap-stack-lg lg:grid-cols-2 lg:gap-16">
         <figure className="overflow-hidden rounded-sm">
           <Image
-            src="/brand/brew.jpg"
-            alt="A cup of Yego coffee being brewed"
-            width={1000}
-            height={1500}
+            {...IMAGES.roasterPortrait}
+            alt={IMAGES.roasterPortrait.alt}
             sizes="(min-width: 1024px) 45vw, 100vw"
             priority
             className="aspect-[4/5] w-full object-cover"
