@@ -22,7 +22,12 @@ export function productJsonLd(
     "@type": "Product",
     name: product.title,
     description: product.description || undefined,
-    image: product.media.map((m) => m.url).slice(0, 5),
+    // Google does not read HEIC, which several store photographs are,
+    // so the JPEG rendition of the featured image leads.
+    image: [
+      ...(product.shareImageUrl ? [product.shareImageUrl] : []),
+      ...product.media.map((m) => m.url).filter((u) => !/\.heic(\?|$)/i.test(u)),
+    ].slice(0, 5),
     brand: { "@type": "Brand", name: BRAND.name },
     url,
     offers: {

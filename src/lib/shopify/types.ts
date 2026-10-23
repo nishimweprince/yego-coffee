@@ -111,6 +111,16 @@ export type ProductDetailModel = ProductCardModel & {
   variants: ProductVariantModel[];
   seoTitle: string | null;
   seoDescription: string | null;
+  /** Subscription only: there is no one-time purchase (§109). */
+  requiresSellingPlan: boolean;
+  /**
+   * Bags in each delivery, from the `custom.bags_per_delivery`
+   * metafield. Null when the product does not carry it, and then no
+   * per-bag price is shown.
+   */
+  bagsPerDelivery: number | null;
+  /** The featured image as a JPEG, for link previews. */
+  shareImageUrl: string | null;
 };
 
 export type CartLineModel = {

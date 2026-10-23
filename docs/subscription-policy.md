@@ -15,14 +15,14 @@ A Yego Coffee subscription sends you freshly roasted coffee on a schedule you ch
 ### How often
 
 - **Once a month:** one delivery every month.
-- **Twice a month:** one delivery every 2 weeks.
+- **Every 2 weeks:** 26 deliveries a year, so some months have three.
 
 The schedule you picked is shown at checkout and in your order confirmation.
 
 ### What you pay
 
-- A subscription bag costs the same as a one-time bag. No discount applies.
-- Shipping is a flat $7 on each delivery.
+- Roaster's Choice is sold by subscription only. The more bags in each delivery, the lower the price per bag.
+- Shipping is $7 on each delivery, and free on orders over $40. **[confirm the free threshold also applies to recurring orders, not only the first]**
 - You are charged when each order is processed, not all at once. **[confirm: the billing moment set in the subscription app]**
 - The first order is charged at checkout.
 

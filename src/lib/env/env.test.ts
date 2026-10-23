@@ -3,6 +3,7 @@ import {
   getAnalyticsEnv,
   getShopifyEnv,
   hasShopifyCredentials,
+  parseCore,
   resetShopifyEnvCache,
 } from ".";
 
@@ -96,5 +97,35 @@ describe("getAnalyticsEnv", () => {
   it("still reports a malformed PostHog host", () => {
     vi.stubEnv("NEXT_PUBLIC_POSTHOG_HOST", "us.i.posthog.com");
     expect(() => getAnalyticsEnv()).toThrow(/NEXT_PUBLIC_POSTHOG_HOST/);
+  });
+});
+
+describe("parseCore", () => {
+  it("defaults the site URL to localhost outside production", () => {
+    expect(parseCore({ NODE_ENV: "development" }).NEXT_PUBLIC_SITE_URL).toBe(
+      "http://localhost:3000",
+    );
+  });
+
+  it("refuses a production deploy that would canonicalise to localhost", () => {
+    expect(() =>
+      parseCore({ NODE_ENV: "production", VERCEL_ENV: "production" }),
+    ).toThrow(/NEXT_PUBLIC_SITE_URL/);
+  });
+
+  it("accepts the production domain", () => {
+    expect(
+      parseCore({
+        NODE_ENV: "production",
+        VERCEL_ENV: "production",
+        NEXT_PUBLIC_SITE_URL: "https://yegocoffee.com",
+      }).NEXT_PUBLIC_SITE_URL,
+    ).toBe("https://yegocoffee.com");
+  });
+
+  it("leaves preview deploys on their default", () => {
+    expect(() =>
+      parseCore({ NODE_ENV: "production", VERCEL_ENV: "preview" }),
+    ).not.toThrow();
   });
 });

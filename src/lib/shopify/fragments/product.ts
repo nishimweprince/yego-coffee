@@ -123,6 +123,19 @@ export const PRODUCT_VARIANT_FRAGMENT = /* GraphQL */ `
   }
 `;
 
+/**
+ * `requiresSellingPlan` marks the Roaster's Choice products, which can
+ * only be bought on a schedule: the product page must not offer them
+ * "one time" (§109).
+ *
+ * `bagsPerDelivery` is the one metafield this storefront reads
+ * (`custom.bags_per_delivery`). It is how a plan's per-bag price is
+ * worked out; the count is never parsed from a title (§109).
+ *
+ * `shareImage` is the featured image re-encoded by Shopify's CDN as a
+ * JPEG. Several of the store's photographs were uploaded as HEIC, which
+ * social crawlers do not render, so link previews use this instead.
+ */
 export const PRODUCT_DETAIL_FRAGMENT = /* GraphQL */ `
   fragment ProductDetailFragment on Product {
     ...ProductCardFragment
@@ -145,6 +158,13 @@ export const PRODUCT_DETAIL_FRAGMENT = /* GraphQL */ `
     seo {
       title
       description
+    }
+    requiresSellingPlan
+    bagsPerDelivery: metafield(namespace: "custom", key: "bags_per_delivery") {
+      value
+    }
+    shareImage: featuredImage {
+      url(transform: { preferredContentType: JPG, maxWidth: 1200 })
     }
   }
 `;

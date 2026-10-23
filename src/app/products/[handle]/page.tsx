@@ -36,7 +36,9 @@ export async function generateMetadata({
       title: product.title,
       description: product.description.slice(0, 200) || undefined,
       url: `/products/${product.handle}`,
-      images: product.featuredImage ? [product.featuredImage.url] : undefined,
+      // The JPEG rendition: several store photographs are HEIC, which
+      // link-preview crawlers do not render.
+      images: product.shareImageUrl ? [product.shareImageUrl] : undefined,
     },
   };
 }

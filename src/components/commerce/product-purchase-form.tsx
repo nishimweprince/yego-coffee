@@ -12,6 +12,8 @@ import { addToCartAction } from "@/app/actions/cart";
 import { cartChanged, openCart } from "@/lib/cart/events";
 import { track } from "@/lib/analytics/analytics";
 import { formatMoneyCompact } from "@/lib/formatting/money";
+import { perBagPrice } from "@/lib/catalog/plans";
+import { byLongestInterval } from "@/lib/shopify/cadence";
 import {
   defaultVariant,
   findVariant,
@@ -41,18 +43,36 @@ export function ProductPurchaseForm({
   const [pending, startTransition] = useTransition();
 
   const variant = findVariant(product.variants, selection) ?? initial;
-  const sellable = Boolean(variant?.availableForSale);
 
   // Subscriptions are a property of the *variant*, not the product:
   // Gatare's plan covers only its 5 lb variant (§96.6). Switching size
   // can therefore remove the schedule the customer picked, so a plan
   // that no longer exists on the selected variant is dropped rather
   // than silently carried into the cart.
-  const plans = variant?.subscriptionOptions ?? [];
-  const activePlanId = plans.some((p) => p.sellingPlanId === planId)
-    ? planId
-    : null;
-  const activePlan = plans.find((p) => p.sellingPlanId === activePlanId);
+  const plans = byLongestInterval(variant?.subscriptionOptions ?? []);
+  const required = product.requiresSellingPlan;
+  // A subscription-only product has no one-time purchase to fall back
+  // to (§109), so it always has a plan selected — the monthly one
+  // until the customer picks another.
+  const activePlan =
+    plans.find((p) => p.sellingPlanId === planId) ??
+    (required ? plans[0] : undefined);
+  const activePlanId = activePlan?.sellingPlanId ?? null;
+
+  // Shopify rejects a subscription-only line without a plan, so a
+  // variant that carries none cannot be bought here at all.
+  const unavailableAsSubscription = required && plans.length === 0;
+  const sellable = Boolean(variant?.availableForSale) && !unavailableAsSubscription;
+  const actionLabel = sellable
+    ? "Add to cart"
+    : unavailableAsSubscription
+      ? "Not available as a subscription"
+      : "Sold out";
+  const shownPrice = activePlan ? activePlan.price : variant?.price;
+  const bagPrice =
+    shownPrice && product.bagsPerDelivery && product.bagsPerDelivery > 1
+      ? perBagPrice(shownPrice, product.bagsPerDelivery)
+      : null;
 
   // Shopify caps at whatever it is meaningfully tracking. Yego's store
   // sells past zero and reports negative counts, so this is not a plain
@@ -93,12 +113,19 @@ export function ProductPurchaseForm({
   return (
     <div className="space-y-stack-lg">
       {variant ? (
-        <ProductPrice
-          price={activePlan ? activePlan.price : variant.price}
-          compareAtPrice={
-            activePlan ? activePlan.compareAtPrice : variant.compareAtPrice
-          }
-        />
+        <div>
+          <ProductPrice
+            price={activePlan ? activePlan.price : variant.price}
+            compareAtPrice={
+              activePlan ? activePlan.compareAtPrice : variant.compareAtPrice
+            }
+          />
+          {bagPrice ? (
+            <p className="mt-1 text-body-s text-muted-foreground">
+              {product.bagsPerDelivery} bags, {formatMoneyCompact(bagPrice)} a bag
+            </p>
+          ) : null}
+        </div>
       ) : null}
 
       <VariantSelector
@@ -111,7 +138,7 @@ export function ProductPurchaseForm({
       {variant ? (
         <DeliverySelector
           options={plans}
-          oneTimePrice={formatMoneyCompact(variant.price)}
+          oneTimePrice={required ? null : formatMoneyCompact(variant.price)}
           selectedPlanId={activePlanId}
           onSelect={(next) => {
             setError(null);
@@ -138,7 +165,7 @@ export function ProductPurchaseForm({
             disabled={!sellable || pending}
             className="flex-1"
           >
-            {pending ? "Adding…" : sellable ? "Add to cart" : "Sold out"}
+            {pending ? "Adding…" : actionLabel}
           </Button>
         </div>
 
@@ -187,7 +214,7 @@ export function ProductPurchaseForm({
             </p>
           </div>
           <Button onClick={handleAdd} disabled={!sellable || pending}>
-            {pending ? "Adding…" : sellable ? "Add to cart" : "Sold out"}
+            {pending ? "Adding…" : actionLabel}
             {/* The same action as the button above, so it needs a name
                 that tells the two apart in a screen reader's control
                 list rather than repeating "Add to cart" twice. */}

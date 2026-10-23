@@ -4,9 +4,8 @@ import { HomeAbout } from "@/components/home/home-about";
 import { HomeLineup } from "@/components/home/home-lineup";
 import { HomeStatement } from "@/components/home/home-statement";
 import { SubscriptionBlock } from "@/components/home/subscription-block";
-import { HOME } from "@/content/home";
 import { COLLECTION_HANDLES } from "@/lib/catalog/collections";
-import { featuredPlans, summarisePlans } from "@/lib/catalog/plans";
+import { summarisePlans } from "@/lib/catalog/plans";
 import { getReassurances } from "@/lib/content/reassurance";
 import { hasShopifyCredentials } from "@/lib/env";
 import { getCollection, getProduct } from "@/lib/shopify/storefront";
@@ -51,11 +50,8 @@ export default async function HomePage() {
   const planProducts = await Promise.all(
     (subscriptions?.products ?? []).map((p) => getProduct(p.handle)),
   );
-  const plans = featuredPlans(
-    summarisePlans(
-      planProducts.filter((p): p is NonNullable<typeof p> => p !== null),
-    ),
-    HOME.subscription.featuredHandles,
+  const plans = summarisePlans(
+    planProducts.filter((p): p is NonNullable<typeof p> => p !== null),
   );
 
   return (

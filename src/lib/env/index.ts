@@ -87,13 +87,33 @@ function format(issues: z.ZodIssue[]): string {
     .join("\n");
 }
 
-function parseCore(): CoreEnv {
-  const result = coreSchema.safeParse(process.env);
+/**
+ * The localhost default exists so development and preview deploys boot
+ * without ceremony. In a production Vercel deploy it is a silent
+ * misconfiguration: every canonical URL, Open Graph URL and JSON-LD
+ * `url` on the live site pointed at http://localhost:3000 for exactly
+ * this reason (review of 2026-10-23). Production must name its domain.
+ */
+export function parseCore(source: NodeJS.ProcessEnv = process.env): CoreEnv {
+  const result = coreSchema.safeParse(source);
   if (!result.success) {
     throw new Error(
       `Invalid environment configuration:\n${format(result.error.issues)}`,
     );
   }
+
+  const site = new URL(result.data.NEXT_PUBLIC_SITE_URL);
+  if (
+    source.VERCEL_ENV === "production" &&
+    (site.hostname === "localhost" || site.hostname === "127.0.0.1")
+  ) {
+    throw new Error(
+      "Invalid environment configuration:\n" +
+        "  NEXT_PUBLIC_SITE_URL: must be the production domain " +
+        "(https://yegocoffee.com) in a production deploy, not localhost",
+    );
+  }
+
   return result.data;
 }
 

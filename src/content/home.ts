@@ -103,30 +103,18 @@ export const HOME = {
 
   subscription: {
     heading: "Coffee subscriptions",
-    /**
-     * §90.07 names four plans. The store publishes eight, because it
-     * also carries a per-roast duplicate for Medium and Dark (§92.1) —
-     * eight near-identical rows is a configuration artefact, not a
-     * merchandising decision. These four are §90.07's, in its order;
-     * the rest are one click away in the subscriptions collection.
-     *
-     * A handle that stops existing simply drops out, and if none match
-     * the section falls back to everything Shopify returns.
-     */
-    featuredHandles: [
-      "monthly-drop",
-      "bi-monthly-drop",
-      "5-lb-bag-monthly-subscription",
-      "5-lb-bag-bi-monthly-subscription",
-    ],
+    /** Roaster's Choice: the customer chooses the bags, the grind and
+     * the schedule; the roasting team chooses the coffee (§109). */
     steps: [
-      "Choose your roast",
-      "Tell us how often you brew",
-      "We roast, pack, and send it",
+      "Choose how many bags",
+      "Choose whole bean or ground, and how often",
+      "We pick the coffee, roast it, and send it",
     ],
-    /** Factual only: cadences exist in the store, the account page
-     * manages subscriptions, every bag is roasted before it ships. */
-    lede: "Once or twice a month, roasted before it ships, and managed from your account.",
+    /** Factual only, from the Roaster's Choice product descriptions:
+     * the roasting team picks the coffee for every delivery, and the
+     * account page manages subscriptions. Cadences are not named here —
+     * they come from Shopify, beneath the plans (§109). */
+    lede: "Our roasting team picks the coffee for every delivery. Freshly roasted, and managed from your account.",
     cta: { label: "Start a subscription", href: "/subscriptions" },
   },
 } as const;

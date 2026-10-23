@@ -42,6 +42,9 @@ function detail(
     variants: [],
     seoTitle: null,
     seoDescription: null,
+    requiresSellingPlan: false,
+    bagsPerDelivery: null,
+    shareImageUrl: null,
   };
 }
 

@@ -104,6 +104,9 @@ describe("mapProductToDetail — subscription options", () => {
       descriptionHtml: "",
       images: { edges: [] },
       seo: null,
+      requiresSellingPlan: true,
+      bagsPerDelivery: null,
+      shareImage: null,
       variants: {
         edges: [
           {
@@ -126,7 +129,7 @@ describe("mapProductToDetail — subscription options", () => {
 
   it("labels frequency from the delivery policy", () => {
     const [option] = detailWith([allocation()]).variants[0].subscriptionOptions;
-    expect(option.frequencyLabel).toBe("Twice a month, every 2 weeks");
+    expect(option.frequencyLabel).toBe("Every 2 weeks");
   });
 
   // The store's "Weekly membership" plan bills every 60 days (§96.3).

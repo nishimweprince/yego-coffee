@@ -94,6 +94,9 @@ export type ApiProductDetail = ApiProduct & {
   images: { edges: Array<{ node: ApiImage }> };
   variants: { edges: Array<{ node: ApiVariant }> };
   seo: { title: string | null; description: string | null } | null;
+  requiresSellingPlan: boolean;
+  bagsPerDelivery: { value: string } | null;
+  shareImage: { url: string } | null;
 };
 
 export type ApiProductByHandleQuery = {

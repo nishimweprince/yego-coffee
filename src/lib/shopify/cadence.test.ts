@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { formatCadence } from "./cadence";
+import { byLongestInterval, formatCadence } from "./cadence";
 
 /**
  * The stakes here are §92.2 #1: a customer misled about billing
@@ -12,8 +12,8 @@ describe("formatCadence", () => {
     expect(formatCadence("MONTH", 1)).toBe("Once a month");
   });
 
-  it("names the fortnightly plan 'Twice a month' and keeps its real interval", () => {
-    expect(formatCadence("WEEK", 2)).toBe("Twice a month, every 2 weeks");
+  it("names the fortnightly plan by its interval, not 'twice a month'", () => {
+    expect(formatCadence("WEEK", 2)).toBe("Every 2 weeks");
   });
 
   it("describes any other interval plainly", () => {
@@ -34,5 +34,23 @@ describe("formatCadence", () => {
   it("returns null for a nonsensical interval count", () => {
     expect(formatCadence("WEEK", 0)).toBeNull();
     expect(formatCadence("WEEK", -1)).toBeNull();
+  });
+});
+
+describe("byLongestInterval", () => {
+  it("puts the monthly plan before the fortnightly one", () => {
+    const plans = byLongestInterval([
+      { interval: "WEEK" as const, intervalCount: 2 },
+      { interval: "MONTH" as const, intervalCount: 1 },
+    ]);
+    expect(plans.map((p) => p.interval)).toEqual(["MONTH", "WEEK"]);
+  });
+
+  it("sorts a plan with no stated interval last", () => {
+    const plans = byLongestInterval([
+      { interval: null, intervalCount: null },
+      { interval: "WEEK" as const, intervalCount: 2 },
+    ]);
+    expect(plans.map((p) => p.interval)).toEqual(["WEEK", null]);
   });
 });

@@ -7064,3 +7064,19 @@ The Starbucks-measured *sizes* in §108.5 are unchanged. Only motion now departs
   - The details column is capped at 32rem.
   - The pair is centred with a single 64px gap.
   - Checked at 1440: photo 555px, 64px gap, details 512px. At 1024 the pair fills the 870px column exactly.
+
+---
+
+# 109. Website review fixes (2026-10-23, review feedback)
+
+A review of the live site found Shopify changes only partly reflected. Decisions:
+
+- **Shipping is $7 a delivery, free on orders over $40.** This supersedes §108's "flat $7, no free tier". The figure lives only in Shopify's shipping policy, which `getReassurances` quotes word for word. The $8 the review saw was the old policy text, not code.
+- **The subscription list is the `subscriptions` collection, as published.** `HOME.subscription.featuredHandles` and `SUBSCRIPTION_PRODUCT_FOR_COFFEE` are gone. Archiving a product in Shopify removes it from the site. Plans sort by bag count when every plan states one.
+- **Roaster's Choice is subscription only.** `requiresSellingPlan` hides "One time" on the product page, and the monthly plan is preselected. Plans are ordered by interval (`byLongestInterval`), never by name.
+- **The fortnightly plan is "Every 2 weeks"**, not "twice a month". It bills every 2 weeks: 26 deliveries a year, not 24.
+- **Bags per delivery come from the `custom.bags_per_delivery` metafield**, the first metafield this storefront reads. The per-bag price and "Save $X each delivery" are arithmetic on Shopify's prices. The saving is measured against the one-bag plan, never a fixed percentage. With no metafield, neither is shown.
+- **Plans are shop tiles** (`SubscriptionTile`), on the same geometry as the coffee shelf. The face is the bags in a delivery, drawn as line bags at one size. Cadences are stated once under the grid.
+- **Production must name its domain.** `parseCore` fails a Vercel production build whose `NEXT_PUBLIC_SITE_URL` is localhost.
+- **Link previews and Product JSON-LD use a JPEG rendition** of the featured image (`shareImage`), because store photographs uploaded as HEIC do not render for crawlers.
+

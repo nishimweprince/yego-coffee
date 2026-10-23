@@ -38,6 +38,9 @@ function product(overrides: Partial<ProductDetailModel> = {}): ProductDetailMode
     hasSellingPlanGroup: false,
     seoTitle: null,
     seoDescription: null,
+    requiresSellingPlan: false,
+    bagsPerDelivery: null,
+    shareImageUrl: null,
     options: [{ id: "o1", name: "Grind", values: ["Whole bean", "Ground"] }],
     variants: [
       {
@@ -255,3 +258,82 @@ describe("ProductPurchaseForm — subscriptions", () => {
   });
 });
 
+describe("ProductPurchaseForm — subscription only", () => {
+  /**
+   * Roaster's Choice cannot be bought once (§109). The review of
+   * 2026-10-23 found "One time" offered and preselected on it anyway.
+   */
+  const monthly = {
+    sellingPlanId: "gid://shopify/SellingPlan/monthly",
+    name: "Once a month",
+    description: null,
+    frequencyLabel: "Once a month",
+    interval: "MONTH" as const,
+    intervalCount: 1,
+    price: { amount: "58.00", currencyCode: "USD" },
+    compareAtPrice: null,
+    savingsPercentage: null,
+  };
+  const fortnightly = {
+    ...monthly,
+    sellingPlanId: "gid://shopify/SellingPlan/fortnightly",
+    name: "Twice a month",
+    frequencyLabel: "Every 2 weeks",
+    interval: "WEEK" as const,
+    intervalCount: 2,
+  };
+
+  function roastersChoice(
+    subscriptionOptions = [fortnightly, monthly],
+  ): ProductDetailModel {
+    const base = product();
+    return {
+      ...base,
+      handle: "roasters-choice-three-bags-subscription",
+      title: "Roaster's Choice - Three Bags Subscription",
+      requiresSellingPlan: true,
+      bagsPerDelivery: 3,
+      options: [],
+      variants: [
+        {
+          ...base.variants[0],
+          price: { amount: "58.00", currencyCode: "USD" },
+          selectedOptions: [],
+          subscriptionOptions,
+        },
+      ],
+    };
+  }
+
+  it("does not offer a one-time purchase", () => {
+    render(<ProductPurchaseForm product={roastersChoice()} />);
+    expect(screen.queryByRole("radio", { name: /One time/ })).not.toBeInTheDocument();
+  });
+
+  it("preselects the monthly plan, whatever order Shopify sends", async () => {
+    const user = userEvent.setup();
+    render(<ProductPurchaseForm product={roastersChoice()} />);
+
+    expect(screen.getByRole("radio", { name: /Once a month/ })).toBeChecked();
+    await user.click(screen.getAllByRole("button", { name: /Add to cart/ })[0]);
+
+    expect(addToCart).toHaveBeenCalledWith(
+      "gid://shopify/ProductVariant/1",
+      1,
+      "gid://shopify/SellingPlan/monthly",
+    );
+  });
+
+  it("states the per-bag price from Shopify's price", () => {
+    render(<ProductPurchaseForm product={roastersChoice()} />);
+    expect(screen.getByText("3 bags, $19.33 a bag")).toBeInTheDocument();
+  });
+
+  it("cannot be added when the variant carries no plan", () => {
+    render(<ProductPurchaseForm product={roastersChoice([])} />);
+    for (const button of screen.getAllByRole("button", {
+      name: /Not available as a subscription/,
+    }))
+      expect(button).toBeDisabled();
+  });
+});

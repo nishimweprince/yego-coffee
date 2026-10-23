@@ -6,7 +6,8 @@ import { controlMark, controlVariants } from "@/components/ui/control";
 import type { SubscriptionOptionModel } from "@/lib/shopify/types";
 
 /**
- * One time, or on a schedule.
+ * One time, or on a schedule — or, for a subscription-only product
+ * such as Roaster's Choice, only on a schedule (§109).
  *
  * Until now the product page listed the schedules Shopify offers and
  * then added the item as a one-time purchase regardless — a visitor
@@ -35,7 +36,8 @@ export function DeliverySelector({
   className,
 }: {
   options: SubscriptionOptionModel[];
-  oneTimePrice: string;
+  /** Null on a subscription-only product: there is no one-time choice. */
+  oneTimePrice: string | null;
   selectedPlanId: string | null;
   onSelect: (sellingPlanId: string | null) => void;
   className?: string;
@@ -43,7 +45,9 @@ export function DeliverySelector({
   if (options.length === 0) return null;
 
   const choices = [
-    { id: null, label: "One time", price: oneTimePrice, savings: null },
+    ...(oneTimePrice === null
+      ? []
+      : [{ id: null, label: "One time", price: oneTimePrice, savings: null }]),
     ...options.map((option) => ({
       id: option.sellingPlanId,
       label: option.frequencyLabel,

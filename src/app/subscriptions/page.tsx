@@ -2,18 +2,19 @@ import type { Metadata } from "next";
 import { StoreUnavailable } from "@/components/commerce/store-unavailable";
 import { PageHeader } from "@/components/ui/page-header";
 import { Section } from "@/components/ui/section";
-import { PlanList } from "@/components/commerce/plan-list";
+import { SubscriptionGrid } from "@/components/commerce/subscription-tile";
 import { YegoLine } from "@/components/ui/yego-line";
 import { HOME } from "@/content/home";
 import { COLLECTION_HANDLES } from "@/lib/catalog/collections";
-import { featuredPlans, summarisePlans } from "@/lib/catalog/plans";
+import { summarisePlans } from "@/lib/catalog/plans";
 import { getReassurances } from "@/lib/content/reassurance";
 import { hasShopifyCredentials } from "@/lib/env";
 import { getCollection, getProduct } from "@/lib/shopify/storefront";
 
 export const metadata: Metadata = {
   title: "Subscriptions",
-  description: "Coffee once or twice a month, roasted in Somerville.",
+  description:
+    "Roaster's Choice coffee by subscription, roasted in Somerville and delivered on your schedule.",
 };
 
 /**
@@ -23,10 +24,11 @@ export const metadata: Metadata = {
  * already decided to consider a subscription and wants to know what is
  * on offer, not how the process works.
  *
- * §10.5 lists four benefits including "Save on every delivery". That
- * one is not shown: every selling plan in this store adjusts price by
- * 0% (§96.5). The true ones are one plain sentence under the title,
- * not a row of labels.
+ * The plans are a shop shelf (§109): one tile per Roaster's Choice
+ * size, with the per-bag price and the saving a larger box earns —
+ * both worked out from Shopify's prices, not claimed. Selling plans
+ * themselves still adjust by 0% (§96.5), so nothing says a subscription
+ * is cheaper than buying once.
  *
  * The two questions that stop a subscription — what does shipping
  * cost, and can I get out of it — are each answered once, beside the
@@ -52,10 +54,9 @@ export default async function SubscriptionsPage() {
   const planProducts = await Promise.all(
     (subscriptions?.products ?? []).map((p) => getProduct(p.handle)),
   );
-  const plans = featuredPlans(
-    summarisePlans(planProducts.filter((p) => p !== null)),
-    HOME.subscription.featuredHandles,
-  );
+  // Every plan the subscriptions collection publishes (§109). The list
+  // follows the store: there are no handles here to fall out of step.
+  const plans = summarisePlans(planProducts.filter((p) => p !== null));
 
   return (
     <main>
@@ -66,7 +67,7 @@ export default async function SubscriptionsPage() {
           lede={HOME.subscription.lede}
         />
 
-        <PlanList plans={plans} className="mt-section-sm" />
+        <SubscriptionGrid plans={plans} className="mt-15" />
 
         <ol className="mt-section-sm max-w-prose list-decimal space-y-stack-xs pl-5 text-body-m text-muted-foreground marker:text-muted-foreground">
           {HOME.subscription.steps.map((step) => (

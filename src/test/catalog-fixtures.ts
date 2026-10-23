@@ -44,6 +44,9 @@ export function product(
     media: [],
     seoTitle: null,
     seoDescription: null,
+    requiresSellingPlan: false,
+    bagsPerDelivery: null,
+    shareImageUrl: null,
     variants: [variant({ id: `${overrides.handle}-v1` })],
     ...overrides,
   };

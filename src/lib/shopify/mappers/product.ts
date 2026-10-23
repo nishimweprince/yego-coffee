@@ -119,5 +119,15 @@ export function mapProductToDetail(
     variants: product.variants.edges.map((e) => mapVariant(e.node)),
     seoTitle: product.seo?.title ?? null,
     seoDescription: product.seo?.description ?? null,
+    requiresSellingPlan: product.requiresSellingPlan,
+    bagsPerDelivery: bagCount(product.bagsPerDelivery?.value),
+    shareImageUrl: product.shareImage?.url ?? null,
   };
+}
+
+/** A whole number of bags, or null. A malformed value is not guessed at. */
+function bagCount(value: string | undefined): number | null {
+  if (!value || !/^\d+$/.test(value.trim())) return null;
+  const count = Number(value);
+  return count >= 1 ? count : null;
 }

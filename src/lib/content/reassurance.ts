@@ -104,10 +104,10 @@ export async function getReassurances(): Promise<Reassurances> {
   return {
     shipping: shipping
       ? {
-          // §108: shipping is a flat $7 with no free tier, so the
-          // question is the cost, not whether it can be waived. The
-          // rate itself is Shopify's — it arrives in the store's own
-          // sentence, never typed here.
+          // §109: $7 a delivery, free over $40. The rate and the
+          // threshold are Shopify's — they arrive in the store's own
+          // sentence, never typed here, so a change to the shipping
+          // policy reaches every page without a deploy.
           question: "How much is shipping?",
           // Not truncated: the document is a sentence or two, and any
           // condition on the rate belongs in the same breath.
