@@ -66,7 +66,8 @@ hero.
   `docs/starbucks-parity.md` before changing a token. Ledes are
   regular weight, never bold.
   Borders use `border-border`, never `border-foreground/NN`. Page
-  wrappers are `<Section>` (width `max-w-page`); page titles are
+  wrappers are `<Section>` (width `max-w-page` = 85% of the screen,
+  max 1360px, §108.8); page titles are
   `<PageHeader>` (`align="center"` on listing pages); choice chips use
   `controlVariants`.
 - Button size `sm` (36px) is for dense UI. Everything else is 48px:

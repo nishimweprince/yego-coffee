@@ -7050,3 +7050,17 @@ The owners found scrolling slow and the site heavy, so every timing was shortene
 | Card photo zoom | 500ms | 350ms |
 
 The Starbucks-measured *sizes* in §108.5 are unchanged. Only motion now departs from their timings.
+
+## 108.8 85% column, and a tighter product page (2026-10-23, owner feedback)
+
+- **Width.** `--container-page` is `min(85vw, 85rem)`, so every column is 85% of the screen and never wider than 1360px. The header and footer now sit inside it too, so the logo lines up with the headings and the grid below it. Checked:
+  - 1224px at 1440, logo at x108
+  - 870px at 1024
+  - 319px at 375, no horizontal scroll
+
+  The mobile menu panel stays full width, and its links follow the column.
+- **PDP gap.** The photo column was a fixed 780px holding a narrower photo, plus an 88px gutter, which left about 200px of empty space. Now:
+  - The photo column is `auto` and takes the gallery's own definite width: `min(664px, 46vw, fit-to-height)`.
+  - The details column is capped at 32rem.
+  - The pair is centred with a single 64px gap.
+  - Checked at 1440: photo 555px, 64px gap, details 512px. At 1024 the pair fills the 870px column exactly.

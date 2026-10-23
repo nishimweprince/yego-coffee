@@ -111,9 +111,11 @@ export default async function ProductPage({
               The other way round left the picture ending half a screen
               above the text beside it, with a column of nothing under
               it. */}
-          {/* The photograph leads: a wide media column beside a
-              436px decision column, as a shop's product page reads. */}
-          <div className="grid items-start gap-stack-lg lg:grid-cols-[minmax(0,1fr)_minmax(0,436px)] lg:gap-16 xl:grid-cols-[minmax(0,780px)_minmax(0,436px)] xl:gap-22">
+          {/* The photo and the decision sit as one pair (§108.8): the
+              photo column is exactly as wide as the photo, the details
+              column is capped at 32rem, and the pair is centred with a
+              single gutter — no empty column between them. */}
+          <div className="grid items-start gap-stack-lg lg:grid-cols-[auto_minmax(0,42rem)] lg:justify-center lg:gap-16">
             {/* The gallery — photo and thumbnails — fits one screen
                 at every size (see .pdp-gallery in globals.css). */}
             <div className="pdp-gallery mx-auto lg:sticky lg:top-30 lg:mx-0">

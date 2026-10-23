@@ -113,9 +113,11 @@
   --text-control--letter-spacing: -0.01em;
 
   /* -- Page width -------------------------------------------
-     One catalogue width for anything laid out in columns: 1360px,
-     which is the full width less the gutter at 1440. */
-  --container-page: 85rem;
+     One column width for the whole site (§108.8): 85% of the screen,
+     never wider than 1360px. Header, footer, hero captions and every
+     section share it, so the logo, the headings and the grid all
+     start on the same line. */
+  --container-page: min(85vw, 85rem);
 
   /* -- Semantic spacing ------------------------------------- */
   --spacing-page-x: clamp(1.25rem, 3vw, 2.5rem);
@@ -557,9 +559,18 @@ html[data-chrome-solid] body:has(main[data-hero="slides"]) [data-chrome] {
     );
   }
 
+  /* Beside the details the gallery takes a definite width, so its
+     grid column is exactly the photo and no wider. 46vw keeps room
+     for the details on a small laptop. */
   @media (min-width: 1024px) {
     .pdp-gallery {
       --gallery-offset: 14.5rem;
+      width: min(
+        664px,
+        46vw,
+        max(15rem, calc((100svh - var(--gallery-offset) - 5.25rem) * 19 / 20))
+      );
+      max-width: none;
     }
   }
 

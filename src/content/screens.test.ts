@@ -260,6 +260,18 @@ describe("screens — Starbucks parity (§108.5)", () => {
     expect(read("src/app/layout.tsx")).toContain("<SmoothScroll />");
   });
 
+  it("caps every column at 85% of the screen, header and footer included (§108.8)", () => {
+    expect(read("src/app/globals.css")).toContain("--container-page: min(85vw, 85rem)");
+    expect(read("src/components/layout/site-header.tsx")).toContain("max-w-page");
+    expect(read("src/components/layout/site-footer.tsx")).toContain("max-w-page");
+  });
+
+  it("sizes the product page's photo column to the photo — no dead column", () => {
+    const pdp = read("src/app/products/[handle]/page.tsx");
+    expect(pdp).toContain("lg:grid-cols-[auto_minmax(0,32rem)]");
+    expect(pdp).toContain("lg:justify-center");
+  });
+
   it("fits the product gallery inside one screen", () => {
     const css = read("src/app/globals.css");
     expect(css).toContain(".pdp-gallery");

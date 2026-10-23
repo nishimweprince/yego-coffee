@@ -41,7 +41,7 @@ export function MobileNav() {
           data-surface="mist"
           className="motion-drop-in absolute inset-x-0 top-full z-50 h-dvh overflow-y-auto border-t border-border bg-background px-page-x py-stack-lg"
         >
-          <ul className="space-y-stack-xs">
+          <ul className="mx-auto max-w-page space-y-stack-xs">
             {[...PRIMARY_NAV, { href: "/contact", label: "Contact" }].map((link) => (
               <li key={link.href}>
                 <Link

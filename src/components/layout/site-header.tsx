@@ -17,8 +17,8 @@ import { SearchTrigger } from "@/components/search/search-trigger";
  */
 export function SiteHeader() {
   return (
-    <header className="sticky top-0 z-50 border-b-2 border-border bg-background">
-      <div className="relative flex h-18 items-center justify-between gap-6 px-page-x lg:h-24">
+    <header className="sticky top-0 z-50 border-b-2 border-border bg-background px-page-x">
+      <div className="mx-auto flex h-18 max-w-page items-center justify-between gap-6 lg:h-24">
         {/* Logo and destinations sit together on the left, the way a
             shop's header reads: where you are, then where you can go.
             Account, search and the bag hold the right edge. */}
