@@ -108,7 +108,13 @@ export async function getReassurances(): Promise<Reassurances> {
           // threshold are Shopify's — they arrive in the store's own
           // sentence, never typed here, so a change to the shipping
           // policy reaches every page without a deploy.
-          question: "How much is shipping?",
+          //
+          // The Yego line answers "Yego." — yes — before the excerpt, so
+          // its question must be one a yes answers. "How much is
+          // shipping?" read as "How much? Yes." Free shipping over $40
+          // makes this one true; if the store ever drops the free tier,
+          // the question has to change with it.
+          question: "Do you offer free shipping?",
           // Not truncated: the document is a sentence or two, and any
           // condition on the rate belongs in the same breath.
           html: toText(shipping.bodyHtml),

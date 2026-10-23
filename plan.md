@@ -6976,7 +6976,7 @@ photographs. The same pass worked through the client's feedback list
 | Find your coffee page to be removed | `/quiz`, `src/components/quiz` and `src/lib/quiz` are deleted. `/quiz` redirects 308 to `/shop`. |
 | Café page to be improved | Rebuilt as a centred header, a wide photograph and feature rows. Hours and the "What we pour" menu render from `CAFE.hours` and `CAFE.menu` once the owners supply them. |
 | "How do you take your coffee", "Not sure where to start", "Never run out of good coffee" | All three home sections are removed. `/subscriptions` is retitled "Coffee subscriptions". |
-| Shipping $7 | Nothing is hardcoded. The owners change the Shopify rate and the shipping policy text, and the Yego line now asks "How much is shipping?". |
+| Shipping $7 | Nothing is hardcoded. The owners change the Shopify rate and the shipping policy text, and the Yego line asks "Do you offer free shipping?" (§109: "Yego." answers it, so the question must be yes/no). |
 | Subscription policy | A draft is in `docs/subscription-policy.md` for the owners to publish in Shopify. The PDP links it from the delivery line. |
 
 ## 108.3 Homepage order
