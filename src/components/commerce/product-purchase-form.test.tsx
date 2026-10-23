@@ -182,7 +182,7 @@ describe("ProductPurchaseForm — subscriptions", () => {
     sellingPlanId: "gid://shopify/SellingPlan/1",
     name: "Monthly membership",
     description: null,
-    frequencyLabel: "Every month",
+    frequencyLabel: "Once a month",
     interval: "MONTH" as const,
     intervalCount: 1,
     price: { amount: "17.00", currencyCode: "USD" },
@@ -220,7 +220,7 @@ describe("ProductPurchaseForm — subscriptions", () => {
     const user = userEvent.setup();
     render(<ProductPurchaseForm product={subscribable()} />);
 
-    await user.click(screen.getByRole("radio", { name: /Every month/ }));
+    await user.click(screen.getByRole("radio", { name: /Once a month/ }));
     await user.click(screen.getByRole("button", { name: "Add to cart" }));
 
     expect(addToCart).toHaveBeenCalledWith(
@@ -234,7 +234,7 @@ describe("ProductPurchaseForm — subscriptions", () => {
     const user = userEvent.setup();
     render(<ProductPurchaseForm product={subscribable()} />);
 
-    await user.click(screen.getByRole("radio", { name: /Every month/ }));
+    await user.click(screen.getByRole("radio", { name: /Once a month/ }));
     // Ground carries no plan; carrying the monthly one over would
     // enrol the customer in a subscription for a variant Shopify does
     // not sell on that plan.

@@ -5,7 +5,7 @@ describe("controlVariants", () => {
   it("rounds by role and draws the token border", () => {
     // Small controls take the control corner; the tall answer card is
     // a surface and takes the surface corner. Exactly one each.
-    const corner = { chip: "rounded-control", square: "rounded-control", row: "rounded-control", card: "rounded-sm" } as const;
+    const corner = { chip: "rounded-pill", square: "rounded-pill", row: "rounded-card", card: "rounded-card" } as const;
     for (const shape of ["chip", "square", "row", "card"] as const) {
       const classes = controlVariants({ shape });
       expect(classes.match(/\brounded-\S+/g)).toEqual([corner[shape]]);

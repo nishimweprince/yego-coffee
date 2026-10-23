@@ -71,21 +71,21 @@ export function ProductGallery({
   if (!current) return null;
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-3">
       <div className="relative">
         <button
           ref={openButtonRef}
           type="button"
           onClick={() => setViewerOpen(true)}
           aria-label={`Open fullscreen image viewer for ${title}`}
-          className="block w-full cursor-zoom-in focus-visible:outline-2 focus-visible:outline-offset-4"
+          className="block w-full cursor-zoom-in rounded-tile focus-visible:outline-2 focus-visible:outline-offset-4"
         >
           <ProductMedia
             image={current}
             title={title}
             priority
             sizes="(min-width: 1024px) 50vw, 100vw"
-            className="bg-surface-elevated"
+            className="aspect-[19/20] rounded-tile bg-surface-elevated"
             zoomOnHover
           />
         </button>
@@ -97,8 +97,11 @@ export function ProductGallery({
         </span>
       </div>
 
+      {/* Fixed 72px thumbnails, so the strip costs the same height
+          at every width and the main photo can be sized to fit the
+          screen around it. */}
       {images.length > 1 ? (
-        <div className="grid grid-cols-4 gap-2">
+        <div className="flex flex-wrap gap-3">
           {images.slice(0, 5).map((image, index) => (
             <button
               key={image.url}
@@ -107,15 +110,15 @@ export function ProductGallery({
               aria-label={`Show photo ${index + 1} of ${Math.min(images.length, 5)}`}
               aria-current={index === active}
               className={cn(
-                "cursor-zoom-in focus-visible:outline-2 focus-visible:outline-offset-2",
+                "size-18 shrink-0 cursor-zoom-in rounded-field transition-opacity duration-200 hover:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-2",
                 index === active && "outline-2 outline-offset-2 outline-accent",
               )}
             >
               <ProductMedia
                 image={image}
                 title={title}
-                sizes="120px"
-                className="bg-surface-elevated"
+                sizes="72px"
+                className="size-18 rounded-field bg-surface-elevated"
               />
             </button>
           ))}
@@ -125,7 +128,7 @@ export function ProductGallery({
       {viewerOpen && typeof document !== "undefined" ? createPortal(
         <div
           data-surface="soil"
-          className="fixed inset-0 z-[60] flex flex-col bg-ink/90 px-page-x py-stack-lg"
+          className="motion-fade-in fixed inset-0 z-[60] flex flex-col bg-ink/90 px-page-x py-stack-lg"
           onMouseDown={(event) => {
             if (event.target === event.currentTarget) setViewerOpen(false);
           }}
@@ -134,7 +137,7 @@ export function ProductGallery({
             role="dialog"
             aria-modal="true"
             aria-label={`${title} — image viewer`}
-            className="mx-auto flex h-full w-full max-w-6xl flex-col"
+            className="mx-auto flex h-full w-full max-w-page flex-col"
           >
             <div className="flex items-center justify-between">
               <p className="label text-muted-foreground">

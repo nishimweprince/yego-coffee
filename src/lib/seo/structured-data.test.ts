@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { articleJsonLd, breadcrumbJsonLd, productJsonLd } from "./structured-data";
-import { darkRoast, gatare, product, variant } from "@/lib/quiz/fixtures";
+import { darkRoast, gatare, product, variant } from "@/test/catalog-fixtures";
 import type { ArticleModel } from "@/lib/shopify/types";
 
 describe("productJsonLd", () => {

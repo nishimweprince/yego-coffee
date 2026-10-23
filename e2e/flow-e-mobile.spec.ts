@@ -12,7 +12,7 @@ test.describe("Flow E — mobile", () => {
     test.skip(info.project.name !== "mobile", "mobile project only");
 
     await page.goto("/");
-    const cta = page.getByRole("link", { name: "Find My Coffee" }).first();
+    const cta = page.getByRole("link", { name: "Shop coffee" }).first();
 
     const box = await cta.boundingBox();
     const viewport = page.viewportSize();
@@ -29,7 +29,7 @@ test.describe("Flow E — mobile", () => {
     // §42: button size sm (36px) is for dense UI; primary mobile CTAs
     // use md or lg.
     await page.goto("/");
-    const cta = page.getByRole("link", { name: "Find My Coffee" }).first();
+    const cta = page.getByRole("link", { name: "Shop coffee" }).first();
     const box = await cta.boundingBox();
     expect(box!.height).toBeGreaterThanOrEqual(44);
   });

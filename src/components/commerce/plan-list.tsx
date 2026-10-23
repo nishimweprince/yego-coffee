@@ -10,7 +10,7 @@ import { cn } from "@/lib/utils";
  *
  * A ruled list of names and prices looked like a price table — the
  * one thing on the page you are not meant to click. Each row now
- * carries an arrow, fills with linen on hover and turns its title
+ * carries an arrow, fills with a quiet tint on hover and turns its title
  * roast, and the fill bleeds past the text edge so it reads as a
  * control rather than a highlighted line. Keyboard focus gets the
  * same fill, so the affordance is not hover-only.
@@ -33,7 +33,7 @@ export function PlanList({
         <li key={plan.handle} className="border-b border-border">
           <Link
             href={`/products/${plan.handle}`}
-            className="group -mx-stack-sm flex min-h-14 items-center gap-4 rounded-sm px-stack-sm py-stack-md transition-colors hover:bg-muted focus-visible:bg-muted focus-visible:outline-none"
+            className="group -mx-stack-sm flex min-h-14 items-center gap-4 rounded-card px-stack-sm py-stack-md transition-colors hover:bg-muted focus-visible:bg-muted focus-visible:outline-none"
           >
             <span className="flex min-w-0 flex-1 flex-wrap items-baseline justify-between gap-x-8 gap-y-stack-xs">
               <span className="text-body-l font-medium transition-colors group-hover:text-accent group-focus-visible:text-accent">

@@ -6945,3 +6945,93 @@ below failed that test.
 
 Kept deliberately: the plan-row arrows (§105.5), the Yego lines (one per
 customer question), the full-height film hero, and both hero actions.
+
+
+# 108. Starbucks direction and client feedback (supersedes §106 shape and weight, §105/§107 on the hero, and "wash is never a section")
+
+Implemented 2026-10-23. The owners asked for the site to move like
+shop.starbucks.com, keeping the palette exactly as it was, with one
+departure: the homepage opens on a full-screen carousel of their own
+photographs. The same pass worked through the client's feedback list
+("Ze comments", 2026-10-19).
+
+## 108.1 Owner decisions
+
+| Topic | Decision |
+|---|---|
+| Shape | Buttons and chips are pills (`rounded-pill`). Photographs, cards and the gallery use 16px (`rounded-card`). Text fields use 8px (`rounded-field`). `rounded-sm` and `rounded-control` are retired. |
+| Type | DM Sans stays. Headings are 700 with −0.02em tracking. The lede is a bold grey second voice. Body text is tracked −0.01em. |
+| Ground | The page is white. Paper stays in the palette as a tint. |
+| Bands | Linen runs full-bleed in two places: the product page's opening band and the homepage subscriptions banner. Soil stays on the hero and the footer. |
+| Width | `max-w-page` (76rem), with a 16–40px gutter. |
+| Nav | Bold and sentence case: Shop, Subscriptions, Our story, Café. Uppercase stays banned. |
+| Hero | Three slides from the owners' photographs (`IMAGES.hero*`). Each slide has one headline, one sentence and one action. They autoplay every 6.5s with a crossfade and a slow settle. Autoplay pauses on hover, focus or a hidden tab, there is a visible pause control, and it holds still under reduced motion. The video is deleted. |
+
+## 108.2 Client feedback
+
+| Feedback | What changed |
+|---|---|
+| Subscriptions: once a month, twice a month | `formatCadence()` labels MONTH×1 as "Once a month" and WEEK×2 as "Twice a month, every 2 weeks", keeping the true interval visible. The owners set the plans themselves in Shopify. |
+| Landing page video to be changed | Replaced by the carousel. |
+| Find your coffee page to be removed | `/quiz`, `src/components/quiz` and `src/lib/quiz` are deleted. `/quiz` redirects 308 to `/shop`. |
+| Café page to be improved | Rebuilt as a centred header, a wide photograph and feature rows. Hours and the "What we pour" menu render from `CAFE.hours` and `CAFE.menu` once the owners supply them. |
+| "How do you take your coffee", "Not sure where to start", "Never run out of good coffee" | All three home sections are removed. `/subscriptions` is retitled "Coffee subscriptions". |
+| Shipping $7 | Nothing is hardcoded. The owners change the Shopify rate and the shipping policy text, and the Yego line now asks "How much is shipping?". |
+| Subscription policy | A draft is in `docs/subscription-policy.md` for the owners to publish in Shopify. The PDP links it from the delivery line. |
+
+## 108.3 Homepage order
+
+Hero → statement → coffee lineup → about row → café row → subscriptions banner.
+
+## 108.4 Linen retired (2026-10-23, owner feedback)
+
+The owners judged the linen band on the product page, and linen
+generally, to read as generated. Linen has been removed from the
+palette, which now has five values: paper, white, ink, roast and
+cherry. The `wash` surface is deleted too. Every page, the
+announcement bar and every panel now sit on paper (#fbfaf8). Product
+image tiles are white. `muted` is a 4% ink tint on white, used only for
+loading fills and hover rows. This supersedes the two bands described
+in §108.1.
+
+## 108.5 Starbucks parity pass (2026-10-23)
+
+Built from the measurements in `docs/starbucks-parity.md`, which holds every number.
+
+- **Type:**
+  - Listing titles 48px, PDP title 40px, feature rows 32px.
+  - Section headings over a grid 24px; card titles 20px at weight 600.
+  - Ledes 18px (16px on a phone) at regular weight.
+  - Card prices 14px bold; PDP price 18px bold. Buttons and nav 15px at weight 600.
+  - Body line height 1.5. Running text is ink at 84%; headings are solid ink.
+- **Layout:**
+  - Content is 1360px wide with a 20–40px gutter. The header is 96px plus a 2px rule.
+  - Listing pages open 76px below the header, with 16px between the title and the lede.
+  - Section heading to grid is 60px. The grid is 1, 2 or 4 columns with 32px gaps.
+- **Card:** a 316×373 tile with 8px corners (`rounded-tile`). On hover the photo zooms to 1.2 over 500ms and the title takes the accent.
+- **PDP:**
+  - A 780px media column with a 664px frame, an 88px gap and a 436px decision column.
+  - Quantity (100×48) and Add to cart (48px) sit on one row.
+- **Motion:**
+  - The route View Transition is removed (`template.tsx` and the canary types are deleted).
+  - New scroll reveal: `data-reveal` elements play a 20px rise and fade over 600ms on `cubic-bezier(0,0,.3,1)`, staggered 75ms per `--reveal-order`, once their top reaches 92% of the viewport. Elements scrolled past are revealed too.
+  - It uses the Web Animations API, because adding an attribute broke hydration on streamed segments.
+  - A boot script hides elements only once JavaScript is present, with a 2s fallback. Reduced motion skips the reveal entirely.
+- **Checked at 1440:** card 316×373, section heading y437 against Starbucks' 432, cards y525 against 521, card title y914 against 910. PDP gallery 664×699 against 664×700, title at x908. At 375, a single 335px column with a 20px gutter.
+
+## 108.6 Smoothness pass (2026-10-23, owner feedback)
+
+- **PDP gallery fits one screen.** The photo and its thumbnails never run past the viewport. `.pdp-gallery` sizes the 19:20 photo from the height left after the chrome and a fixed 72px thumbnail strip, capped at 664px with a 15rem floor. Checked:
+  - 1440×900: 202→870px
+  - 1280×680: 195→643px
+  - 768×1024: 160→943px
+  - 375×812: 181→618px
+- **Momentum scrolling.** `lenis@1.3.11` drives wheel and trackpad input (1.1s, ease-out cubic). The page keeps its native scroll, so sticky positioning, ChromeScroll and the reveal are unchanged.
+  - Touch keeps the device's own scrolling.
+  - Off under reduced motion.
+  - Wheel input is ignored while a dialog sets `body { overflow: hidden }`.
+  - In-page anchors glide to 96px below the top.
+- **Transitions:**
+  - Page changes crossfade (160ms out, 280ms in), opacity only, so the scroll reveal still provides the movement. This reverses the removal in §108.5 at the owners' request.
+  - The cart drawer slides in from the right; the search panel and mobile menu drop in 8px; backdrops and the image viewer fade.
+  - Every link, button and field eases colour, fill and border changes over 200ms by default.

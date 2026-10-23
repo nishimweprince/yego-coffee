@@ -10,7 +10,6 @@ import { expect, requireCredentials, test } from "./fixtures";
 const PAGES = [
   "/",
   "/shop",
-  "/quiz",
   "/cafe",
   "/about",
   "/journal",
@@ -76,17 +75,21 @@ test.describe("accessibility floor", () => {
     expect(missing).toEqual([]);
   });
 
-  test("the quiz is keyboard operable end to end", async ({ page }) => {
-    await page.goto("/quiz");
+  test("the hero carousel is keyboard operable", async ({ page }) => {
+    await page.goto("/");
 
-    // Reach the first answer by keyboard alone and choose it.
-    const first = page.getByRole("radio").first();
-    await first.focus();
-    await expect(first).toBeFocused();
+    // The controls are real buttons, and the next slide's action
+    // becomes reachable once it is shown (§108).
+    const next = page.getByRole("button", { name: "Next slide" });
+    await next.focus();
+    await expect(next).toBeFocused();
     await page.keyboard.press("Enter");
 
     await expect(
-      page.getByRole("heading", { name: /how many cups/i }),
+      page.getByRole("link", { name: "Start a subscription" }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("button", { name: "Pause slideshow" }),
     ).toBeVisible();
   });
 

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { DeliverySelector } from "./delivery-selector";
@@ -21,8 +22,12 @@ import type { ProductDetailModel } from "@/lib/shopify/types";
 
 export function ProductPurchaseForm({
   product,
+  subscriptionPolicyHref,
 }: {
   product: ProductDetailModel;
+  /** The store's subscription terms, linked wherever a recurring
+   * schedule is chosen (§108). Absent when the store has none. */
+  subscriptionPolicyHref?: string;
 }) {
   const router = useRouter();
   const initial = defaultVariant(product.variants);
@@ -116,30 +121,42 @@ export function ProductPurchaseForm({
       ) : null}
 
       <div>
-        <p className="label text-muted-foreground">Quantity</p>
-        <QuantitySelector
-          value={quantity}
-          onChange={(next) => setQuantity(next)}
-          max={max}
-          disabled={!sellable}
-          className="mt-stack-sm"
-        />
-      </div>
-
-      <div>
-        <Button
-          size="lg"
-          onClick={handleAdd}
-          disabled={!sellable || pending}
-          className="w-full sm:w-auto"
-        >
-          {pending ? "Adding…" : sellable ? "Add to cart" : "Sold out"}
-        </Button>
+        {/* Quantity and the action on one line, both 48px pills — the
+            stepper's own buttons carry its accessible names, so the
+            heading above it is for screen readers only. */}
+        <p className="sr-only">Quantity</p>
+        <div className="flex items-center gap-3">
+          <QuantitySelector
+            value={quantity}
+            onChange={(next) => setQuantity(next)}
+            max={max}
+            disabled={!sellable}
+            className="shrink-0"
+          />
+          <Button
+            onClick={handleAdd}
+            disabled={!sellable || pending}
+            className="flex-1"
+          >
+            {pending ? "Adding…" : sellable ? "Add to cart" : "Sold out"}
+          </Button>
+        </div>
 
         {activePlan ? (
           <p className="mt-stack-sm text-body-s text-muted-foreground">
             Delivered {activePlan.frequencyLabel.toLowerCase()}, until you
             change or cancel it.
+            {subscriptionPolicyHref ? (
+              <>
+                {" "}
+                <Link
+                  href={subscriptionPolicyHref}
+                  className="text-foreground underline underline-offset-4 hover:text-accent"
+                >
+                  Subscription policy
+                </Link>
+              </>
+            ) : null}
           </p>
         ) : null}
 

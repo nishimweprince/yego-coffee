@@ -22,11 +22,22 @@ describe("café content", () => {
     ).toEqual([]);
   });
 
-  it("does not carry a phone number or opening hours at all", () => {
+  it("does not carry a phone number at all", () => {
     // Deleted rather than flagged: unverified data that nothing
     // displays is not worth the risk of one day being displayed.
     expect(CAFE).not.toHaveProperty("phone");
-    expect(CAFE).not.toHaveProperty("hours");
+  });
+
+  it("holds hours and menu entries that are complete, never half-filled", () => {
+    // Empty is valid — /cafe omits the row. Anything present must be a
+    // whole line a stranger can act on.
+    for (const line of CAFE.hours) {
+      expect(line.days.trim()).not.toBe("");
+      expect(line.hours.trim()).not.toBe("");
+    }
+    for (const item of CAFE.menu) {
+      expect(item.name.trim()).not.toBe("");
+    }
   });
 
   it("keeps the confirmed address intact", () => {

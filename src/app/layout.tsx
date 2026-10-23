@@ -8,6 +8,11 @@ import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/components/layout/site-header";
 import { IMAGES } from "@/content/images";
 import { ChromeScroll } from "@/components/layout/chrome-scroll";
+import { SmoothScroll } from "@/components/layout/smooth-scroll";
+import {
+  REVEAL_BOOT_SCRIPT,
+  RevealObserver,
+} from "@/components/layout/reveal-observer";
 import { AnalyticsRoot } from "@/components/analytics/analytics-root";
 import { env, getAnalyticsEnv } from "@/lib/env";
 
@@ -72,7 +77,12 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       // one was scrolled to.
       data-scroll-behavior="smooth"
       className={`${dmSans.variable} h-full`}
+      // The reveal boot script marks <html> before React hydrates.
+      suppressHydrationWarning
     >
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: REVEAL_BOOT_SCRIPT }} />
+      </head>
       <body className="flex min-h-full flex-col">
         {/* One wrapper so a full-screen hero can float the whole bar
             over its footage — see "chrome over film" in globals.css.
@@ -82,6 +92,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           <SiteHeader />
         </div>
         <ChromeScroll />
+        <RevealObserver />
+        <SmoothScroll />
         {children}
         <SiteFooter />
         <AnalyticsRoot

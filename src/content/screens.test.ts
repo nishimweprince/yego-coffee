@@ -43,13 +43,14 @@ describe("screens — no decorative eyebrows", () => {
   });
 });
 
-describe("screens — the lineup is laid out for its size", () => {
+describe("screens — the lineup is laid out as a shelf (§108)", () => {
   it("never renders a fixed three-column product grid", () => {
     // Four coffees in a three-column grid is a row of three and one
-    // stranded card; one mug is a card beside two empty cells.
+    // stranded card. The shelf is two across on a phone and four from
+    // a laptop up, so the four coffees fill one row exactly.
     const grid = read("src/components/commerce/product-grid.tsx");
-    expect(grid).toContain("COLUMNS");
-    expect(grid).toContain("products.length");
+    expect(grid).toContain("grid-cols-2");
+    expect(grid).toContain("lg:grid-cols-4");
 
     for (const file of [
       "src/app/shop/page.tsx",
@@ -84,7 +85,9 @@ describe("screens — the buying path answers questions where they are asked", (
     const cart = read("src/app/cart/page.tsx");
     expect(cart).not.toContain("Nothing here yet");
     expect(cart).toContain("ProductGrid");
-    expect(cart).toContain("/quiz");
+    expect(cart).toContain('href="/shop"');
+    // The quiz is gone (§108); nothing may still send people to it.
+    expect(cart).not.toContain("/quiz");
   });
 
   it("states each fact on the product page exactly once", () => {
@@ -104,10 +107,11 @@ describe("screens — one ground, one recipe (§105)", () => {
   );
 
   /**
-   * The only places a surface may change. The film hero and the footer
-   * invert to ink; the announcement bar is the one linen strip; the
-   * rest declare `mist` because they open from chrome that may be
-   * transparent over the film (see "panels that open from the chrome").
+   * The only places a surface may change. The hero and the footer
+   * invert to ink. There are no tinted bands (§108.4); the rest
+   * declare `mist` because they open from chrome that may be
+   * transparent over the hero (see "panels that open from the
+   * chrome").
    */
   const SURFACE_FILES = new Set([
     "src/app/layout.tsx",
@@ -121,7 +125,7 @@ describe("screens — one ground, one recipe (§105)", () => {
     "src/components/product/product-gallery.tsx",
   ]);
 
-  it("changes surface only in the chrome, the film hero and the footer", () => {
+  it("changes surface only in the chrome, the hero and the footer", () => {
     const offenders = SOURCE.filter(
       (file) => !SURFACE_FILES.has(file) && /data-surface=/.test(read(file)),
     );
@@ -130,13 +134,14 @@ describe("screens — one ground, one recipe (§105)", () => {
 
   it("never reaches past the token system", () => {
     // Each of these was a way a page drifted from the rest: a second
-    // display register, hand-mixed borders, a third corner radius, an
-    // uppercase label, a raw palette ramp.
+    // display register, hand-mixed borders, a stock corner radius
+    // outside the pill/card/field set, an uppercase label, a raw
+    // palette ramp.
     const banned = [
       /type-display/,
       /type-utility/,
       /border-foreground\/\d/,
-      /rounded-(md|lg|xl)\b/,
+      /rounded-(sm|md|lg|xl|2xl|3xl|control)\b/,
       /\buppercase\b/,
       /\btracking-/,
       /(bg|text|border)-(soil|terrace|sage|mist|sun)-\d/,
@@ -152,7 +157,7 @@ describe("screens — one ground, one recipe (§105)", () => {
   });
 
   it("lays every page out at one of two widths", () => {
-    // `page` (6xl) for columns, `prose` for a reading measure. Dialogs
+    // `page` (76rem) for columns, `prose` for a reading measure. Dialogs
     // set their own width and are not pages.
     const offenders = walk("src/app").filter((file) =>
       /max-w-[2345]xl/.test(read(file)),
@@ -172,9 +177,12 @@ describe("screens — the contour leads its content", () => {
 
   it("keeps trailing labels only where they sign off", () => {
     // The footer's sign-off repeated the address beneath it and was cut
-    // (§107); the quiz's progress label is the one trailing label left.
+    // (§107). With the quiz gone (§108) no trailing label is left.
     expect(read("src/components/layout/site-footer.tsx")).not.toContain("<Contour");
-    expect(read("src/components/quiz/quiz-shell.tsx")).toContain('align="end"');
+    const trailing = [...walk("src/app"), ...walk("src/components")].filter(
+      (file) => /<Contour[^>]*align="end"/.test(read(file)),
+    );
+    expect(trailing).toEqual([]);
   });
 });
 
@@ -198,3 +206,63 @@ describe("screens — panels that open from the chrome", () => {
   });
 });
 
+
+describe("screens — no linen (§108.4)", () => {
+  it("retires the linen tint and the wash surface", () => {
+    const css = read("src/app/globals.css");
+    expect(css).not.toContain("--color-linen");
+    expect(css).not.toContain('[data-surface="wash"]');
+    const offenders = [...walk("src/app"), ...walk("src/components")].filter(
+      (file) => /data-surface="wash"|\blinen\b/.test(read(file)),
+    );
+    expect(offenders).toEqual([]);
+  });
+});
+
+describe("screens — Starbucks parity (§108.5)", () => {
+  it("lays the shelf out one, two, then four across", () => {
+    const grid = read("src/components/commerce/product-grid.tsx");
+    expect(grid).toContain("grid-cols-1");
+    expect(grid).toContain("sm:grid-cols-2");
+    expect(grid).toContain("lg:grid-cols-4");
+  });
+
+  it("frames product photos at the measured 316:373 on an 8px tile", () => {
+    const card = read("src/components/commerce/product-card.tsx");
+    expect(card).toContain("aspect-[316/373]");
+    expect(card).toContain("rounded-tile");
+  });
+
+  it("reveals on scroll, and never while motion is unwelcome", () => {
+    const reveal = read("src/components/layout/reveal-observer.tsx");
+    expect(reveal).toContain("use client");
+    expect(reveal).toContain("prefers-reduced-motion");
+    // Never touch a server-rendered element's attributes: that is a
+    // hydration mismatch on streamed segments.
+    expect(reveal).not.toContain("setAttribute(\"data-revealed\"");
+    expect(read("src/app/layout.tsx")).toContain("<RevealObserver />");
+  });
+
+  it("crossfades page changes without a second rise (§108.6)", () => {
+    // The scroll reveal moves the arriving page's content; the route
+    // transition must only fade, or everything rises twice.
+    const css = read("src/app/globals.css");
+    const arrive = css.slice(css.indexOf("::view-transition-new(.page-arrive)"));
+    expect(arrive.slice(0, arrive.indexOf("}"))).toContain("yego-fade-in");
+    expect(read("src/app/template.tsx")).toContain("ViewTransition");
+  });
+
+  it("scrolls with momentum, and not for anyone who asked for less motion", () => {
+    const smooth = read("src/components/layout/smooth-scroll.tsx");
+    expect(smooth).toContain("prefers-reduced-motion");
+    // A locked page (open drawer or viewer) must not scroll behind it.
+    expect(smooth).toContain('document.body.style.overflow !== "hidden"');
+    expect(read("src/app/layout.tsx")).toContain("<SmoothScroll />");
+  });
+
+  it("fits the product gallery inside one screen", () => {
+    const css = read("src/app/globals.css");
+    expect(css).toContain(".pdp-gallery");
+    expect(css).toMatch(/100svh - var\(--gallery-offset\)/);
+  });
+});

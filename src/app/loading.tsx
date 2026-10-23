@@ -11,7 +11,7 @@ import { ProductGridSkeleton } from "@/components/commerce/product-grid-skeleton
 export default function Loading() {
   return (
     <main className="px-page-x py-section-md" aria-busy="true">
-      <div className="mx-auto max-w-6xl">
+      <div className="mx-auto max-w-page">
         <span className="sr-only">Loading</span>
         <ProductGridSkeleton />
       </div>

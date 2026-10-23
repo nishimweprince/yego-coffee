@@ -15,14 +15,20 @@
  * day being displayed. Deleting it satisfies §91 outright rather than
  * gating it, and the guard stays armed for anything added later.
  *
- * To publish them: add `phone` / `hours` back with values confirmed by
- * the owners, and add the matching `provisional` entries set to
- * `false`. Set an entry to `true` only while a value is still
- * unverified — that is what the guard is for, and it will stop the
+ * §108 adds two slots the owners will fill — opening hours and the
+ * drinks the café pours. Both start empty, and /cafe renders each row
+ * only once it has entries. Fill them only with values the owners have
+ * confirmed. While a value is still unverified, add a matching
+ * `provisional` entry set to `true`: the guard will stop a production
  * deploy until it is resolved.
  */
 
-export type OpeningHours = { open: string; close: string };
+/** One line of the opening hours, written the way the door sign is:
+ * `{ days: "Monday to Friday", hours: "7am to 4pm" }`. */
+export type OpeningHours = { days: string; hours: string };
+
+/** One drink, with an optional short line under it. */
+export type MenuItem = { name: string; note?: string };
 
 export const CAFE = {
   addressLine: "1212 Broadway",
@@ -39,6 +45,12 @@ export const CAFE = {
       `Yego Coffee, ${this.addressLine}, ${this.locality}, ${this.region} ${this.postalCode}`,
     )}`;
   },
+
+  /** Owners to supply (§108). Empty renders nothing. */
+  hours: [] as readonly OpeningHours[],
+
+  /** Owners to supply (§108). Empty renders nothing. */
+  menu: [] as readonly MenuItem[],
 
   /**
    * Fields whose values exist but are not yet confirmed by the owners.

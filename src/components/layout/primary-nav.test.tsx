@@ -7,24 +7,23 @@ vi.mock("next/navigation", () => ({
 }));
 
 describe("PrimaryNav", () => {
-  it("renders the five primary destinations", () => {
+  it("renders the four primary destinations", () => {
     render(<PrimaryNav />);
-    for (const label of [
-      "Shop",
-      "Subscriptions",
-      "Find Your Coffee",
-      "Our Story",
-      "Café",
-    ]) {
+    for (const label of ["Shop", "Subscriptions", "Our story", "Café"]) {
       expect(
         screen.getByRole("link", { name: label }),
       ).toBeInTheDocument();
     }
   });
 
+  it("no longer links the removed quiz", () => {
+    render(<PrimaryNav />);
+    expect(screen.queryByRole("link", { name: /find your coffee/i })).toBeNull();
+  });
+
   it("marks only the current destination with aria-current", () => {
     render(<PrimaryNav />);
-    expect(screen.getByRole("link", { name: "Our Story" })).toHaveAttribute(
+    expect(screen.getByRole("link", { name: "Our story" })).toHaveAttribute(
       "aria-current",
       "page",
     );

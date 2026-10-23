@@ -50,7 +50,7 @@ export default async function JournalPage() {
 
   return (
     <main className="px-page-x py-section-md">
-      <div className="mx-auto max-w-6xl">
+      <div className="mx-auto max-w-page">
         <h1 className="text-display-l">Journal</h1>
 
         {articles.length === 0 ? (
@@ -65,7 +65,7 @@ export default async function JournalPage() {
             >
               <div className="grid items-center gap-stack-lg sm:grid-cols-2 sm:gap-12">
                 {lead.image ? (
-                  <div className="relative aspect-[4/3] overflow-hidden rounded-sm bg-surface-elevated">
+                  <div className="relative aspect-[4/3] overflow-hidden rounded-card bg-surface-elevated">
                     <Image
                       src={lead.image.url}
                       alt={lead.image.altText ?? ""}
@@ -106,7 +106,7 @@ export default async function JournalPage() {
                         href={`/journal/${article.handle}`}
                         className="group block"
                       >
-                        <div className="relative aspect-[4/3] overflow-hidden rounded-sm bg-surface-elevated">
+                        <div className="relative aspect-[4/3] overflow-hidden rounded-card bg-surface-elevated">
                           {article.image ? (
                             <Image
                               src={article.image.url}
@@ -123,7 +123,7 @@ export default async function JournalPage() {
                         >
                           {date(article.publishedAt)}
                         </time>
-                        <h3 className="mt-stack-sm text-h3">{article.title}</h3>
+                        <h3 className="mt-stack-sm text-h4">{article.title}</h3>
                       </Link>
                     </article>
                   ))}

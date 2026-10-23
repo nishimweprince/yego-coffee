@@ -44,15 +44,15 @@ export default async function CartPage() {
     return (
       <main>
         <section className="px-page-x py-section-md">
-          <div className="mx-auto max-w-6xl">
+          <div className="mx-auto max-w-page">
             <h1 className="text-display-l">Your cart is empty</h1>
             <p className="mt-stack-md max-w-prose text-lede text-muted-foreground">
-              Pick a roast below, or answer three questions and we will
-              match you to one.
+              Pick a roast below, or have it delivered once or twice a
+              month.
             </p>
             <div className="mt-section-sm flex flex-wrap items-center gap-stack-md">
-              <Link href="/quiz" className={buttonVariants({ size: "lg" })}>
-                Find my coffee
+              <Link href="/shop" className={buttonVariants({ size: "lg" })}>
+                Shop coffee
               </Link>
               <Link
                 href="/subscriptions"
@@ -66,7 +66,7 @@ export default async function CartPage() {
 
         {lineup.length > 0 ? (
           <section aria-label="The lineup" className="px-page-x pb-section-md">
-            <div className="mx-auto max-w-6xl">
+            <div className="mx-auto max-w-page">
               <Contour label="The lineup" />
               <ProductGrid
                 products={lineup}
@@ -82,7 +82,7 @@ export default async function CartPage() {
 
   return (
     <main className="px-page-x py-section-md">
-      <div className="mx-auto max-w-6xl">
+      <div className="mx-auto max-w-page">
         <h1 className="text-display-l">Cart</h1>
         <Contour
           label={`${cart.totalQuantity} ${cart.totalQuantity === 1 ? "item" : "items"}`}

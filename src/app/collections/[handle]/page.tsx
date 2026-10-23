@@ -46,8 +46,9 @@ export default async function CollectionPage({
 
   return (
     <main>
-      <Section>
+      <Section className="pt-section-xs">
         <PageHeader
+          align="center"
           title={collection.title}
           lede={collection.description || undefined}
           breadcrumb={[{ href: "/shop", label: "Shop" }]}

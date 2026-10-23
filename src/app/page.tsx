@@ -1,8 +1,8 @@
 import { CafeBlock } from "@/components/home/cafe-block";
-import { CoffeeFinder } from "@/components/home/coffee-finder";
-import { DiscoveryCards } from "@/components/home/discovery-cards";
 import { Hero } from "@/components/home/hero";
 import { HomeAbout } from "@/components/home/home-about";
+import { HomeLineup } from "@/components/home/home-lineup";
+import { HomeStatement } from "@/components/home/home-statement";
 import { SubscriptionBlock } from "@/components/home/subscription-block";
 import { HOME } from "@/content/home";
 import { COLLECTION_HANDLES } from "@/lib/catalog/collections";
@@ -12,13 +12,13 @@ import { hasShopifyCredentials } from "@/lib/env";
 import { getCollection, getProduct } from "@/lib/shopify/storefront";
 
 /**
- * The homepage — Hero, About, the coffees, the finder, subscriptions,
- * the café, in that order (§105).
+ * The homepage — Hero, statement, the coffees, about, the café,
+ * subscriptions, in that order (§108).
  *
- * Six sections on one light ground. The only dark surfaces are the
- * film hero, which is a photograph, and the footer. Sections are told
- * apart by whitespace and, twice, the contour rule — not by a change
- * of colour under each one.
+ * A full screen of photographs, then a shop's rhythm on a near-white
+ * ground: one centred line, the shelf, two mirrored feature rows and
+ * the recurring offer. Sections are told apart by whitespace and,
+ * once, the contour rule.
  *
  * Everything commercial on this page is read from Shopify at render
  * time: no price, title or availability is duplicated into content.
@@ -31,8 +31,9 @@ export default async function HomePage() {
     // The brand story stands on its own without the catalogue; only the
     // commerce sections need Shopify.
     return (
-      <main data-hero="video">
+      <main data-hero="slides">
         <Hero />
+        <HomeStatement />
         <HomeAbout />
         <CafeBlock />
       </main>
@@ -44,16 +45,6 @@ export default async function HomePage() {
     getCollection(COLLECTION_HANDLES.subscriptions),
     getReassurances(),
   ]);
-
-  // The cards feature the coffees, not the 5 lb Bag: that is a format
-  // of the same three roasts, and repeating them reads as a longer
-  // catalogue than Yego has.
-  const featuredHandles = new Set<string>(
-    HOME.discovery.cards.map((card) => card.productHandle),
-  );
-  const lineup = (coffee?.products ?? []).filter((p) =>
-    featuredHandles.has(p.handle),
-  );
 
   // Cadence lives on the variant's allocation, which only the detail
   // query fetches — so the subscription products are read in full.
@@ -68,21 +59,24 @@ export default async function HomePage() {
   );
 
   return (
-    <main data-hero="video">
+    <main data-hero="slides">
       <Hero />
+
+      <HomeStatement />
+
+      <HomeLineup
+        products={coffee?.products ?? []}
+        shipping={reassurances.shipping}
+      />
 
       <HomeAbout />
 
-      <DiscoveryCards products={lineup} shipping={reassurances.shipping} />
-
-      <CoffeeFinder />
+      <CafeBlock />
 
       <SubscriptionBlock
         plans={plans}
         cancellation={reassurances.cancellation}
       />
-
-      <CafeBlock />
     </main>
   );
 }

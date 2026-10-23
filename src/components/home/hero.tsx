@@ -1,91 +1,87 @@
 import Image from "next/image";
 import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
-import { HeroVideo } from "@/components/home/hero-video";
+import { HeroCarousel } from "@/components/home/hero-carousel";
 import { HOME } from "@/content/home";
 
-/** Where the placeholder footage lives. Swap both files together. */
-const FILM = {
-  src: "/brand/video/hero-coffee.webm",
-  poster: "/brand/video/hero-coffee-poster.jpg",
-  /** Describes the poster, which is what a screen reader can perceive. */
-  alt: "Freshly picked coffee cherries in a harvest bucket",
-};
-
 /**
- * The hero — a full screen of film.
+ * The hero — a full screen of the owners' photographs (§108).
  *
- * The page opens on the crop itself rather than on a photograph boxed
- * beside a paragraph. The chrome floats over it (see the "chrome over
- * film" rules in globals.css), so nothing is stacked on top of the
- * picture and the viewport belongs to one image.
+ * The page opens on the coffee's own journey rather than on a
+ * paragraph: green sacks, the roaster's drop, the check under the
+ * lamp. The chrome floats over it (see the "chrome over the hero"
+ * rules in globals.css), so the viewport belongs to the picture.
  *
- * `data-surface="soil"` because the type sits on dark footage: this is
- * a photograph, not a coloured band, and it is one of only two places
- * the site inverts (the other is the footer). Every token beneath it
- * follows, so the buttons, rules and muted text are already correct
- * against the frame without a single hard-coded colour.
+ * `data-surface="soil"` because the type sits on dark photographs:
+ * every token beneath it follows, so the buttons, rules and muted text
+ * are correct against the frame without a hard-coded colour.
  *
- * The still is server-rendered and is the LCP element. The film is a
- * client island layered over it, skipped entirely under reduced
- * motion — see HeroVideo. Everything below the video is static.
- *
- * A headline, one sentence and two actions — nothing else. The trust
- * row and scroll cue that sat under the buttons repeated what the
- * about section says one scroll later (§107).
+ * Every slide is server-rendered. The first photograph is the LCP
+ * element and its headline is the page's only <h1>; the others are
+ * <h2>s on slides that stay in the document, inert until shown.
+ * HeroCarousel is the one client island — it only decides which slide
+ * is showing.
  */
 export function Hero() {
+  const slides = HOME.hero.slides;
+
   return (
     <section
       data-surface="soil"
-      className="hero-scrim relative isolate flex min-h-svh flex-col justify-end overflow-hidden"
+      aria-roledescription="carousel"
+      aria-label="Yego Coffee, from Rwanda to Somerville"
+      className="relative isolate min-h-svh overflow-hidden"
     >
-      <Image
-        src={FILM.poster}
-        alt={FILM.alt}
-        fill
-        priority
-        sizes="100vw"
-        className="-z-10 object-cover"
-      />
-      <HeroVideo
-        src={FILM.src}
-        className="absolute inset-0 -z-10 h-full w-full object-cover"
-      />
-
-      <div className="relative z-10 px-page-x pt-40 pb-section-md">
-        <div className="mx-auto w-full max-w-6xl">
-          <h1 className="rise-in max-w-[16ch] text-display-xl">
-            {HOME.hero.headline}
-          </h1>
-
-          <p className="rise-in mt-stack-md max-w-prose text-lede">
-            {HOME.hero.body}
-          </p>
-
-          {/* Links, not buttons: these navigate. The button styling
-              comes from the shared variants so a CTA cannot drift from
-              the system. Size lg per §42. The actions arrive a beat
-              after the words — the page's one animated moment. */}
-          <div
-            className="rise-in mt-stack-lg flex flex-wrap items-center gap-stack-sm"
-            style={{ "--rise-delay": "160ms" } as React.CSSProperties}
-          >
-            <Link
-              href={HOME.hero.primaryCta.href}
-              className={buttonVariants({ size: "lg" })}
+      <HeroCarousel count={slides.length}>
+        {slides.map((slide, index) => {
+          const Heading = index === 0 ? "h1" : "h2";
+          return (
+            <div
+              key={slide.image.src}
+              role="group"
+              aria-roledescription="slide"
+              aria-label={`${index + 1} of ${slides.length}`}
+              data-hero-slide
+              className="hero-scrim absolute inset-0 isolate flex flex-col justify-end"
             >
-              {HOME.hero.primaryCta.label}
-            </Link>
-            <Link
-              href={HOME.hero.secondaryCta.href}
-              className={buttonVariants({ variant: "secondary", size: "lg" })}
-            >
-              {HOME.hero.secondaryCta.label}
-            </Link>
-          </div>
-        </div>
-      </div>
+              <Image
+                src={slide.image.src}
+                alt={slide.image.alt}
+                fill
+                priority={index === 0}
+                sizes="100vw"
+                className="hero-slide__image -z-10 object-cover"
+                style={{ objectPosition: slide.image.focus }}
+              />
+
+              <div className="hero-slide__copy relative z-10 px-page-x pt-40 pb-28 sm:pb-32">
+                <div className="mx-auto w-full max-w-page">
+                  <Heading className="max-w-[15ch] text-display-xl">
+                    {slide.headline}
+                  </Heading>
+
+                  <p className="mt-stack-md max-w-[40ch] text-lede font-bold">
+                    {slide.body}
+                  </p>
+
+                  {/* A link, not a button: it navigates. Size lg per
+                      §42. On soil the primary pill is paper with ink
+                      type, so it holds on any frame. */}
+                  <Link
+                    href={slide.cta.href}
+                    className={buttonVariants({
+                      size: "lg",
+                      className: "mt-stack-lg",
+                    })}
+                  >
+                    {slide.cta.label}
+                  </Link>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </HeroCarousel>
     </section>
   );
 }

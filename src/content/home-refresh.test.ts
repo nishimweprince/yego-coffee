@@ -18,18 +18,17 @@ describe("design refresh — homepage structure", () => {
     expect(HOME.about.cta.href).toBe("/about");
   });
 
-  it("simplifies primary navigation to five items and moves Contact out", () => {
+  it("keeps primary navigation to four items, without the quiz or Contact", () => {
+    // §108: the quiz was removed at the client's request.
     expect(PRIMARY_NAV.map((link) => link.label)).toEqual([
       "Shop",
       "Subscriptions",
-      "Find Your Coffee",
-      "Our Story",
+      "Our story",
       "Café",
     ]);
     expect(PRIMARY_NAV.map((link) => link.href)).toEqual([
       "/shop",
       "/subscriptions",
-      "/quiz",
       "/about",
       "/cafe",
     ]);
@@ -46,15 +45,15 @@ describe("design refresh — homepage structure", () => {
     ]);
   });
 
-  it("renders Hero then About then Discovery with no carousel", () => {
+  it("renders the hero, statement, lineup, about, café and subscriptions in order", () => {
     const page = read("src/app/page.tsx");
     const order = [
       "<Hero",
+      "<HomeStatement",
+      "<HomeLineup",
       "<HomeAbout",
-      "<DiscoveryCards",
-      "<CoffeeFinder",
-      "<SubscriptionBlock",
       "<CafeBlock",
+      "<SubscriptionBlock",
     ].map((marker) => {
       // Last occurrence: the no-credential fallback above renders a
       // subset of the same sections, so the full order reads from the
@@ -65,43 +64,58 @@ describe("design refresh — homepage structure", () => {
     });
     expect([...order].sort((a, b) => a - b)).toEqual(order);
     expect(page).not.toContain("BrandStatement");
-    expect(page).not.toContain("HeroSlides");
+    // Removed at the client's request (§108).
+    expect(page).not.toContain("DiscoveryCards");
+    expect(page).not.toContain("CoffeeFinder");
     // Both repeated something already on the page (§105).
     expect(page).not.toContain("SignatureCoffees");
     expect(page).not.toContain("FinalCta");
   });
 
-  it("keeps the hero a Server Component with no carousel", () => {
-    expect(
-      existsSync(join(root, "src/components/home/hero-slides.tsx")),
-    ).toBe(false);
+  it("keeps the hero a Server Component, with the carousel as its one island", () => {
     const hero = read("src/components/home/hero.tsx");
     expect(hero).not.toContain("use client");
-    expect(hero).not.toContain("HeroSlides");
-    expect(hero).toContain("<h1");
+    expect(hero).toContain("<HeroCarousel");
+    // The first slide's headline is the page's only <h1>.
+    expect(hero).toContain('index === 0 ? "h1" : "h2"');
+    expect(read("src/components/home/hero-carousel.tsx")).toContain(
+      "use client",
+    );
+  });
+
+  it("removes the quiz, its finder and the discovery cards outright", () => {
+    for (const gone of [
+      "src/app/quiz",
+      "src/components/quiz",
+      "src/components/home/coffee-finder.tsx",
+      "src/components/home/discovery-cards.tsx",
+    ]) {
+      expect(existsSync(join(root, gone)), gone).toBe(false);
+    }
   });
 });
 
 describe("design refresh — the quiet page", () => {
   const SECTION_FILES: Array<[marker: string, file: string]> = [
     ["<Hero", "src/components/home/hero.tsx"],
+    ["<HomeStatement", "src/components/home/home-statement.tsx"],
+    ["<HomeLineup", "src/components/home/home-lineup.tsx"],
     ["<HomeAbout", "src/components/home/home-about.tsx"],
-    ["<DiscoveryCards", "src/components/home/discovery-cards.tsx"],
-    ["<CoffeeFinder", "src/components/home/coffee-finder.tsx"],
-    ["<SubscriptionBlock", "src/components/home/subscription-block.tsx"],
     ["<CafeBlock", "src/components/home/cafe-block.tsx"],
+    ["<SubscriptionBlock", "src/components/home/subscription-block.tsx"],
   ];
 
-  it("sits on one ground: only the film hero carries a surface", () => {
+  it("sits on one ground: only the hero changes it", () => {
+    // §108.4: the hero is soil and everything else is the paper page.
+    // No tinted bands.
+    const allowed: Record<string, string> = {
+      "<Hero": 'data-surface="soil"',
+    };
     for (const [marker, file] of SECTION_FILES) {
       const surfaces = read(file).match(/data-surface="[a-z]+"/g) ?? [];
-      if (marker === "<Hero") {
-        expect(new Set(surfaces), marker).toEqual(
-          new Set(['data-surface="soil"']),
-        );
-      } else {
-        expect(surfaces, marker).toEqual([]);
-      }
+      expect([...new Set(surfaces)], marker).toEqual(
+        allowed[marker] ? [allowed[marker]] : [],
+      );
     }
   });
 
@@ -128,40 +142,44 @@ describe("design refresh — the quiet page", () => {
     // page that also carries cadences, terms and the real offer.
     const home = read("src/content/home.ts");
     expect(home).not.toContain("/collections/subscriptions");
-    expect(HOME.hero.primaryCta.href).toBe("/subscriptions");
+    expect(
+      HOME.hero.slides.some((slide) => slide.cta.href === "/subscriptions"),
+    ).toBe(true);
     expect(HOME.subscription.cta.href).toBe("/subscriptions");
   });
 });
 
-describe("design refresh — the film hero", () => {
+describe("design refresh — the hero carousel (§108)", () => {
   const hero = () => read("src/components/home/hero.tsx");
+  const carousel = () => read("src/components/home/hero-carousel.tsx");
 
-  it("fills the viewport and floats the chrome over the footage", () => {
+  it("fills the viewport and floats the chrome over the photographs", () => {
     expect(hero()).toContain("min-h-svh");
     // The stylesheet keys the floating chrome off this flag; without it
-    // the header sits on a bar above the video and the hero is not
+    // the header sits on a bar above the hero and it is not
     // full-screen at all.
-    expect(read("src/app/page.tsx")).toContain('data-hero="video"');
+    expect(read("src/app/page.tsx")).toContain('data-hero="slides"');
     const css = read("src/app/globals.css");
-    expect(css).toContain('body:has(main[data-hero="video"]) [data-chrome]');
+    expect(css).toContain('body:has(main[data-hero="slides"]) [data-chrome]');
+    expect(css).not.toContain('data-hero="video"');
   });
 
-  it("renders a poster still on the server as well as the film", () => {
-    // The still is the LCP element and the fallback for every browser
-    // that will not or cannot play the video.
-    expect(hero()).toContain("hero-coffee-poster.jpg");
-    expect(hero()).toContain("hero-coffee.webm");
-    expect(hero()).toContain("priority");
+  it("server-renders every slide from the owners' photographs, the first as LCP", () => {
+    expect(hero()).toContain("priority={index === 0}");
+    expect(HOME.hero.slides.length).toBeGreaterThan(1);
+    for (const slide of HOME.hero.slides) {
+      expect(slide.image.src).toMatch(/^\/brand\/hero-/);
+      expect(slide.cta.label.length).toBeGreaterThan(0);
+    }
+    expect(existsSync(join(root, "public/brand/video"))).toBe(false);
   });
 
-  it("skips the video entirely under reduced motion", () => {
-    const video = read("src/components/home/hero-video.tsx");
-    expect(video).toContain("use client");
-    expect(video).toContain("prefers-reduced-motion");
-    // Returning null before the element exists is what keeps the file
-    // from being downloaded at all — hiding it with CSS would still
-    // fetch and decode it.
-    expect(video).toContain("if (!allowed) return null;");
+  it("holds still for anyone who asked for less motion, and can be paused", () => {
+    expect(carousel()).toContain("prefers-reduced-motion");
+    // WCAG 2.2.2: moving content that starts on its own can be paused.
+    expect(carousel()).toContain("Pause slideshow");
+    // Hidden slides cannot be tabbed into.
+    expect(carousel()).toContain("inert=");
   });
 
   it("keeps the chrome rules out of a cascade layer", () => {
@@ -169,7 +187,7 @@ describe("design refresh — the film hero", () => {
     // in @layer components however specific. Inside the layer these
     // overrides lost and the announcement bar stayed opaque.
     const css = read("src/app/globals.css");
-    const chrome = css.indexOf("Chrome over film.");
+    const chrome = css.indexOf("Chrome over the hero.");
     const components = css.indexOf("@layer components");
     expect(chrome).toBeGreaterThan(-1);
     expect(chrome).toBeLessThan(components);
@@ -202,7 +220,7 @@ describe("design refresh — one typeface", () => {
   });
 });
 
-describe("design refresh — chrome over film", () => {
+describe("design refresh — chrome over the hero", () => {
   it("keeps the open mobile menu opaque", () => {
     // Regression: the chrome's transparency was applied to every
     // descendant [data-surface], which swept in the mobile menu panel.

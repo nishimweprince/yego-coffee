@@ -3,23 +3,16 @@ import { cn } from "@/lib/utils";
 import type { ProductCardModel } from "@/lib/shopify/types";
 
 /**
- * The lineup, laid out for the number of things in it.
+ * The lineup, as a shop shelf (§108, docs/starbucks-parity.md).
  *
- * A fixed three-column grid left Yego's four coffees as a row of three
- * and one stranded card beside two empty cells, and the single mug as
- * a card floating in a third of a row. Neither reads as a decision.
+ * One card per row on a phone, two on a tablet, four from a laptop up,
+ * with an even 32px gap. Yego's four coffees fill one row exactly; a
+ * shorter list sits left-aligned on the same rhythm rather than
+ * stretching to fill it, so every card on the site is the same size.
  *
- * Four coffees is the whole catalogue, so four goes to a 2×2: bigger
- * cards, no hole, and it reads as a lineup rather than as page one of
- * a longer list.
+ * Each card is revealed as it scrolls in, a beat after the one before
+ * it in the row.
  */
-const COLUMNS: Record<number, string> = {
-  1: "sm:grid-cols-1 lg:grid-cols-2",
-  2: "sm:grid-cols-2",
-  3: "sm:grid-cols-2 lg:grid-cols-3",
-  4: "sm:grid-cols-2",
-};
-
 export function ProductGrid({
   products,
   priorityCount = 3,
@@ -31,15 +24,19 @@ export function ProductGrid({
 }) {
   if (products.length === 0) return null;
 
-  const columns = COLUMNS[products.length] ?? "sm:grid-cols-2 lg:grid-cols-3";
-
   return (
-    <div className={cn("grid gap-x-6 gap-y-12", columns, className)}>
+    <div
+      className={cn(
+        "grid grid-cols-1 gap-x-4 gap-y-8 sm:grid-cols-2 sm:gap-x-8 lg:grid-cols-4",
+        className,
+      )}
+    >
       {products.map((product, i) => (
         <ProductCard
           key={product.id}
           product={product}
           priority={i < priorityCount}
+          revealOrder={(i % 4) + 1}
         />
       ))}
     </div>

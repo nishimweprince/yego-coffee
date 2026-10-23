@@ -23,14 +23,14 @@ export const controlVariants = cva(
     variants: {
       shape: {
         /** A short toggle: roast, size, grind, cups. */
-        chip: "inline-flex min-h-11 rounded-control items-center px-4 text-body-s",
+        chip: "inline-flex min-h-11 rounded-pill items-center px-4 text-body-s",
         /** A single figure. */
-        square: "grid h-12 w-12 rounded-control place-items-center text-body-m tabular-nums",
+        square: "grid h-12 w-12 rounded-pill place-items-center text-body-m tabular-nums",
         /** A full-width option with a radio mark and a price. */
-        row: "flex min-h-11 rounded-control items-center justify-between gap-4 px-4 py-3",
-        /** A tall answer with a headline. Large enough to read as a
+        row: "flex min-h-12 rounded-card items-center justify-between gap-4 px-4 py-3",
+        /** A tall choice with a headline. Large enough to read as a
             surface, so it takes the surface corner. */
-        card: "group flex min-h-32 flex-col justify-between rounded-sm p-stack-md text-left",
+        card: "group flex min-h-32 flex-col justify-between rounded-card p-stack-md text-left",
       },
       state: {
         idle: "border-border hover:border-foreground",
@@ -64,6 +64,6 @@ export function controlMark(active: boolean, onInk = false) {
 
 /** Text inputs and selects. */
 export const inputClassName =
-  "min-h-11 rounded-sm border border-border bg-surface-elevated px-3 text-body-m " +
+  "min-h-11 rounded-field border border-border bg-surface-elevated px-4 text-body-m " +
   "transition-colors hover:border-rule focus:border-foreground " +
   "focus:outline-none aria-[invalid=true]:border-destructive";

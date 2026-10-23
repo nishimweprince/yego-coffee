@@ -3,11 +3,11 @@
 /* ============================================================
    Yego Coffee — design tokens.
 
-   One typeface, one accent, one light ground. The page is paper
-   from top to bottom; the only dark surfaces are the footer and
-   the film hero, which is a photograph rather than a coloured
-   band. Everything else is separated by whitespace and, at most
-   twice per page, the contour rule.
+   One typeface, one accent, one light ground (§108). The page is
+   near-white paper from top to bottom, with no tinted bands; the only
+   dark surfaces are the footer and the photographic hero. Everything
+   else is separated by whitespace and, at most twice per page, the
+   contour rule.
    ============================================================ */
 
 @theme {
@@ -15,8 +15,8 @@
      One family, DM Sans, in three registers separated by weight,
      size and colour rather than by family or case:
 
-       display  500, tracked slightly tight
-       body     400
+       display  700, tracked tight
+       body     400, tracked a hair tight
        label    500, small, sentence case, muted
 
      DM Sans is variable on optical size and weight only. There is no
@@ -29,48 +29,62 @@
   --font-sans: var(--font-dm-sans), ui-sans-serif, system-ui, sans-serif;
 
   /* -- Brand palette — "Roastery" ----------------------------
-     Six values. Paper is a hair warm so the photographs do not go
+     Five values. Paper is a hair warm so the photographs do not go
      cold against it; roast is pulled from the beans in those same
      photographs and is the only chromatic accent. Cherry is for
-     errors and never for brand. */
+     errors and never for brand. Linen was retired in §108.4: a
+     beige band under every product read as a template, not a
+     choice. */
   --color-paper: #fbfaf8;
   --color-white: #ffffff;
-  --color-linen: #f3f0eb;
   --color-ink: #1f1b17;
   --color-roast: #6b4a2e;
   --color-cherry: #9d3b2e;
 
   /* -- Type scale -------------------------------------------
-     Display sizes are fluid but capped; text sizes are fixed. One
-     display-xl per site — the film hero. */
-  --text-display-xl: clamp(2.5rem, 1.6rem + 3.2vw, 4.5rem);
-  --text-display-xl--line-height: 1;
+     Measured against shop.starbucks.com (docs/starbucks-parity.md):
+       display-l  48px  listing and statement titles (32px on a phone)
+       h1         40px  the product title
+       h2         32px  feature-row headings
+       h3         24px  section headings over a grid
+       h4         20px  card titles
+       lede       18px  regular, grey — the line under a title
+     One display-xl per site — the hero slides. */
+  --text-display-xl: clamp(2.75rem, 1.9rem + 2.6vw, 4rem);
+  --text-display-xl--line-height: 1.05;
   --text-display-xl--letter-spacing: -0.02em;
 
-  --text-display-l: clamp(1.875rem, 1.45rem + 1.4vw, 2.75rem);
-  --text-display-l--line-height: 1.08;
+  --text-display-l: clamp(2rem, 1.25rem + 2.2vw, 3rem);
+  --text-display-l--line-height: 1.2;
   --text-display-l--letter-spacing: -0.02em;
 
-  --text-h1: clamp(1.75rem, 1.4rem + 1vw, 2.25rem);
-  --text-h1--line-height: 1.15;
-  --text-h1--letter-spacing: -0.015em;
+  --text-h1: clamp(2rem, 1.6rem + 1vw, 2.5rem);
+  --text-h1--line-height: 1.3;
+  --text-h1--letter-spacing: -0.02em;
 
-  --text-h2: 1.5rem;
+  --text-h2: clamp(1.75rem, 1.5rem + 0.6vw, 2rem);
   --text-h2--line-height: 1.2;
-  --text-h2--letter-spacing: -0.01em;
+  --text-h2--letter-spacing: -0.02em;
 
-  --text-h3: 1.125rem;
-  --text-h3--line-height: 1.35;
-  --text-h3--letter-spacing: 0;
+  --text-h3: 1.5rem;
+  --text-h3--line-height: 1.2;
+  --text-h3--letter-spacing: -0.02em;
 
-  --text-lede: 1.25rem;
+  --text-h4: 1.25rem;
+  --text-h4--line-height: 1.2;
+  --text-h4--letter-spacing: -0.02em;
+
+  /* The lede is the quiet second voice under a title: regular weight,
+     grey, a step above body. */
+  --text-lede: clamp(1rem, 0.95rem + 0.3vw, 1.125rem);
   --text-lede--line-height: 1.5;
+  --text-lede--letter-spacing: -0.01em;
 
   --text-body-l: 1.125rem;
   --text-body-l--line-height: 1.6;
 
   --text-body-m: 1rem;
-  --text-body-m--line-height: 1.6;
+  --text-body-m--line-height: 1.5;
 
   --text-body-s: 0.875rem;
   --text-body-s--line-height: 1.5;
@@ -84,30 +98,52 @@
   --text-label--line-height: 1.3;
   --text-label--letter-spacing: 0;
 
-  --text-price: 1rem;
-  --text-price--line-height: 1.3;
+  --text-price: 1.125rem;
+  --text-price--line-height: 1.2;
   --text-price--letter-spacing: 0;
 
+  /* The price under a product card. */
+  --text-price-s: 0.875rem;
+  --text-price-s--line-height: 1.2;
+  --text-price-s--letter-spacing: 0;
+
+  /* Button and nav text. */
+  --text-control: 0.9375rem;
+  --text-control--line-height: 1.2;
+  --text-control--letter-spacing: -0.01em;
+
+  /* -- Page width -------------------------------------------
+     One catalogue width for anything laid out in columns: 1360px,
+     which is the full width less the gutter at 1440. */
+  --container-page: 85rem;
+
   /* -- Semantic spacing ------------------------------------- */
-  --spacing-page-x: clamp(1.25rem, 4vw, 5rem);
+  --spacing-page-x: clamp(1.25rem, 3vw, 2.5rem);
+  /* 76px at 1440: a listing title's distance from the header, and
+     from the title block to the first grid. */
+  --spacing-section-xs: clamp(3rem, 5.3vw, 4.75rem);
   --spacing-section-sm: clamp(2.5rem, 4vw, 4rem);
-  --spacing-section-md: clamp(3.5rem, 6vw, 6rem);
-  --spacing-section-lg: clamp(4.5rem, 8vw, 8rem);
+  --spacing-section-md: clamp(4rem, 7vw, 6.5rem);
+  --spacing-section-lg: clamp(5rem, 9vw, 8rem);
   --spacing-stack-xs: 0.375rem;
   --spacing-stack-sm: 0.75rem;
   --spacing-stack-md: 1.5rem;
   --spacing-stack-lg: 2.5rem;
 
   /* -- Shape ------------------------------------------------
-     Two radii, by role (§106). Surfaces — images, cards, panels,
-     inputs — sit almost square at 2px; things you press or pick —
-     buttons, chips — get a slightly softer 4px so they read as
-     controls. Nothing else is rounded but dots and icon buttons. */
-  --radius-sm: 2px;
-  --radius-control: 4px;
+     Four radii, by role (§108). Things you press or pick — buttons,
+     chips — are pills. Editorial photographs take a soft 16px.
+     Product tiles and the gallery are tighter at 8px, so the
+     merchandise reads as merchandise. Text fields are 8px too. */
+  --radius-pill: 9999px;
+  --radius-card: 1rem;
+  --radius-tile: 0.5rem;
+  --radius-field: 0.5rem;
 
   /* -- Motion ----------------------------------------------- */
   --ease-brand: cubic-bezier(0.22, 0.61, 0.36, 1);
+  /* The scroll reveal's curve: fast out of the gate, long settle. */
+  --ease-reveal: cubic-bezier(0, 0, 0.3, 1);
   --ease-exit: cubic-bezier(0.4, 0, 1, 1);
 }
 
@@ -115,12 +151,13 @@
    Semantic layer.
 
    Assignments live on [data-surface] rather than a global dark
-   theme. Three surfaces:
+   theme. Two surfaces:
 
-     mist   paper   the page. Everything.
-     wash   linen   the announcement bar, image backdrops, skeletons.
-                    Never a page section.
-     soil   ink     the footer, and the film hero. Nowhere else.
+     mist   paper   the page, the announcement bar, every panel.
+     soil   ink     the footer, and the hero. Nowhere else.
+
+   `muted` is not a palette value but a whisper of ink in white —
+   the quiet fill behind a loading image or a hovered row.
    ============================================================ */
 
 :root,
@@ -129,29 +166,10 @@
   --foreground: var(--color-ink);
   --surface: var(--color-paper);
   --surface-elevated: var(--color-white);
-  --muted: var(--color-linen);
+  --muted: color-mix(in srgb, var(--color-ink) 4%, var(--color-white));
   --muted-foreground: color-mix(in srgb, var(--color-ink) 64%, var(--color-paper));
-  --border: color-mix(in srgb, var(--color-ink) 12%, var(--color-paper));
+  --border: color-mix(in srgb, var(--color-ink) 10%, var(--color-paper));
   --rule: color-mix(in srgb, var(--color-ink) 28%, var(--color-paper));
-  --accent: var(--color-roast);
-  --accent-foreground: var(--color-white);
-  --primary: var(--color-ink);
-  --primary-hover: color-mix(in srgb, var(--color-ink) 82%, var(--color-paper));
-  --primary-foreground: var(--color-paper);
-  --ring: var(--color-roast);
-  --success: var(--color-roast);
-  --destructive: var(--color-cherry);
-}
-
-[data-surface="wash"] {
-  --background: var(--color-linen);
-  --foreground: var(--color-ink);
-  --surface: var(--color-linen);
-  --surface-elevated: var(--color-white);
-  --muted: var(--color-paper);
-  --muted-foreground: color-mix(in srgb, var(--color-ink) 64%, var(--color-linen));
-  --border: color-mix(in srgb, var(--color-ink) 12%, var(--color-linen));
-  --rule: color-mix(in srgb, var(--color-ink) 28%, var(--color-linen));
   --accent: var(--color-roast);
   --accent-foreground: var(--color-white);
   --primary: var(--color-ink);
@@ -182,22 +200,22 @@
 }
 
 /* ============================================================
-   Chrome over film.
+   Chrome over the hero.
 
    Deliberately unlayered. The [data-surface] blocks above are
    unlayered too, and an unlayered rule beats anything in
    @layer components no matter how specific it is — inside the
    layer these overrides lost to the announcement bar's own
-   data-surface and the bar stayed opaque over the video.
+   data-surface and the bar stayed opaque over the hero.
 
-   On a page whose hero is a full-screen video, the announcement bar
-   and the header float on the footage instead of sitting on a bar
+   On a page whose hero is a full-screen photograph, the announcement
+   bar and the header float on the picture instead of sitting on a bar
    above it — the hero is only full-screen if nothing is stacked on
    top of it. `:has()` keeps this a property of the page rather than
    a prop threaded through the root layout, so every other route
    keeps the ordinary solid, sticky header.
 
-   Once the visitor scrolls past the film the chrome returns as a
+   Once the visitor scrolls past the hero the chrome returns as a
    fixed, solid bar: wayfinding matters more than the effect the
    moment the picture is gone.
    ============================================================ */
@@ -210,7 +228,7 @@
   display: contents;
 }
 
-body:has(main[data-hero="video"]) [data-chrome] {
+body:has(main[data-hero="slides"]) [data-chrome] {
   display: block;
   position: absolute;
   inset-inline: 0;
@@ -220,7 +238,7 @@ body:has(main[data-hero="video"]) [data-chrome] {
 
 /* Inside the floating wrapper the header must not try to stick to a
    box that is only as tall as itself. */
-body:has(main[data-hero="video"]) [data-chrome] > header {
+body:has(main[data-hero="slides"]) [data-chrome] > header {
   position: relative;
 }
 
@@ -228,9 +246,9 @@ body:has(main[data-hero="video"]) [data-chrome] > header {
    otherwise win over an ancestor, so it is named here too — but only
    it. Sweeping every descendant [data-surface] into transparency also
    caught the open mobile menu, whose panel then disappeared and left
-   its links floating unreadably over the film. */
-html:not([data-chrome-solid]) body:has(main[data-hero="video"]) [data-chrome],
-html:not([data-chrome-solid]) body:has(main[data-hero="video"]) [data-chrome] > p[data-surface] {
+   its links floating unreadably over the photograph. */
+html:not([data-chrome-solid]) body:has(main[data-hero="slides"]) [data-chrome],
+html:not([data-chrome-solid]) body:has(main[data-hero="slides"]) [data-chrome] > p[data-surface] {
   --background: transparent;
   --foreground: var(--color-paper);
   --muted-foreground: color-mix(in srgb, var(--color-paper) 82%, transparent);
@@ -242,11 +260,11 @@ html:not([data-chrome-solid]) body:has(main[data-hero="video"]) [data-chrome] > 
   color: var(--color-paper);
 }
 
-/* Over film every colour in the bar is paper, so the announcement's
+/* Over the hero every colour in the bar is paper, so the announcement's
    link loses the accent colour that marked it as one. It gets a rule
    instead — the affordance has to survive the inversion. */
 html:not([data-chrome-solid])
-  body:has(main[data-hero="video"])
+  body:has(main[data-hero="slides"])
   [data-chrome]
   p a {
   text-decoration: underline;
@@ -258,13 +276,13 @@ html:not([data-chrome-solid])
    floating chrome; it returns to its own colours the moment the bar
    goes solid. */
 html:not([data-chrome-solid])
-  body:has(main[data-hero="video"])
+  body:has(main[data-hero="slides"])
   [data-chrome]
   img {
   filter: brightness(0) invert(1);
 }
 
-html[data-chrome-solid] body:has(main[data-hero="video"]) [data-chrome] {
+html[data-chrome-solid] body:has(main[data-hero="slides"]) [data-chrome] {
   position: fixed;
   animation: yego-chrome-in 300ms var(--ease-brand) both;
 }
@@ -293,22 +311,33 @@ html[data-chrome-solid] body:has(main[data-hero="video"]) [data-chrome] {
     border-color: var(--border);
   }
 
-  /* In-page moves glide; the sticky header is 64px, and the padding
+  /* In-page moves glide; the sticky header is 96px, and the padding
      keeps an anchored heading from landing underneath it. Route
      changes are exempt — see data-scroll-behavior on <html>. Stilled
      under reduced motion below. */
   html {
     scroll-behavior: smooth;
-    scroll-padding-top: 5.5rem;
+    scroll-padding-top: 6rem;
   }
 
+  /* Once SmoothScroll's Lenis is driving the page it moves the
+     scroll position itself every frame; the browser's own smoothing
+     on top of that would fight it. */
+  html.lenis {
+    scroll-behavior: auto;
+  }
+
+  /* Running text is a step softer than headings, the way a shop page
+     sets its copy: solid ink for what you scan, eased ink for what
+     you read. Surfaces restate their own colour below. */
   body {
     background-color: var(--background);
-    color: var(--foreground);
+    color: color-mix(in srgb, var(--foreground) 84%, var(--background));
     font-family: var(--font-body);
     font-optical-sizing: auto;
     font-size: var(--text-body-m);
     line-height: var(--text-body-m--line-height);
+    letter-spacing: -0.01em;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
   }
@@ -322,10 +351,29 @@ html[data-chrome-solid] body:has(main[data-hero="video"]) [data-chrome] {
   h2,
   h3,
   h4 {
+    color: var(--foreground);
     font-family: var(--font-display);
-    font-weight: 500;
-    letter-spacing: -0.01em;
+    font-weight: 700;
+    letter-spacing: -0.02em;
     text-wrap: balance;
+  }
+
+  /* Every control eases between states instead of snapping (§108.6):
+     colour, fill, rule and fade, 200ms on the brand curve. A
+     component that sets its own transition utility overrides this;
+     layout properties are never animated here. */
+  a,
+  button,
+  [role="button"],
+  summary,
+  label,
+  input,
+  select,
+  textarea {
+    transition-property: color, background-color, border-color,
+      text-decoration-color, opacity, box-shadow, outline-color;
+    transition-duration: 200ms;
+    transition-timing-function: var(--ease-brand);
   }
 
   /* Tailwind v4's Preflight leaves buttons at the browser default
@@ -349,7 +397,7 @@ html[data-chrome-solid] body:has(main[data-hero="video"]) [data-chrome] {
   :focus-visible {
     outline: 2px solid var(--ring);
     outline-offset: 2px;
-    border-radius: var(--radius-sm);
+    border-radius: var(--radius-field);
   }
 
   /* Chrome draws its own clear button inside type="search", in its
@@ -455,10 +503,10 @@ html[data-chrome-solid] body:has(main[data-hero="video"]) [data-chrome] {
   }
 
   /* ----------------------------------------------------------
-     The film hero.
+     The hero scrim.
 
-     A full-screen video needs the words to hold against whatever
-     frame happens to be playing, without dimming the footage into
+     A full-screen carousel needs the words to hold against whichever
+     photograph is showing, without dimming the picture into
      grey. One scrim, weighted to the bottom where the type sits,
      clearing through the middle so the picture stays a picture.
      Built from the band's own --background, so it follows the
@@ -468,14 +516,92 @@ html[data-chrome-solid] body:has(main[data-hero="video"]) [data-chrome] {
     content: "";
     position: absolute;
     inset: 0;
+    z-index: -1;
     pointer-events: none;
-    background: linear-gradient(
-      to top,
-      color-mix(in srgb, var(--background) 94%, transparent) 0%,
-      color-mix(in srgb, var(--background) 86%, transparent) 45%,
-      color-mix(in srgb, var(--background) 58%, transparent) 75%,
-      color-mix(in srgb, var(--background) 55%, transparent) 100%
+    background:
+      /* The top band carries the floating header. */
+      linear-gradient(
+        to bottom,
+        color-mix(in srgb, var(--background) 55%, transparent) 0%,
+        transparent 22%
+      ),
+      /* The bottom carries the words; it clears through the middle so
+         the photograph stays a photograph. */
+      linear-gradient(
+        to top,
+        color-mix(in srgb, var(--background) 92%, transparent) 0%,
+        color-mix(in srgb, var(--background) 72%, transparent) 38%,
+        color-mix(in srgb, var(--background) 20%, transparent) 68%,
+        transparent 100%
+      );
+  }
+
+  /* ----------------------------------------------------------
+     The product gallery fits one screen.
+
+     Photo and thumbnail strip together never run past the bottom of
+     the viewport, so the bag and the buy button are seen together.
+     The photo is 19:20, and the strip is a fixed 72px plus a 12px
+     gap, so the width that fits is the height left over, less the
+     strip, scaled by the photo's ratio. --gallery-offset is the
+     chrome and padding above the gallery on first load.
+     ---------------------------------------------------------- */
+  .pdp-gallery {
+    --gallery-offset: 12.5rem;
+    width: 100%;
+    max-width: min(
+      100%,
+      664px,
+      /* A floor, so a phone on its side still gets a usable photo. */
+      max(15rem, calc((100svh - var(--gallery-offset) - 5.25rem) * 19 / 20))
     );
+  }
+
+  @media (min-width: 1024px) {
+    .pdp-gallery {
+      --gallery-offset: 14.5rem;
+    }
+  }
+
+  /* ----------------------------------------------------------
+     The hero carousel (§108).
+
+     Slides are stacked; the current one fades up over the last, and
+     its photograph settles from a slight zoom over the interval — one
+     slow movement per slide, the page's only ambient motion. The
+     words rise in as the slide arrives. All of it stops under reduced
+     motion (see the block at the end of this file).
+     ---------------------------------------------------------- */
+  .hero-slide {
+    opacity: 0;
+    transition: opacity 1100ms var(--ease-brand);
+  }
+
+  .hero-slide[data-active] {
+    opacity: 1;
+    z-index: 1;
+  }
+
+  .hero-slide__image {
+    transform: scale(1.06);
+    transition: transform 7500ms linear;
+  }
+
+  .hero-slide[data-active] .hero-slide__image {
+    transform: none;
+  }
+
+  .hero-slide[data-active] .hero-slide__copy > * {
+    animation: yego-rise 800ms var(--ease-brand) 250ms both;
+  }
+
+  .hero-progress {
+    animation: yego-progress linear both;
+  }
+
+  .hero-progress--still {
+    animation: none;
+    transform: none;
   }
 
   /* ----------------------------------------------------------
@@ -510,11 +636,16 @@ html[data-chrome-solid] body:has(main[data-hero="video"]) [data-chrome] {
 /* ============================================================
    Motion — one idea.
 
-   The hero arrives: the headline rises, then the actions. Moving to
-   another page is the same gesture, once: the page being left fades,
-   the page arriving rises the same half-line. Nothing else on the
-   site animates on load, so it reads as the page opening rather than
-   as decoration scattered down it.
+   Two movements, both measured from shop.starbucks.com (§108.5):
+
+     The hero: each slide's words rise as its photograph fades up.
+     The reveal: titles, section headings and product cards slide up
+     20px and fade in as they scroll into view — 600ms on a long
+     settle, each card in a row 75ms after the one before.
+
+   Around them, everything eases (§108.6): scrolling has momentum
+   (SmoothScroll), page changes crossfade, panels open with a short
+   slide or fade, and controls ease between states.
    ============================================================ */
 
 @keyframes yego-rise {
@@ -525,6 +656,15 @@ html[data-chrome-solid] body:has(main[data-hero="video"]) [data-chrome] {
   to {
     opacity: 1;
     transform: none;
+  }
+}
+
+@keyframes yego-progress {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
   }
 }
 
@@ -546,9 +686,54 @@ html[data-chrome-solid] body:has(main[data-hero="video"]) [data-chrome] {
   }
 }
 
-/* Route transitions — drawn by app/template.tsx. The browser's own
-   whole-document crossfade is switched off so only the page content
-   moves; the chrome, which lives outside the template, holds still. */
+/* The scroll reveal. Hidden only once the inline boot script in the
+   root layout has marked the document — without JavaScript nothing
+   is ever hidden. RevealObserver plays the entrance with the Web
+   Animations API (600ms, var(--ease-reveal), 75ms per
+   --reveal-order step) and holds its end state, so no attribute on a
+   server-rendered element is ever changed under React. */
+html[data-reveal-ready] [data-reveal] {
+  opacity: 0.01;
+  transform: translateY(20px);
+}
+
+/* Panels open with motion that says where they came from: the cart
+   slides in from the edge it lives on, the menu and search drop from
+   the header, backdrops fade. They close at once — leaving should
+   never make anyone wait. */
+@keyframes yego-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes yego-slide-in-right {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: none;
+  }
+}
+
+@keyframes yego-drop-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Page changes crossfade — drawn by app/template.tsx. Opacity only:
+   the arriving page's own scroll reveal supplies the movement, so the
+   two never stack into a double rise. The browser's whole-document
+   crossfade is switched off so the chrome holds still. */
 ::view-transition {
   pointer-events: none;
 }
@@ -559,11 +744,11 @@ html[data-chrome-solid] body:has(main[data-hero="video"]) [data-chrome] {
 }
 
 ::view-transition-old(.page-leave) {
-  animation: yego-fade-out 120ms var(--ease-exit) both;
+  animation: yego-fade-out 160ms var(--ease-exit) both;
 }
 
 ::view-transition-new(.page-arrive) {
-  animation: yego-rise 360ms var(--ease-brand) 60ms both;
+  animation: yego-fade-in 280ms var(--ease-reveal) 40ms both;
 }
 
 @keyframes yego-fade-out {
@@ -576,6 +761,18 @@ html[data-chrome-solid] body:has(main[data-hero="video"]) [data-chrome] {
 }
 
 @layer components {
+  .motion-fade-in {
+    animation: yego-fade-in 220ms var(--ease-reveal) both;
+  }
+
+  .motion-slide-in-right {
+    animation: yego-slide-in-right 380ms var(--ease-reveal) both;
+  }
+
+  .motion-drop-in {
+    animation: yego-drop-in 260ms var(--ease-reveal) both;
+  }
+
   .rise-in {
     animation: yego-rise 700ms var(--ease-brand) both;
     animation-delay: var(--rise-delay, 0ms);
@@ -602,5 +799,11 @@ html[data-chrome-solid] body:has(main[data-hero="video"]) [data-chrome] {
   ::view-transition-group(*) {
     animation-duration: 0s !important;
     animation-delay: 0s !important;
+  }
+
+  [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
   }
 }

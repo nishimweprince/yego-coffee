@@ -17,16 +17,16 @@ export function ProductGridSkeleton({
     <div
       aria-hidden
       className={cn(
-        "grid gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-3",
+        "grid grid-cols-1 gap-x-4 gap-y-8 sm:grid-cols-2 sm:gap-x-8 lg:grid-cols-4",
         className,
       )}
     >
       {Array.from({ length: count }, (_, index) => (
         <div key={index} className="animate-pulse">
-          <div className="aspect-square rounded-sm bg-muted" />
-          <div className="mt-stack-md flex items-baseline justify-between gap-4">
-            <div className="h-5 w-2/3 rounded-sm bg-muted" />
-            <div className="h-5 w-1/4 rounded-sm bg-muted" />
+          <div className="aspect-[316/373] rounded-tile bg-muted" />
+          <div className="mt-stack-md space-y-2">
+            <div className="h-5 w-2/3 rounded-field bg-muted" />
+            <div className="h-4 w-1/4 rounded-field bg-muted" />
           </div>
         </div>
       ))}

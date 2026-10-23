@@ -12,7 +12,7 @@ export default function SignedInLayout({
 }: LayoutProps<"/account">) {
   return (
     <main className="px-page-x py-section-md">
-      <div className="mx-auto max-w-6xl">
+      <div className="mx-auto max-w-page">
         <AccountNav />
         <div className="mt-section-sm">{children}</div>
       </div>

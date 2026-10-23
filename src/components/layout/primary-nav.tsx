@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { PRIMARY_NAV } from "@/content/navigation";
-import { cn } from "@/lib/utils";
 
 /**
  * The desktop primary navigation.
@@ -18,7 +17,7 @@ export function PrimaryNav() {
 
   return (
     <nav aria-label="Primary" className="hidden lg:block">
-      <ul className="flex items-center gap-6">
+      <ul className="flex items-center gap-7">
         {PRIMARY_NAV.map((link) => {
           const active =
             pathname === link.href || pathname.startsWith(`${link.href}/`);
@@ -27,10 +26,7 @@ export function PrimaryNav() {
               <Link
                 href={link.href}
                 aria-current={active ? "page" : undefined}
-                className={cn(
-                  "link-sweep text-body-s font-medium transition-colors hover:text-foreground",
-                  active ? "text-foreground" : "text-muted-foreground",
-                )}
+                className="link-sweep text-control font-semibold text-foreground transition-colors hover:text-accent"
               >
                 {link.label}
               </Link>

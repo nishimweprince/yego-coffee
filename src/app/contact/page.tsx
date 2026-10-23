@@ -19,8 +19,8 @@ export const metadata: Metadata = {
 export default function ContactPage() {
   return (
     <main className="px-page-x py-section-md">
-      <div className="mx-auto grid max-w-6xl items-center gap-stack-lg lg:grid-cols-2 lg:gap-16">
-        <figure className="overflow-hidden rounded-sm">
+      <div className="mx-auto grid max-w-page items-center gap-stack-lg lg:grid-cols-2 lg:gap-16">
+        <figure className="overflow-hidden rounded-card">
           <Image
             {...IMAGES.roasterPortrait}
             alt={IMAGES.roasterPortrait.alt}

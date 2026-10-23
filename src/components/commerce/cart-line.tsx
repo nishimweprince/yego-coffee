@@ -88,7 +88,7 @@ export function CartLine({ line }: { line: CartLineModel }) {
       <div className="min-w-0 flex-1">
         <div className="flex items-start justify-between gap-4">
           <div className="min-w-0">
-            <h3 className="text-h3">
+            <h3 className="text-h4">
               <Link href={`/products/${line.productHandle}`}>
                 {line.productTitle}
               </Link>

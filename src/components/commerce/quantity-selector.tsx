@@ -26,7 +26,7 @@ export function QuantitySelector({
   return (
     <div
       className={cn(
-        "inline-flex items-center rounded-sm border border-border",
+        "inline-flex items-center rounded-pill border border-border",
         className,
       )}
     >
@@ -35,7 +35,7 @@ export function QuantitySelector({
         onClick={() => set(value - 1)}
         disabled={disabled || value <= min}
         aria-label={`Decrease ${label.toLowerCase()}`}
-        className="grid h-11 w-11 place-items-center transition-colors hover:bg-muted disabled:opacity-30"
+        className="grid h-12 w-9 place-items-center rounded-l-pill transition-colors hover:bg-muted disabled:opacity-30"
       >
         <FontAwesomeIcon icon={faMinus} className="h-3 w-3" />
       </button>
@@ -44,7 +44,7 @@ export function QuantitySelector({
       <span
         aria-live="polite"
         aria-label={`${label}: ${value}`}
-        className="w-10 text-center text-body-m tabular-nums"
+        className="w-7 text-center text-body-m tabular-nums"
       >
         {value}
       </span>
@@ -54,7 +54,7 @@ export function QuantitySelector({
         onClick={() => set(value + 1)}
         disabled={disabled || value >= max}
         aria-label={`Increase ${label.toLowerCase()}`}
-        className="grid h-11 w-11 place-items-center transition-colors hover:bg-muted disabled:opacity-30"
+        className="grid h-12 w-9 place-items-center rounded-r-pill transition-colors hover:bg-muted disabled:opacity-30"
       >
         <FontAwesomeIcon icon={faPlus} className="h-3 w-3" />
       </button>

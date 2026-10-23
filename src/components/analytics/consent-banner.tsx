@@ -35,7 +35,7 @@ export function ConsentBanner({ hasProviders }: { hasProviders: boolean }) {
       aria-label="Analytics consent"
       className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-surface-elevated px-page-x py-stack-md"
     >
-      <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-stack-md">
+      <div className="mx-auto flex max-w-page flex-wrap items-center justify-between gap-stack-md">
         <p className="max-w-prose text-body-s">
           We&apos;d like to measure how this site is used, so we can make
           it better. No personal details, and nothing at all unless you

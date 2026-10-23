@@ -55,20 +55,20 @@ export default async function ShopSectionPage({
 
   return (
     <main>
-      <Section>
+      <Section className="pt-section-xs">
         <PageHeader
+          align="center"
           title={collection.title}
           lede={collection.description || undefined}
           breadcrumb={[{ href: "/shop", label: "Shop" }]}
         />
 
-        <div className="mt-section-sm">
+        <div className="mt-section-md flex flex-wrap items-center justify-between gap-stack-md">
           <RoastFilter options={roasts} selected={selected} />
+          <p className="label text-muted-foreground">
+            {`${visible.length} of ${collection.products.length}`}
+          </p>
         </div>
-
-        <p className="label text-muted-foreground mt-stack-lg">
-          {`${visible.length} of ${collection.products.length}`}
-        </p>
 
         {visible.length === 0 ? (
           <div className="mt-section-sm">
@@ -81,8 +81,8 @@ export default async function ShopSectionPage({
             </Link>
           </div>
         ) : (
-          <div className="mt-section-sm">
-            <ProductGrid products={visible} />
+          <div className="mt-15">
+            <ProductGrid products={visible} priorityCount={4} />
           </div>
         )}
       </Section>

@@ -16,6 +16,9 @@ export type BrandImage = {
   alt: string;
   width: number;
   height: number;
+  /** Where a full-bleed crop should hold, as CSS object-position. Only
+      set where the default centre would cut the subject. */
+  focus?: string;
 };
 
 export const IMAGES = {
@@ -78,5 +81,31 @@ export const IMAGES = {
     alt: "A member of the Yego team filling a bag beside the roaster",
     width: 1200,
     height: 1600,
+  },
+  /* The hero carousel (§108). Supplied by the owners on 2026-10-23.
+     The two portrait frames crop hard on a wide screen, so each holds
+     its subject: the printed sack, the stream of beans. The sack's
+     print names Gatare, which the store sells as its light roast, so
+     naming it is true. */
+  heroSacks: {
+    src: "/brand/hero-gatare-sacks.jpg",
+    alt: "Jute sacks of green coffee stamped Product of Rwanda, Natural coffee, Gatare C.W.S.",
+    width: 1333,
+    height: 2000,
+    focus: "50% 62%",
+  },
+  heroRoasterDrop: {
+    src: "/brand/hero-roaster-drop.jpg",
+    alt: "Roasted beans tumbling from the roaster's door into the cooling tray",
+    width: 1333,
+    height: 2000,
+    focus: "50% 58%",
+  },
+  heroRoasterInspecting: {
+    src: "/brand/hero-roaster-inspecting.jpg",
+    alt: "A roaster leans over the cooling tray, checking the beans under a lamp",
+    width: 2000,
+    height: 1333,
+    focus: "60% 50%",
   },
 } as const satisfies Record<string, BrandImage>;

@@ -164,7 +164,7 @@ export function CartDrawer() {
             type="button"
             aria-label="Close cart"
             onClick={close}
-            className="absolute inset-0 bg-ink/50"
+            className="motion-fade-in absolute inset-0 bg-ink/50"
           />
 
           <div
@@ -174,7 +174,7 @@ export function CartDrawer() {
             aria-label="Cart"
             tabIndex={-1}
             data-surface="mist"
-            className="absolute inset-y-0 right-0 flex w-full max-w-md flex-col border-l border-border outline-none"
+            className="motion-slide-in-right absolute inset-y-0 right-0 flex w-full max-w-md flex-col border-l border-border outline-none"
           >
             <div className="flex items-center justify-between gap-4 border-b border-border px-stack-md py-stack-md">
               <h2 className="text-h3">Cart{count > 0 ? ` (${count})` : ""}</h2>

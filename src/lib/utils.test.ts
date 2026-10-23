@@ -32,8 +32,9 @@ describe("cn", () => {
   });
 
   it("collapses the surface and control radii into one corner", () => {
-    expect(cn("rounded-sm", "rounded-control")).toBe("rounded-control");
-    expect(cn("rounded-control", "rounded-sm")).toBe("rounded-sm");
+    expect(cn("rounded-card", "rounded-pill")).toBe("rounded-pill");
+    expect(cn("rounded-pill", "rounded-card")).toBe("rounded-card");
+    expect(cn("rounded-field", "rounded-card")).toBe("rounded-card");
   });
 });
 

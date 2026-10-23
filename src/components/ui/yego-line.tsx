@@ -15,7 +15,7 @@ import { cn } from "@/lib/utils";
  * It replaces the decorative eyebrow that used to sit above every
  * section heading. An eyebrow reading "Subscriptions" above a heading
  * about subscriptions carries nothing; this carries the store's own
- * shipping threshold and cancellation terms.
+ * shipping rate and cancellation terms.
  *
  * The fact is never authored here — it arrives verbatim from a Shopify
  * policy document via `getReassurances()`, with a link to the whole
@@ -35,7 +35,7 @@ export function YegoLine({
       <p className="label text-muted-foreground">{reassurance.question}</p>
 
       <div className="mt-stack-sm flex flex-wrap items-baseline gap-x-4 gap-y-stack-xs">
-        <p className="font-display text-h1 font-medium text-accent">Yego.</p>
+        <p className="font-display text-h1 font-bold text-accent">Yego.</p>
         <p className="max-w-prose flex-1 text-body-m text-muted-foreground">
           {reassurance.html}{" "}
           <Link

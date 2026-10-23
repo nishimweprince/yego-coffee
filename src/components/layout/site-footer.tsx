@@ -20,7 +20,7 @@ export function SiteFooter() {
           directly beneath it (§107). */}
       <div className="grid gap-stack-lg sm:grid-cols-2 lg:grid-cols-[1.2fr_1fr_1fr_1fr]">
         <div>
-          <p className="font-display text-h2 font-medium">{BRAND.name}</p>
+          <p className="font-display text-h3 font-bold">{BRAND.name}</p>
           <p className="mt-stack-xs text-body-s text-muted-foreground">
             {BRAND.shopAddress}
           </p>
@@ -34,7 +34,7 @@ export function SiteFooter() {
 
         {FOOTER_GROUPS.map((group) => (
           <nav key={group.label} aria-label={`Footer — ${group.label}`}>
-            <h2 className="label text-muted-foreground">{group.label}</h2>
+            <h2 className="text-body-m font-bold">{group.label}</h2>
             <ul className="mt-stack-md space-y-stack-sm">
               {group.links.map((link) => (
                 <li key={link.href}>

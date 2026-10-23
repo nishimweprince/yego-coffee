@@ -14,8 +14,11 @@ import type { ProductCardModel } from "@/lib/shopify/types";
  * card was cut (§107): the whole card already leads to the product,
  * and a grid of identical outlined buttons read as template chrome.
  *
- * One hover for the whole card: the photo leans in and the title turns
- * roast together, so the card reads as one destination.
+ * Laid out as a shop shelf card (§108): a 316:373 photo on a white tile,
+ * then the name, the roast and the price stacked beneath it — name
+ * first, so titles line up across a row whether or not a roast note
+ * follows. One hover for the whole card: the photo zooms and the name
+ * takes the accent together, so the card reads as one destination.
  *
  * There is deliberately **no add-to-cart here.** Every product in this
  * catalogue carries a real choice (grind, size or roast), and a
@@ -24,17 +27,28 @@ import type { ProductCardModel } from "@/lib/shopify/types";
 export function ProductCard({
   product,
   priority = false,
+  revealOrder,
   className,
 }: {
   product: ProductCardModel;
   priority?: boolean;
+  /** Position in its row, for the scroll reveal's stagger. */
+  revealOrder?: number;
   className?: string;
 }) {
   const note = roastNote(product);
   const href = `/products/${product.handle}`;
 
   return (
-    <article className={cn("group", className)}>
+    <article
+      data-reveal
+      style={
+        revealOrder
+          ? ({ "--reveal-order": revealOrder } as React.CSSProperties)
+          : undefined
+      }
+      className={cn("group", className)}
+    >
       {/* Duplicates the title link's destination, so it is skipped by
           assistive technology rather than announced twice. */}
       <Link href={href} className="block" tabIndex={-1} aria-hidden>
@@ -44,25 +58,28 @@ export function ProductCard({
           priority={priority}
           zoomOnHover
           sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
-          className="rounded-sm bg-surface-elevated"
+          className="aspect-[316/373] rounded-tile bg-surface-elevated"
         />
       </Link>
 
-      <div className="mt-stack-md">
-        <div className="flex items-baseline justify-between gap-4">
-          <h3 className="text-h3 transition-colors group-hover:text-accent">
-            <Link href={href}>{product.title}</Link>
-          </h3>
-          <PriceRange min={product.minPrice} max={product.maxPrice} />
-        </div>
+      <div className="mt-4">
+        <h3 className="text-h4 font-semibold transition-colors duration-200 group-hover:text-accent">
+          <Link href={href}>{product.title}</Link>
+        </h3>
 
         {note || !product.availableForSale ? (
-          <p className="mt-stack-xs label text-muted-foreground">
+          <p className="mt-1 text-body-s text-muted-foreground">
             {[note, product.availableForSale ? null : "Sold out"]
               .filter(Boolean)
               .join(", ")}
           </p>
         ) : null}
+
+        <PriceRange
+          min={product.minPrice}
+          max={product.maxPrice}
+          className="mt-2 text-price-s font-bold text-muted-foreground"
+        />
       </div>
     </article>
   );

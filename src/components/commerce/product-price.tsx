@@ -22,7 +22,7 @@ export function ProductPrice({
 
   return (
     <p className={cn("flex items-baseline gap-2", className)}>
-      <span className="type-figure text-price">
+      <span className="type-figure text-price font-bold">
         {formatMoneyCompact(price)}
       </span>
       {discounted ? (

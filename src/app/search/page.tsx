@@ -35,7 +35,7 @@ export default async function SearchPage({
 
   return (
     <main className="px-page-x py-section-md">
-      <div className="mx-auto max-w-6xl">
+      <div className="mx-auto max-w-page">
         <h1 className="text-display-l">
           {query ? <>Results for “{query}”</> : "Search"}
         </h1>
@@ -43,7 +43,7 @@ export default async function SearchPage({
         {!query ? (
           <p className="mt-stack-md text-body-l text-muted-foreground">
             Search from the header, or press{" "}
-            <kbd className="rounded-sm border border-border px-1.5 py-0.5 text-body-s">
+            <kbd className="rounded-field border border-border px-1.5 py-0.5 text-body-s">
               /
             </kbd>{" "}
             anywhere.

@@ -54,7 +54,7 @@ describe("summarisePlans", () => {
     const [plan] = summarisePlans([
       planProduct("bi-monthly-drop", [{ interval: "WEEK", count: 2 }]),
     ]);
-    expect(plan.cadences).toEqual(["Every 2 weeks"]);
+    expect(plan.cadences).toEqual(["Twice a month, every 2 weeks"]);
   });
 
   // The 5 lb monthly subscription carries two plan groups, one of them
@@ -66,7 +66,7 @@ describe("summarisePlans", () => {
         { interval: "DAY", count: 60 },
       ]),
     ]);
-    expect(plan.cadences).toEqual(["Every month", "Every 60 days"]);
+    expect(plan.cadences).toEqual(["Once a month", "Every 60 days"]);
   });
 
   it("de-duplicates a cadence offered on several variants", () => {
@@ -74,7 +74,7 @@ describe("summarisePlans", () => {
       { interval: "MONTH", count: 1 },
       { interval: "MONTH", count: 1 },
     ]);
-    expect(summarisePlans([product])[0].cadences).toEqual(["Every month"]);
+    expect(summarisePlans([product])[0].cadences).toEqual(["Once a month"]);
   });
 
   it("reports no cadence rather than a vague one when policy is absent", () => {

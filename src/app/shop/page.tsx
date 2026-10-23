@@ -1,12 +1,10 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import { ProductGrid } from "@/components/commerce/product-grid";
 import { RoastFilter } from "@/components/commerce/roast-filter";
 import { StoreUnavailable } from "@/components/commerce/store-unavailable";
 import { PageHeader } from "@/components/ui/page-header";
 import { Section } from "@/components/ui/section";
-import { IMAGES } from "@/content/images";
 import { SHOP_SECTIONS } from "@/lib/catalog/collections";
 import {
   availableRoasts,
@@ -28,6 +26,10 @@ export const metadata: Metadata = {
  * product. The store still models subscriptions as eight duplicate
  * products (§92.1); listing them here would show the same three
  * coffees four times over and read as a catalogue of thirteen.
+ *
+ * Laid out as a catalogue opening (§108): a centred title over a bold
+ * grey line, then each collection under its own heading on a four-up
+ * shelf.
  */
 export default async function ShopPage({
   searchParams,
@@ -56,34 +58,26 @@ export default async function ShopPage({
 
   return (
     <main>
-      <Section>
+      <Section className="pt-section-xs">
           <PageHeader
-            title="Coffee"
+            align="center"
+            title="Explore our coffee"
             lede="Grown in Rwanda. Roasted in Somerville."
           />
 
-          {/* Atmosphere, not merchandise: the bags in this photograph
-              are not the products below, so it carries no link. The
-              source is 1600px wide, so it is never asked to fill more
-              than the 6xl container. */}
-          <Image
-            {...IMAGES.bagsLineup}
-            alt={IMAGES.bagsLineup.alt}
-            sizes="(min-width: 1152px) 1152px, 100vw"
-            priority
-            className="mt-section-sm aspect-[21/9] w-full rounded-sm object-cover"
-          />
-
-          <div className="mt-section-sm flex flex-wrap items-center justify-between gap-stack-md">
-            <RoastFilter options={roasts} selected={selected} />
-            {/* A count that never changes is noise. It appears when a
-                filter is hiding something, which is the only moment it
-                tells the reader anything. */}
-            {filtered ? (
-              <p className="label text-muted-foreground">
-                {`${visible.length} of ${coffees.length}`}
-              </p>
-            ) : null}
+          <div className="mt-section-md flex flex-wrap items-end justify-between gap-stack-md">
+            <h2 data-reveal className="text-h3">Coffee</h2>
+            <div className="flex flex-wrap items-center gap-stack-md">
+              <RoastFilter options={roasts} selected={selected} />
+              {/* A count that never changes is noise. It appears when a
+                  filter is hiding something, which is the only moment
+                  it tells the reader anything. */}
+              {filtered ? (
+                <p className="label text-muted-foreground">
+                  {`${visible.length} of ${coffees.length}`}
+                </p>
+              ) : null}
+            </div>
           </div>
 
           {visible.length === 0 ? (
@@ -97,18 +91,18 @@ export default async function ShopPage({
               </Link>
             </div>
           ) : (
-            <div className="mt-section-sm">
-              <ProductGrid products={visible} />
+            <div className="mt-15">
+              <ProductGrid products={visible} priorityCount={4} />
             </div>
           )}
       </Section>
 
       {merch && merch.products.length > 0 ? (
         <Section aria-labelledby="merch-heading" className="pt-0">
-            <h2 id="merch-heading" className="text-display-l">
+            <h2 id="merch-heading" data-reveal className="text-h3">
               Merch
             </h2>
-            <div className="mt-section-sm">
+            <div className="mt-15">
               <ProductGrid products={merch.products} priorityCount={0} />
             </div>
         </Section>

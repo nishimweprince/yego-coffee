@@ -33,14 +33,14 @@ export default async function AboutPage() {
   return (
     <main>
       <section className="px-page-x py-section-md">
-        <div className="mx-auto grid max-w-6xl items-center gap-stack-lg lg:grid-cols-2 lg:gap-16">
+        <div className="mx-auto grid max-w-page items-center gap-stack-lg lg:grid-cols-2 lg:gap-16">
           <figure>
             <Image
               {...IMAGES.founders}
               alt={IMAGES.founders.alt}
               sizes="(min-width: 1024px) 45vw, 100vw"
               priority
-              className="aspect-[3/2] w-full rounded-sm object-cover"
+              className="aspect-[3/2] w-full rounded-card object-cover"
             />
             <figcaption className="mt-stack-sm label text-muted-foreground">
               Fatuma and Francois Tuyishime, Somerville, Massachusetts
@@ -82,14 +82,14 @@ export default async function AboutPage() {
           cards. One caption, because the machine's name is printed on
           it; the others need none. */}
       <section aria-label="The roastery" className="px-page-x py-section-md">
-        <div className="mx-auto grid max-w-6xl grid-cols-2 gap-stack-md lg:grid-cols-12 lg:gap-stack-lg">
+        <div className="mx-auto grid max-w-page grid-cols-2 gap-stack-md lg:grid-cols-12 lg:gap-stack-lg">
           <figure className="col-span-2 lg:col-span-5">
             <Image
               {...IMAGES.roasterLoring}
               alt={IMAGES.roasterLoring.alt}
               sizes="(min-width: 1024px) 40vw, 100vw"
               loading="lazy"
-              className="aspect-[4/5] w-full rounded-sm object-cover"
+              className="aspect-[4/5] w-full rounded-card object-cover"
             />
             <figcaption className="mt-stack-sm label text-muted-foreground">
               The Loring roaster
@@ -100,20 +100,20 @@ export default async function AboutPage() {
             alt={IMAGES.roasterBeans.alt}
             sizes="(min-width: 1024px) 32vw, 50vw"
             loading="lazy"
-            className="aspect-[3/4] w-full rounded-sm object-cover lg:col-span-4 lg:mt-section-sm"
+            className="aspect-[3/4] w-full rounded-card object-cover lg:col-span-4 lg:mt-section-sm"
           />
           <Image
             {...IMAGES.basket}
             alt={IMAGES.basket.alt}
             sizes="(min-width: 1024px) 24vw, 50vw"
             loading="lazy"
-            className="aspect-[3/4] w-full rounded-sm object-cover lg:col-span-3 lg:self-end"
+            className="aspect-[3/4] w-full rounded-card object-cover lg:col-span-3 lg:self-end"
           />
         </div>
       </section>
 
       <section className="px-page-x py-section-md">
-        <div className="mx-auto max-w-6xl">
+        <div className="mx-auto max-w-page">
           <Contour label="The facts" />
           <dl className="mt-section-sm grid gap-x-8 gap-y-stack-lg sm:grid-cols-2">
             <div>
@@ -148,7 +148,7 @@ export default async function AboutPage() {
           reads to the bottom of this page is the most persuaded
           visitor on the site and had nowhere to go. */}
       <section className="px-page-x pb-section-md">
-        <div className="mx-auto max-w-6xl border-t border-border pt-section-sm">
+        <div className="mx-auto max-w-page border-t border-border pt-section-sm">
           <h2 className="max-w-[24ch] text-h1">
             Taste what four decades of it turned into.
           </h2>

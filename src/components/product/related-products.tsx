@@ -1,5 +1,4 @@
 import { ProductGrid } from "@/components/commerce/product-grid";
-import { Contour } from "@/components/ui/contour";
 import type { ProductCardModel } from "@/lib/shopify/types";
 
 /**
@@ -11,7 +10,7 @@ import type { ProductCardModel } from "@/lib/shopify/types";
  */
 export function RelatedProducts({
   products,
-  heading = "The rest of the lineup",
+  heading = "You might also like",
 }: {
   products: ProductCardModel[];
   heading?: string;
@@ -19,13 +18,15 @@ export function RelatedProducts({
   if (products.length === 0) return null;
 
   return (
-    <section aria-label={heading} className="px-page-x py-section-md">
-      <div className="mx-auto max-w-6xl">
-        <Contour label={heading} />
+    <section aria-labelledby="related-heading" className="px-page-x py-section-md">
+      <div className="mx-auto max-w-page">
+        <h2 id="related-heading" data-reveal className="text-h3">
+          {heading}
+        </h2>
         <ProductGrid
           products={products}
           priorityCount={0}
-          className="mt-section-sm"
+          className="mt-15"
         />
       </div>
     </section>

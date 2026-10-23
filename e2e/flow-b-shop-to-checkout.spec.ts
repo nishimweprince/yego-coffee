@@ -12,7 +12,9 @@ test.describe("Flow B — shop to one-time checkout", () => {
   }) => {
     await page.goto("/shop");
 
-    await expect(page.getByRole("heading", { name: "Coffee" })).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "Coffee", exact: true }),
+    ).toBeVisible();
 
     await page.getByRole("link", { name: /medium roast/i }).first().click();
     await expect(page).toHaveURL(/\/products\/medium-roast/);

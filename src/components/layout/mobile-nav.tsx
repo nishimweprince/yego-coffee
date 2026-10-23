@@ -39,9 +39,9 @@ export function MobileNav() {
           // transparency: the links landed unreadable on the video.
           // Declaring the surface here also states what it is.
           data-surface="mist"
-          className="absolute inset-x-0 top-full border-b border-border bg-background px-page-x py-stack-md"
+          className="motion-drop-in absolute inset-x-0 top-full z-50 h-dvh overflow-y-auto border-t border-border bg-background px-page-x py-stack-lg"
         >
-          <ul className="space-y-1">
+          <ul className="space-y-stack-xs">
             {[...PRIMARY_NAV, { href: "/contact", label: "Contact" }].map((link) => (
               <li key={link.href}>
                 <Link
@@ -49,10 +49,10 @@ export function MobileNav() {
                   onClick={() => setOpen(false)}
                   aria-current={pathname === link.href ? "page" : undefined}
                   className={cn(
-                    "block py-stack-sm text-body-l transition-colors hover:text-accent",
+                    "block py-stack-sm text-h2 font-bold transition-colors hover:text-accent",
                     pathname === link.href
-                      ? "text-foreground"
-                      : "text-muted-foreground",
+                      ? "text-accent"
+                      : "text-foreground",
                   )}
                 >
                   {link.label}

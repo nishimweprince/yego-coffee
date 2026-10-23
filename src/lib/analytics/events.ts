@@ -20,15 +20,6 @@ export type AnalyticsEvent =
   | { name: "subscription_cta_clicked"; location: string }
   | { name: "selling_plan_selected"; sellingPlanId: string; cadence: string }
   | { name: "subscription_added_to_cart"; handle: string; cadence: string }
-  // Quiz
-  | { name: "quiz_started"; prefilled: boolean }
-  | { name: "quiz_step_viewed"; step: string; index: number }
-  | { name: "quiz_answered"; step: string; answer: string }
-  | { name: "quiz_back_clicked"; step: string }
-  | { name: "quiz_completed"; questions: number }
-  | { name: "quiz_result_viewed"; handle: string; hasSubscription: boolean }
-  | { name: "quiz_recommendation_changed"; cupsPerDay: number }
-  | { name: "quiz_subscription_started"; handle: string }
   // Cart
   | { name: "cart_item_added"; handle: string; quantity: number }
   | { name: "cart_item_removed"; handle: string }

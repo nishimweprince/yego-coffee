@@ -34,7 +34,7 @@ export default async function AccountPage() {
           <Contour label="Recent order" />
           {latest ? (
             <div className="mt-stack-lg">
-              <p className="text-h3">{latest.name}</p>
+              <p className="text-h4">{latest.name}</p>
               <p className="mt-stack-xs text-body-m text-muted-foreground">
                 {new Date(latest.processedAt).toLocaleDateString("en-US", {
                   year: "numeric",

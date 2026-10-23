@@ -98,7 +98,7 @@ export function SearchPanel({ onClose }: { onClose: () => void }) {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex justify-center bg-ink/40 px-page-x pt-[10vh]"
+      className="motion-fade-in fixed inset-0 z-50 flex justify-center bg-ink/40 px-page-x pt-[10vh]"
       onMouseDown={(event) => {
         if (event.target === event.currentTarget) onClose();
       }}
@@ -113,7 +113,7 @@ export function SearchPanel({ onClose }: { onClose: () => void }) {
         aria-modal="true"
         aria-label="Search"
         data-surface="mist"
-        className="h-fit w-full max-w-2xl rounded-sm border border-border bg-surface-elevated"
+        className="motion-drop-in h-fit w-full max-w-2xl rounded-card border border-border bg-surface-elevated"
       >
         <form
           onSubmit={(event) => {
@@ -154,9 +154,9 @@ export function SearchPanel({ onClose }: { onClose: () => void }) {
                   key={index}
                   className="flex items-center gap-stack-md px-stack-md py-stack-sm"
                 >
-                  <span className="h-12 w-12 shrink-0 rounded-sm bg-muted" />
-                  <span className="h-5 min-w-0 flex-1 rounded-sm bg-muted" />
-                  <span className="h-5 w-16 rounded-sm bg-muted" />
+                  <span className="h-12 w-12 shrink-0 rounded-field bg-muted" />
+                  <span className="h-5 min-w-0 flex-1 rounded-field bg-muted" />
+                  <span className="h-5 w-16 rounded-field bg-muted" />
                 </li>
               ))}
             </ul>

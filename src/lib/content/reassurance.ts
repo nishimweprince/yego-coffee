@@ -7,9 +7,9 @@ import { getPolicies } from "@/lib/shopify/storefront";
  * The two questions a visitor asks before committing to a recurring
  * bag of coffee are "what does delivery cost me" and "can I get out of
  * this". Both have answers, and both were previously buried on
- * /policies where nobody reads them: the shipping policy states a free
- * threshold and a flat rate, and the cancellation policy states that a
- * subscription can be changed at any time.
+ * /policies where nobody reads them: the shipping policy states the
+ * flat rate, and the cancellation policy states that a subscription
+ * can be changed at any time.
  *
  * Nothing here is written by hand. Every string returned is a verbatim
  * excerpt of a Shopify policy document plus a link to the whole thing —
@@ -104,14 +104,13 @@ export async function getReassurances(): Promise<Reassurances> {
   return {
     shipping: shipping
       ? {
-          // Phrased as a yes/no question because the answer is the
-          // word "yes". The condition and the rate follow immediately
-          // in the store's own sentence, so the qualifier is never a
-          // click away from the claim.
-          question: "Can I get free shipping?",
-          // Not truncated: the free threshold is only half the answer,
-          // and a customer under it needs the flat rate in the same
-          // breath. The document is two sentences long.
+          // §108: shipping is a flat $7 with no free tier, so the
+          // question is the cost, not whether it can be waived. The
+          // rate itself is Shopify's — it arrives in the store's own
+          // sentence, never typed here.
+          question: "How much is shipping?",
+          // Not truncated: the document is a sentence or two, and any
+          // condition on the rate belongs in the same breath.
           html: toText(shipping.bodyHtml),
           href: `/policies/${shipping.handle}`,
           title: shipping.title,

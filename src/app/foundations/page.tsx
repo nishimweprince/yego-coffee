@@ -10,11 +10,10 @@ export const metadata: Metadata = {
 
 type Swatch = { token: string; value: string; role: string };
 
-/** The whole palette. Six values; every semantic token resolves to one. */
+/** The whole palette. Five values; every semantic token resolves to one. */
 const palette: Swatch[] = [
   { token: "paper", value: "--color-paper", role: "Page ground" },
   { token: "white", value: "--color-white", role: "Cards, panels, inputs, image backdrops" },
-  { token: "linen", value: "--color-linen", role: "The one tint: announcement bar, quiet fills" },
   { token: "ink", value: "--color-ink", role: "Text, primary buttons; the footer ground" },
   { token: "roast", value: "--color-roast", role: "The accent: links, \"Yego.\", the focus ring" },
   { token: "cherry", value: "--color-cherry", role: "Destructive only" },
@@ -25,7 +24,8 @@ const typeScale: Array<{ name: string; className: string; note: string }> = [
   { name: "Display L", className: "text-display-l font-display", note: "Page titles and homepage section headings." },
   { name: "Heading 1", className: "text-h1 font-display", note: "Detail titles: product, order, policy." },
   { name: "Heading 2", className: "text-h2 font-display", note: "Section titles inside a page." },
-  { name: "Heading 3", className: "text-h3 font-display", note: "Card and block titles." },
+  { name: "Heading 3", className: "text-h3 font-display", note: "Section headings over a grid." },
+  { name: "Heading 4", className: "text-h4 font-display font-semibold", note: "Card titles." },
   { name: "Lede", className: "text-lede text-muted-foreground", note: "The opening paragraph under a title." },
   { name: "Body L", className: "text-body-l", note: "Editorial paragraphs." },
   { name: "Body M", className: "text-body-m", note: "Default reading size." },
@@ -40,7 +40,7 @@ export default function FoundationsPage() {
   return (
     <main className="px-page-x pb-section-lg">
       {/* The thesis. What a reader should take away before the swatches. */}
-      <header className="mx-auto max-w-6xl pt-section-md">
+      <header className="mx-auto max-w-page pt-section-md">
         <p className="label text-muted-foreground">Yego Coffee · Design foundations</p>
         <h1 className="mt-stack-lg max-w-[18ch] text-display-l">
           One ground, one accent, one typeface.
@@ -55,13 +55,13 @@ export default function FoundationsPage() {
         </p>
       </header>
 
-      <section className="mx-auto mt-section-md max-w-6xl">
+      <section className="mx-auto mt-section-md max-w-page">
         <Contour label="Colour" />
         <div className="mt-stack-lg grid grid-cols-2 gap-px bg-border sm:grid-cols-3 lg:grid-cols-6">
           {palette.map((swatch) => (
             <div key={swatch.token} className="bg-surface-elevated p-4">
               <div
-                className="h-16 w-full rounded-sm border border-border"
+                className="h-16 w-full rounded-card border border-border"
                 style={{ backgroundColor: `var(${swatch.value})` }}
               />
               <p className="mt-stack-sm font-mono text-caption">{swatch.token}</p>
@@ -81,7 +81,7 @@ export default function FoundationsPage() {
         </p>
       </section>
 
-      <section className="mx-auto mt-section-md max-w-6xl">
+      <section className="mx-auto mt-section-md max-w-page">
         <Contour label="Type" />
         <p className="mt-stack-lg max-w-prose text-body-m text-muted-foreground">
           DM Sans throughout. Headings sit at weight 500 and are capped at
@@ -110,18 +110,18 @@ export default function FoundationsPage() {
         </div>
       </section>
 
-      <section className="mx-auto mt-section-md max-w-6xl">
+      <section className="mx-auto mt-section-md max-w-page">
         <Contour label="Surface" />
         <p className="mt-stack-lg max-w-prose text-body-m text-muted-foreground">
           Inversion is a surface context you nest, not a document-level dark
           mode. Semantic tokens reassign on{" "}
           <code className="font-mono text-body-s">[data-surface]</code>.
-          Three exist: mist is the page, wash is the one tint, soil is the
-          footer and the film hero. No page section uses wash or soil.
+          Two exist: mist is the page, soil is the footer and the hero.
+          No page section uses soil.
         </p>
 
-        <div className="mt-stack-lg grid gap-px bg-border md:grid-cols-3">
-          {(["mist", "wash", "soil"] as const).map((surface) => (
+        <div className="mt-stack-lg grid gap-px bg-border md:grid-cols-2">
+          {(["mist", "soil"] as const).map((surface) => (
             <div key={surface} data-surface={surface} className="p-8">
               <p className="label text-muted-foreground">
                 data-surface=&quot;{surface}&quot;
@@ -146,7 +146,7 @@ export default function FoundationsPage() {
         </div>
       </section>
 
-      <section className="mx-auto mt-section-md max-w-6xl">
+      <section className="mx-auto mt-section-md max-w-page">
         <Contour label="Primitives" />
 
         <div className="mt-stack-lg space-y-8">
@@ -181,7 +181,7 @@ export default function FoundationsPage() {
         </div>
       </section>
 
-      <section className="mx-auto mt-section-md max-w-6xl">
+      <section className="mx-auto mt-section-md max-w-page">
         <Contour label="System" />
         <dl className="mt-stack-lg grid gap-px bg-border sm:grid-cols-3">
           <div className="bg-surface-elevated p-5">

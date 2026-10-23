@@ -157,7 +157,7 @@ describe("mapSubscription", () => {
       deliveryPolicy: { interval: "WEEK", intervalCount: 2 },
       lines: { nodes: [] },
     });
-    expect(contract.cadence).toBe("Every 2 weeks");
+    expect(contract.cadence).toBe("Twice a month, every 2 weeks");
   });
 
   it("says nothing about cadence when the contract states no policy", () => {

@@ -9,20 +9,16 @@ import type { Reassurance } from "@/lib/content/reassurance";
 import type { SubscriptionPlanSummary } from "@/lib/catalog/plans";
 
 /**
- * The subscription section.
+ * The subscriptions banner — the page's closing offer (§108).
  *
- * The plans come first and the mechanics second. Leading with the
- * steps asked someone to read an instruction manual before seeing
- * what was on offer. The three steps stay numbered — a fixed order is
- * a genuine sequence — but as an ordinary ordered list, not as
- * zero-padded figures set like chapter heads.
+ * On the page's own ground like every other row (§108.4): the offer
+ * is told apart by its heading and plans, not by a tinted band.
  *
- * Plans and prices come from Shopify (see PlanList), and every cadence line is
- * generated from the selling plan's own delivery policy rather than
- * its name. Nothing here claims a saving: every selling plan in the
- * store adjusts price by 0%, and inventing the comparison is
- * forbidden. The reason to subscribe is the schedule, and the
- * cancellation terms below are the store's own.
+ * Plans and prices come from Shopify (see PlanList), and every cadence
+ * line is generated from the selling plan's own delivery policy rather
+ * than its name. Nothing here claims a saving: every selling plan in
+ * the store adjusts price by 0%, and inventing the comparison is
+ * forbidden. The cancellation terms below are the store's own.
  */
 export function SubscriptionBlock({
   plans,
@@ -34,55 +30,44 @@ export function SubscriptionBlock({
   return (
     <section
       aria-labelledby="subscription-heading"
-      className="px-page-x py-section-md"
+      className="px-page-x py-section-sm"
     >
-      <div className="mx-auto max-w-6xl">
-        {/* Photograph beside the offer, the same split the about and
-            café sections use. On a phone it follows the plans, so the
-            prices are not pushed below a picture. */}
-        <div className="grid items-center gap-stack-lg lg:grid-cols-[0.9fr_1.1fr] lg:gap-16">
-          <Image
-            {...IMAGES.bagsTrio}
-            alt={IMAGES.bagsTrio.alt}
-            sizes="(min-width: 1024px) 40vw, 100vw"
-            loading="lazy"
-            className="order-2 aspect-[4/3] w-full rounded-sm object-cover lg:order-1 lg:aspect-[4/5]"
-          />
-
-          <div className="order-1 lg:order-2">
-            <h2
-              id="subscription-heading"
-              className="max-w-[14ch] text-display-l"
-            >
+      <div className="mx-auto max-w-page">
+        <div className="grid items-center gap-stack-lg md:grid-cols-2 md:gap-12 lg:gap-16">
+          <div data-reveal>
+            <h2 id="subscription-heading" className="max-w-[16ch] text-h2">
               {HOME.subscription.heading}
             </h2>
+            <p className="mt-stack-md max-w-[40ch] text-lede text-muted-foreground">
+              {HOME.subscription.lede}
+            </p>
 
-            <ol className="mt-stack-lg max-w-prose list-decimal space-y-stack-xs pl-5 text-body-m text-muted-foreground marker:text-muted-foreground">
-              {HOME.subscription.steps.map((step) => (
-                <li key={step} className="pl-1">
-                  {step}
-                </li>
-              ))}
-            </ol>
-
-            <div className="mt-stack-lg">
-              <PlanList plans={plans} />
-            </div>
+            <PlanList plans={plans} className="mt-stack-lg" />
 
             <Link
               href={HOME.subscription.cta.href}
-              className={`${buttonVariants({ size: "lg" })} mt-stack-lg`}
+              className={buttonVariants({ size: "lg", className: "mt-stack-lg" })}
             >
               {HOME.subscription.cta.label}
             </Link>
           </div>
+
+          {/* After the plans on a phone, so the prices are not pushed
+              below a picture. */}
+          <Image
+            {...IMAGES.bagsTrio}
+            alt={IMAGES.bagsTrio.alt}
+            sizes="(min-width: 768px) 50vw, 100vw"
+            loading="lazy"
+            data-reveal
+            style={{ "--reveal-order": 1 } as React.CSSProperties}
+            className="aspect-[4/3] w-full rounded-card object-cover"
+          />
         </div>
 
         {/* The cancellation terms, beside the plans rather than on a
-            policy page — answered with the brand's own word, the way
-            the shipping question is answered beside the prices. One
-            Yego line per question a customer actually asks. */}
-        <YegoLine reassurance={cancellation} className="mt-section-md" />
+            policy page — one Yego line per question a customer asks. */}
+        <YegoLine reassurance={cancellation} className="mt-section-sm" />
       </div>
     </section>
   );

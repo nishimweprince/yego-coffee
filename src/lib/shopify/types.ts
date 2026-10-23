@@ -74,7 +74,7 @@ export type SubscriptionOptionModel = {
   /** Shopify's own plan name. Display only, never a source of cadence. */
   name: string;
   description: string | null;
-  /** Derived from deliveryPolicy, e.g. "Every 2 weeks". */
+  /** Derived from deliveryPolicy, e.g. "Once a month". */
   frequencyLabel: string;
   interval: "DAY" | "WEEK" | "MONTH" | "YEAR" | null;
   intervalCount: number | null;
@@ -126,7 +126,7 @@ export type CartLineModel = {
   /** Shopify's plan name. Display only — never a source of cadence. */
   sellingPlanName: string | null;
   /**
-   * Generated from the plan's delivery policy, e.g. "Every 2 weeks".
+   * Generated from the plan's delivery policy, e.g. "Once a month".
    *
    * The cart is where a customer commits to a recurring charge, and
    * Shopify's plan names do not reliably describe it: this store has a

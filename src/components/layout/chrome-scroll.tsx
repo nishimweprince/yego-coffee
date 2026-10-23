@@ -3,11 +3,11 @@
 import { useEffect } from "react";
 
 /**
- * Brings the header back once the film hero is behind you.
+ * Brings the header back once the hero is behind you.
  *
- * On a page with a full-screen video hero the chrome floats over the
- * footage, unreadable against a light page and out of the way of the
- * picture. The moment the hero scrolls past, wayfinding matters more
+ * On a page with a full-screen photographic hero the chrome floats
+ * over the picture, unreadable against a light page and out of the
+ * way of the photograph. The moment the hero scrolls past, wayfinding matters more
  * than the effect, so the bar returns fixed and solid.
  *
  * Renders nothing. It sets one attribute and the stylesheet does the
@@ -19,7 +19,7 @@ export function ChromeScroll() {
     // measuring <main> would put the threshold at 85% of the whole
     // page and the bar would never come back.
     const hero = document.querySelector<HTMLElement>(
-      'main[data-hero="video"] > section:first-of-type',
+      'main[data-hero="slides"] > section:first-of-type',
     );
     if (!hero) return;
 

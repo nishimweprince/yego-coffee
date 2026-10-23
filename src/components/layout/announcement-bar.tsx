@@ -8,10 +8,10 @@ import Link from "next/link";
 export function AnnouncementBar() {
   return (
     <p
-      data-surface="wash"
+      data-surface="mist"
       className="border-b border-border px-page-x py-stack-sm text-center text-body-s text-muted-foreground"
     >
-      Fresh roast on repeat, monthly or every two months.{" "}
+      Fresh roast on repeat, once or twice a month.{" "}
       <Link
         href="/subscriptions"
         className="text-accent underline underline-offset-4 hover:text-foreground"

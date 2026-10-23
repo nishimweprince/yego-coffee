@@ -103,65 +103,76 @@ export default async function ProductPage({
           ),
         }}
       />
-      <div className="mx-auto max-w-6xl px-page-x py-section-md">
-        {/* The gallery is the column that sticks, not the buy column.
-            The other way round left the picture ending half a screen
-            above the text beside it, with a column of nothing under
-            it. */}
-        <div className="grid items-start gap-section-sm lg:grid-cols-2 lg:gap-16">
-          <div className="lg:sticky lg:top-24">
-            <ProductGallery images={gallery} title={product.title} />
-          </div>
-
-          <div>
-            <PageHeader
-              title={product.title}
-              size="h1"
-              breadcrumb={[{ href: "/shop", label: "Shop" }]}
-            />
-
-            {/* Roast is the one fact about a coffee that is not already
-                a control on this page, so it sits with the name rather
-                than in a specification block that repeated the size and
-                grind pickers word for word. */}
-            {roast ? (
-              <p className="mt-stack-sm label text-muted-foreground">
-                {roast} roast
-              </p>
-            ) : null}
-
-            <div className="mt-stack-lg">
-              <ProductPurchaseForm product={product} />
+      {/* The opening (§108): the gallery and the decision side by side
+          on the page's own ground — no tinted band. */}
+      <section className="px-page-x py-section-sm">
+        <div className="mx-auto max-w-page">
+          {/* The gallery is the column that sticks, not the buy column.
+              The other way round left the picture ending half a screen
+              above the text beside it, with a column of nothing under
+              it. */}
+          {/* The photograph leads: a wide media column beside a
+              436px decision column, as a shop's product page reads. */}
+          <div className="grid items-start gap-stack-lg lg:grid-cols-[minmax(0,1fr)_minmax(0,436px)] lg:gap-16 xl:grid-cols-[minmax(0,780px)_minmax(0,436px)] xl:gap-22">
+            {/* The gallery — photo and thumbnails — fits one screen
+                at every size (see .pdp-gallery in globals.css). */}
+            <div className="pdp-gallery mx-auto lg:sticky lg:top-30 lg:mx-0">
+              <ProductGallery images={gallery} title={product.title} />
             </div>
 
-            {/* The question that stops a first order, answered beside
-                the button rather than below the description where it
-                had scrolled out of sight. Just the one: the device is
-                the page's signature and stacking two of them spends it
-                twice. Cancellation terms belong where a recurring
-                charge is actually chosen — the delivery control says
-                it, and the subscriptions page carries the full text. */}
-            <YegoLine
-              reassurance={reassurances.shipping}
-              className="mt-section-sm"
-            />
+            <div className="lg:pt-stack-sm">
+              <PageHeader
+                title={product.title}
+                size="product"
+                breadcrumb={[{ href: "/shop", label: "Shop" }]}
+              />
 
-            {product.descriptionHtml ? (
-              <>
-                <Contour label="Details" className="mt-section-sm" />
-                {/* Authored by the store owner in Shopify admin, not by
-                    site visitors (§39). Shopify's rich-text editor
-                    leaves <meta> fragments inline (§96.4); they render
-                    as nothing, which is the correct outcome. */}
-                <div
-                  className="mt-stack-lg max-w-prose space-y-stack-md text-body-m text-muted-foreground [&_a]:underline [&_strong]:text-foreground"
-                  dangerouslySetInnerHTML={{ __html: product.descriptionHtml }}
+              {/* Roast is the one fact about a coffee that is not
+                  already a control on this page, so it sits with the
+                  name rather than in a specification block that
+                  repeated the size and grind pickers word for word. */}
+              {roast ? (
+                <p className="mt-4 text-lede text-muted-foreground">
+                  {roast} roast
+                </p>
+              ) : null}
+
+              <div className="mt-stack-md">
+                <ProductPurchaseForm
+                  product={product}
+                  subscriptionPolicyHref={reassurances.cancellation?.href}
                 />
-              </>
-            ) : null}
+              </div>
+
+              {/* The question that stops a first order, answered beside
+                  the button rather than below the description where it
+                  had scrolled out of sight. Just the one: cancellation
+                  terms belong where a recurring charge is actually
+                  chosen, and the delivery line links them. */}
+              <YegoLine
+                reassurance={reassurances.shipping}
+                className="mt-section-sm"
+              />
+            </div>
           </div>
         </div>
-      </div>
+      </section>
+
+      {product.descriptionHtml ? (
+        <section aria-label="Details" className="px-page-x pt-section-md">
+          <div className="mx-auto max-w-page">
+            <Contour label="Details" />
+            {/* Authored by the store owner in Shopify admin, not by
+                site visitors (§39). Shopify's rich-text editor leaves
+                <meta> fragments inline (§96.4); they render as
+                nothing, which is the correct outcome. */}
+            <div
+              className="mt-stack-lg max-w-prose space-y-stack-md text-body-l text-muted-foreground [&_a]:underline [&_strong]:text-foreground"
+              dangerouslySetInnerHTML={{ __html: product.descriptionHtml }}
+            />
+          </div>
+        </section>
+      ) : null}
 
       <RelatedProducts products={related} />
     </main>

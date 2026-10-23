@@ -1,6 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
-import { buttonVariants } from "@/components/ui/button";
 import { StoreUnavailable } from "@/components/commerce/store-unavailable";
 import { PageHeader } from "@/components/ui/page-header";
 import { Section } from "@/components/ui/section";
@@ -15,7 +13,7 @@ import { getCollection, getProduct } from "@/lib/shopify/storefront";
 
 export const metadata: Metadata = {
   title: "Subscriptions",
-  description: "Coffee on your schedule, roasted in Somerville.",
+  description: "Coffee once or twice a month, roasted in Somerville.",
 };
 
 /**
@@ -63,6 +61,7 @@ export default async function SubscriptionsPage() {
     <main>
       <Section>
         <PageHeader
+          align="center"
           title={HOME.subscription.heading}
           lede={HOME.subscription.lede}
         />
@@ -79,12 +78,6 @@ export default async function SubscriptionsPage() {
 
         <YegoLine reassurance={reassurances.shipping} className="mt-section-md" />
         <YegoLine reassurance={reassurances.cancellation} className="mt-stack-lg" />
-
-        <div className="mt-section-md">
-          <Link href="/quiz" className={buttonVariants({ size: "lg" })}>
-            Find my coffee
-          </Link>
-        </div>
       </Section>
     </main>
   );

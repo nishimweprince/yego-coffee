@@ -5,8 +5,9 @@ import { cn } from "@/lib/utils";
  *
  * Every route used to write its own `px-page-x py-section-md` and
  * `mx-auto max-w-*` pair, and the widths drifted between 3xl and 6xl
- * with no rule. Two widths exist now: `page` for anything laid out in
- * columns, `prose` for a single reading column.
+ * with no rule. Two widths exist now: `page` (76rem, a shop's catalogue
+ * width) for anything laid out in columns, `prose` for a single
+ * reading column.
  *
  * A Server Component; it renders a `<section>` (or another element via
  * `as`) so headings and `aria-labelledby` work as they always did.
@@ -39,7 +40,7 @@ export function Section({
       <div
         className={cn(
           "mx-auto",
-          width === "page" ? "max-w-6xl" : "max-w-prose",
+          width === "page" ? "max-w-page" : "max-w-prose",
           innerClassName,
         )}
       >

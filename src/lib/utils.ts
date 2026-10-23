@@ -16,10 +16,11 @@ import { extendTailwindMerge } from "tailwind-merge";
  */
 const twMerge = extendTailwindMerge({
   extend: {
-    // `rounded-control` (--radius-control) is a custom name too; without
-    // this, `cn("rounded-sm", "rounded-control")` keeps both.
+    // The radii (--radius-pill, --radius-card, --radius-field) are
+    // custom names too; without this, `cn("rounded-card",
+    // "rounded-pill")` keeps both.
     theme: {
-      radius: ["control"],
+      radius: ["pill", "card", "tile", "field"],
     },
     classGroups: {
       "font-size": [
@@ -30,6 +31,7 @@ const twMerge = extendTailwindMerge({
             "h1",
             "h2",
             "h3",
+            "h4",
             "lede",
             "body-l",
             "body-m",
@@ -37,6 +39,8 @@ const twMerge = extendTailwindMerge({
             "caption",
             "label",
             "price",
+            "price-s",
+            "control",
           ],
         },
       ],

@@ -36,6 +36,12 @@ export type RedirectRule = {
 
 export const REDIRECTS: RedirectRule[] = [
   {
+    source: "/quiz",
+    destination: "/shop",
+    permanent: true,
+    reason: "§108: the coffee finder was removed at the client's request",
+  },
+  {
     source: "/collections/all",
     destination: "/shop",
     permanent: true,

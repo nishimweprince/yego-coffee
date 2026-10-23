@@ -1,23 +1,18 @@
 import { ViewTransition } from "react";
 
 /**
- * The route transition — one motion idea, reused.
+ * The route transition: a crossfade (§108.6).
  *
  * A template remounts whenever the first path segment changes, which
- * is every move between the site's pages (home → shop, shop → a
- * product, anywhere → the café). Wrapping its children in a
- * `ViewTransition` gives each such move an exit for the page being
- * left and an enter for the page arriving; the classes are drawn in
- * globals.css.
+ * is every move between the site's pages. Wrapping its children in a
+ * `ViewTransition` lets the page being left fade quickly and the page
+ * arriving fade in after it; the classes are drawn in globals.css.
  *
- * The move is the hero's: the old page fades quickly, the new one
- * rises the same half-line the headline rises on load. No slides, no
- * direction — this site's navigation is flat, so left and right would
- * encode nothing true. `default="none"` keeps the wrapper still during
- * Suspense reveals and refreshes, where a fade would read as a glitch.
- *
- * Moves within one segment (product → related product, shop → shop/
- * coffee) swap instantly; that is fine, they are the same place.
+ * Opacity only. The arriving page's titles and cards rise on their
+ * own through the scroll reveal, so a moving page transition on top
+ * would rise everything twice. `default="none"` keeps the wrapper
+ * still during Suspense reveals and refreshes, where a fade would read
+ * as a glitch.
  */
 export default function Template({ children }: { children: React.ReactNode }) {
   return (

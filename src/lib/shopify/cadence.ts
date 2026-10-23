@@ -23,7 +23,13 @@ const SINGULAR: Record<Exclude<DeliveryInterval, null>, string> = {
 };
 
 /**
- * "Every 2 weeks", "Every month", "Every 60 days".
+ * "Once a month", "Twice a month, every 2 weeks", "Every 60 days".
+ *
+ * The two cadences Yego sells are named the way the owners describe
+ * them (§108): once and twice a month. "Twice a month" keeps its exact
+ * interval beside it, because every two weeks is not quite two
+ * deliveries in every calendar month and the customer is owed the
+ * real rhythm. Any other interval is described plainly.
  *
  * Returns null when Shopify states no recurring policy. Callers must
  * treat that as "cannot be described" and omit the cadence rather than
@@ -35,23 +41,13 @@ export function formatCadence(
 ): string | null {
   if (!interval || !intervalCount || intervalCount < 1) return null;
 
+  if (interval === "MONTH" && intervalCount === 1) return "Once a month";
+  if (interval === "WEEK" && intervalCount === 2) {
+    return "Twice a month, every 2 weeks";
+  }
+
   const unit = SINGULAR[interval];
   return intervalCount === 1
     ? `Every ${unit}`
     : `Every ${intervalCount} ${unit}s`;
-}
-
-/**
- * Days between deliveries, for the quiz's quantity maths (§9.5).
- * Months are approximated at 30 days; the estimate is presented as an
- * estimate (§9.5 forbids promising exact consumption).
- */
-export function cadenceInDays(
-  interval: DeliveryInterval,
-  intervalCount: number | null,
-): number | null {
-  if (!interval || !intervalCount || intervalCount < 1) return null;
-
-  const days = { DAY: 1, WEEK: 7, MONTH: 30, YEAR: 365 }[interval];
-  return days * intervalCount;
 }
