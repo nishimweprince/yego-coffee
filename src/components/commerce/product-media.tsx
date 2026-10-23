@@ -53,11 +53,11 @@ export function ProductMedia({
         priority={priority}
         className={cn(
           "object-cover",
-          // The shelf zoom is deliberately strong — 1.2 over half a
-          // second, clipped by the tile — so a hovered card reads as
+          // The shelf zoom is deliberately strong — 1.2 over 350ms,
+          // clipped by the tile — so a hovered card reads as
           // picked up. The gallery's own zoom stays gentle.
           zoomOnHover &&
-            "transition-transform duration-500 ease-out group-hover/zoom:scale-105 group-hover:scale-[1.2] group-focus-within:scale-[1.2]",
+            "transition-transform duration-350 ease-out group-hover/zoom:scale-105 group-hover:scale-[1.2] group-focus-within:scale-[1.2]",
         )}
       />
     </div>

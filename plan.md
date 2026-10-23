@@ -7035,3 +7035,18 @@ Built from the measurements in `docs/starbucks-parity.md`, which holds every num
   - Page changes crossfade (160ms out, 280ms in), opacity only, so the scroll reveal still provides the movement. This reverses the removal in §108.5 at the owners' request.
   - The cart drawer slides in from the right; the search panel and mobile menu drop in 8px; backdrops and the image viewer fade.
   - Every link, button and field eases colour, fill and border changes over 200ms by default.
+
+## 108.7 Faster motion (2026-10-23, owner feedback)
+
+The owners found scrolling slow and the site heavy, so every timing was shortened:
+
+| What | Before | Now |
+|---|---|---|
+| Lenis scroll | fixed 1.1s glide | `lerp: 0.18`, `wheelMultiplier: 1.1`. Answers immediately and settles in about 0.3s. |
+| Scroll reveal | 600ms, 75ms stagger, 20px rise | 420ms, 50ms stagger, 12px rise |
+| Page crossfade | 160ms out, 280ms in | 90ms out, 160ms in, no delay |
+| Panels | fade 220ms, slide 380ms, drop 260ms | fade 140ms, slide 240ms, drop 160ms |
+| Control states | 200ms | 140–150ms. The nav underline is 200ms. |
+| Card photo zoom | 500ms | 350ms |
+
+The Starbucks-measured *sizes* in §108.5 are unchanged. Only motion now departs from their timings.

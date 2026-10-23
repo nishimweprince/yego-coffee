@@ -30,9 +30,11 @@ export function SmoothScroll() {
 
     const lenis = new Lenis({
       autoRaf: true,
-      duration: 1.1,
-      // Fast start, long settle — the same curve as the scroll reveal.
-      easing: (t) => 1 - Math.pow(1 - t, 3),
+      // Follow the wheel closely: each frame closes 18% of the gap to
+      // the target, so the page answers at once and settles in about
+      // a third of a second. A fixed 1.1s glide felt heavy (§108.7).
+      lerp: 0.18,
+      wheelMultiplier: 1.1,
       anchors: { offset: -96 },
       allowNestedScroll: true,
       prevent: (node) =>

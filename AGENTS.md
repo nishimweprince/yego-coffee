@@ -74,7 +74,7 @@ hero.
 - Motion (§108.5–108.6):
   - The hero carousel.
   - The scroll reveal: mark an element `data-reveal` (stagger with `--reveal-order`) and `RevealObserver` plays it with the Web Animations API. Never set attributes on server-rendered elements from the client.
-  - Momentum scrolling through Lenis (`SmoothScroll`). Wheel input only, off under reduced motion, paused while a dialog locks `<body>`. Mark an inner scroller `data-lenis-prevent` if it must scroll natively.
+  - Momentum scrolling through Lenis (`SmoothScroll`, `lerp` 0.18 — keep it responsive, §108.7). Wheel input only, off under reduced motion, paused while a dialog locks `<body>`. Mark an inner scroller `data-lenis-prevent` if it must scroll natively.
   - Pages crossfade, opacity only (`template.tsx`).
   - Panels open with `motion-fade-in`, `motion-slide-in-right` or `motion-drop-in`.
   - Controls ease 200ms between states by default (base layer).

@@ -51,7 +51,7 @@ export function PlanList({
             <FontAwesomeIcon
               icon={faArrowRight}
               aria-hidden
-              className="h-3.5 w-3.5 shrink-0 text-muted-foreground transition-[transform,color] duration-200 ease-(--ease-brand) group-hover:translate-x-1 group-hover:text-accent group-focus-visible:translate-x-1 group-focus-visible:text-accent"
+              className="h-3.5 w-3.5 shrink-0 text-muted-foreground transition-[transform,color] duration-150 ease-(--ease-brand) group-hover:translate-x-1 group-hover:text-accent group-focus-visible:translate-x-1 group-focus-visible:text-accent"
             />
           </Link>
         </li>

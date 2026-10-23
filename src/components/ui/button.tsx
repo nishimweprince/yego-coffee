@@ -16,7 +16,7 @@ const buttonVariants = cva(
   [
     "inline-flex items-center justify-center gap-2 whitespace-nowrap",
     "font-sans font-semibold select-none rounded-pill",
-    "transition-[background-color,color,border-color] duration-200",
+    "transition-[background-color,color,border-color] duration-150",
     "ease-(--ease-brand)",
     "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring",
     "disabled:pointer-events-none disabled:opacity-40 disabled:shadow-none",
@@ -37,7 +37,7 @@ const buttonVariants = cva(
           "relative px-0 text-foreground",
           "after:absolute after:inset-x-0 after:-bottom-0.5 after:h-px",
           "after:origin-left after:scale-x-0 after:bg-current",
-          "after:transition-transform after:duration-300 after:ease-(--ease-brand)",
+          "after:transition-transform after:duration-200 after:ease-(--ease-brand)",
           "hover:after:scale-x-100",
         ],
       },

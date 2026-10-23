@@ -63,7 +63,7 @@ export function ProductCard({
       </Link>
 
       <div className="mt-4">
-        <h3 className="text-h4 font-semibold transition-colors duration-200 group-hover:text-accent">
+        <h3 className="text-h4 font-semibold transition-colors duration-150 group-hover:text-accent">
           <Link href={href}>{product.title}</Link>
         </h3>
 

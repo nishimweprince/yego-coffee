@@ -372,7 +372,7 @@ html[data-chrome-solid] body:has(main[data-hero="slides"]) [data-chrome] {
   textarea {
     transition-property: color, background-color, border-color,
       text-decoration-color, opacity, box-shadow, outline-color;
-    transition-duration: 200ms;
+    transition-duration: 140ms;
     transition-timing-function: var(--ease-brand);
   }
 
@@ -623,7 +623,7 @@ html[data-chrome-solid] body:has(main[data-hero="slides"]) [data-chrome] {
     background-color: currentColor;
     transform-origin: left;
     transform: scaleX(0);
-    transition: transform 300ms var(--ease-brand);
+    transition: transform 200ms var(--ease-brand);
   }
 
   .link-sweep:hover::after,
@@ -694,7 +694,7 @@ html[data-chrome-solid] body:has(main[data-hero="slides"]) [data-chrome] {
    server-rendered element is ever changed under React. */
 html[data-reveal-ready] [data-reveal] {
   opacity: 0.01;
-  transform: translateY(20px);
+  transform: translateY(12px);
 }
 
 /* Panels open with motion that says where they came from: the cart
@@ -744,11 +744,11 @@ html[data-reveal-ready] [data-reveal] {
 }
 
 ::view-transition-old(.page-leave) {
-  animation: yego-fade-out 160ms var(--ease-exit) both;
+  animation: yego-fade-out 90ms var(--ease-exit) both;
 }
 
 ::view-transition-new(.page-arrive) {
-  animation: yego-fade-in 280ms var(--ease-reveal) 40ms both;
+  animation: yego-fade-in 160ms var(--ease-reveal) both;
 }
 
 @keyframes yego-fade-out {
@@ -762,15 +762,15 @@ html[data-reveal-ready] [data-reveal] {
 
 @layer components {
   .motion-fade-in {
-    animation: yego-fade-in 220ms var(--ease-reveal) both;
+    animation: yego-fade-in 140ms var(--ease-reveal) both;
   }
 
   .motion-slide-in-right {
-    animation: yego-slide-in-right 380ms var(--ease-reveal) both;
+    animation: yego-slide-in-right 240ms var(--ease-reveal) both;
   }
 
   .motion-drop-in {
-    animation: yego-drop-in 260ms var(--ease-reveal) both;
+    animation: yego-drop-in 160ms var(--ease-reveal) both;
   }
 
   .rise-in {

@@ -5,13 +5,14 @@ import { useEffect } from "react";
 /** Shown once its top is 8% above the bottom of the viewport. */
 const FOLD = 0.92;
 
-/** Measured from shop.starbucks.com (docs/starbucks-parity.md). */
-const DURATION_MS = 600;
-const STAGGER_MS = 75;
+/** Quicker than Starbucks' 600ms / 75ms / 20px: at their pace the
+ * page felt heavy under momentum scrolling (§108.7). */
+const DURATION_MS = 420;
+const STAGGER_MS = 50;
 const EASING = "cubic-bezier(0, 0, 0.3, 1)";
 
 const KEYFRAMES: Keyframe[] = [
-  { opacity: 0.01, transform: "translateY(20px)" },
+  { opacity: 0.01, transform: "translateY(12px)" },
   { opacity: 1, transform: "none" },
 ];
 
