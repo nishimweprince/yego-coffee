@@ -1,7 +1,9 @@
+import Image from "next/image";
 import Link from "next/link";
 import { PriceRange } from "./product-price";
 import { ProductMedia } from "./product-media";
 import { formatMoneyCompact } from "@/lib/formatting/money";
+import { SUBSCRIPTION_PHOTOS } from "@/content/subscriptions";
 import { cadenceSentence } from "@/lib/catalog/plans";
 import type { SubscriptionPlanSummary } from "@/lib/catalog/plans";
 import { cn } from "@/lib/utils";
@@ -43,12 +45,12 @@ export function Bag({ className }: { className?: string }) {
  * bold muted price — so the plans sit in the store's shop grid rather
  * than in a table of their own.
  *
- * The face is the delivery itself: one drawn bag per bag in the box, at
- * the same size on every tile, so four bags look like twice two. That
- * is the plan's real difference, and it replaces four copies of the
- * same product photograph. Without a bag count (the
- * `custom.bags_per_delivery` metafield) it falls back to Shopify's
- * photograph.
+ * The face is the delivery itself. A Roaster's Choice box shows a
+ * photograph of as many bags as it holds (§110), so the four boxes
+ * differ by what actually differs between them rather than repeating
+ * one product photograph. A box with no such photograph draws its
+ * bags instead, one outline per bag. Without a bag count it falls back
+ * to Shopify's photograph.
  *
  * The per-bag price and the saving are arithmetic on Shopify's prices
  * (see summarisePlans). The one-bag tile states its per-bag price but no
@@ -64,6 +66,10 @@ export function SubscriptionTile({
   className?: string;
 }) {
   const href = `/products/${plan.handle}`;
+  const photo =
+    plan.type === "roasters-choice" && plan.bags
+      ? SUBSCRIPTION_PHOTOS.roastersChoiceBoxes[plan.bags]
+      : undefined;
 
   return (
     <article
@@ -78,7 +84,17 @@ export function SubscriptionTile({
       {/* Duplicates the title link's destination, so it is skipped by
           assistive technology rather than announced twice. */}
       <Link href={href} className="block" tabIndex={-1} aria-hidden>
-        {plan.bags ? (
+        {photo ? (
+          <div className="relative aspect-[316/373] overflow-hidden rounded-tile bg-surface-elevated">
+            <Image
+              src={photo.src}
+              alt={photo.alt}
+              fill
+              sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
+              className="object-cover transition-transform duration-350 ease-out group-hover:scale-[1.2] group-focus-within:scale-[1.2]"
+            />
+          </div>
+        ) : plan.bags ? (
           <div className="flex aspect-[316/373] items-end justify-center overflow-hidden rounded-tile bg-surface-elevated pb-[17%] text-foreground">
             <div className="flex w-full items-end justify-center transition-transform duration-350 ease-out group-hover:scale-[1.08] group-focus-within:scale-[1.08]">
               {Array.from({ length: plan.bags }, (_, i) => (

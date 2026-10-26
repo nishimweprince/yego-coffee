@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Bag } from "./subscription-tile";
 import { buttonVariants } from "@/components/ui/button";
+import { SUBSCRIPTION_PHOTOS } from "@/content/subscriptions";
 import { formatMoneyCompact } from "@/lib/formatting/money";
 import {
   cadenceSentence,
@@ -28,27 +29,28 @@ const ACTIONS: Record<SubscriptionType, string> = {
 };
 
 /**
- * The faces of the two choices, and the one idea on this page.
+ * The faces of the two choices.
  *
- * A Regular subscription is a coffee you already know, so its card
- * shows the coffees themselves — Shopify's own photographs, standing
- * together. Roaster's Choice is a coffee nobody has chosen yet, so its
- * card shows the same three bags as drawings. Photograph against
- * outline says "you pick" against "we pick" without a tagline.
+ * A Regular subscription is one of the store's own coffees, so its
+ * card shows those coffees in Shopify's photographs, side by side.
+ * Roaster's Choice shows the range the roasters choose from — a row of
+ * past selections (§110). Both frames are the same shape, so the cards
+ * read as a pair.
  */
 function ChoiceFace({ option }: { option: ChooserOption }) {
-  const frame =
-    "flex aspect-[16/9] items-end justify-center overflow-hidden rounded-tile bg-background pb-[6%]";
+  const frame = "relative aspect-[16/9] overflow-hidden rounded-tile bg-background";
 
   if (option.type === "roasters-choice") {
+    const photo = SUBSCRIPTION_PHOTOS.roastersChoiceChooser;
     return (
-      <div className={cn(frame, "text-foreground")}>
-        {[0, 1, 2].map((i) => (
-          <Bag
-            key={i}
-            className={cn("w-[19%] shrink-0", i > 0 && "-ml-[2%]")}
-          />
-        ))}
+      <div className={frame}>
+        <Image
+          src={photo.src}
+          alt={photo.alt}
+          fill
+          sizes="(min-width: 768px) 45vw, 100vw"
+          className="object-cover"
+        />
       </div>
     );
   }
@@ -58,23 +60,30 @@ function ChoiceFace({ option }: { option: ChooserOption }) {
     .filter((p) => p.image !== null)
     .slice(0, 3);
 
+  if (photos.length === 0) {
+    return (
+      <div className={cn(frame, "flex items-end justify-center pb-[6%] text-foreground")}>
+        {[0, 1, 2].map((i) => (
+          <Bag key={i} className={cn("w-[19%] shrink-0", i > 0 && "-ml-[2%]")} />
+        ))}
+      </div>
+    );
+  }
+
   return (
-    <div className={frame}>
-      {photos.map(({ image, title }, i) => (
-        <div
-          // Two coffees can share one photograph in Shopify; the
-          // title is the unique part.
-          key={title}
-          className={cn(
-            "relative aspect-[60/92] w-[19%] shrink-0 overflow-hidden rounded-tile border border-border bg-surface-elevated",
-            i > 0 && "-ml-[2%]",
-          )}
-        >
+    <div
+      className={cn(frame, "grid gap-1")}
+      style={{ gridTemplateColumns: `repeat(${photos.length}, minmax(0, 1fr))` }}
+    >
+      {photos.map(({ image, title }) => (
+        // Two coffees can share one photograph in Shopify; the title
+        // is the unique part.
+        <div key={title} className="relative bg-surface-elevated">
           <Image
             src={image!.url}
             alt={image!.altText ?? title}
             fill
-            sizes="(min-width: 768px) 12vw, 25vw"
+            sizes="(min-width: 768px) 15vw, 33vw"
             className="object-cover"
           />
         </div>

@@ -54,7 +54,7 @@ export const IMAGES = {
   },
   bagsOnBurlap: {
     src: "/brand/bags-on-burlap.jpg",
-    alt: "Yego Coffee bags laid on burlap coffee sacks",
+    alt: "Four Yego Coffee bags laid on burlap coffee sacks",
     width: 1200,
     height: 1600,
   },
@@ -73,6 +73,29 @@ export const IMAGES = {
   bagFilling: {
     src: "/brand/bag-filling.jpg",
     alt: "Scooping freshly roasted beans into a Yego Coffee bag",
+    width: 1200,
+    height: 1600,
+  },
+  /* The subscription photographs (owner-supplied 2026-10-26). One,
+     two, three and four bags — with bagsTrio and bagsOnBurlap — so
+     each Roaster's Choice box is shown with as many bags as it holds
+     (§110). The labels are past selections; the alt text never names
+     them. */
+  bagSingle: {
+    src: "/brand/bag-on-burlap-single.jpg",
+    alt: "A single Yego Coffee bag resting on jute coffee sacks",
+    width: 1200,
+    height: 1600,
+  },
+  bagsPair: {
+    src: "/brand/bags-on-burlap-pair.jpg",
+    alt: "Two Yego Coffee bags on jute sacks stamped with export markings",
+    width: 1200,
+    height: 1600,
+  },
+  bagScoop: {
+    src: "/brand/bag-scoop.jpg",
+    alt: "Roasted beans poured from a scoop into a Yego Coffee bag",
     width: 1200,
     height: 1600,
   },

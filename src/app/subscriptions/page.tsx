@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { StoreUnavailable } from "@/components/commerce/store-unavailable";
 import { SubscriptionChooser } from "@/components/commerce/subscription-chooser";
 import { SubscriptionGrid } from "@/components/commerce/subscription-tile";
@@ -7,6 +8,7 @@ import { PageHeader } from "@/components/ui/page-header";
 import { Section } from "@/components/ui/section";
 import { YegoLine } from "@/components/ui/yego-line";
 import { HOME } from "@/content/home";
+import { SUBSCRIPTION_PHOTOS } from "@/content/subscriptions";
 import { getSubscriptionShelves } from "@/lib/catalog/shelves";
 import type { SubscriptionPlanSummary } from "@/lib/catalog/plans";
 import {
@@ -112,13 +114,29 @@ export default async function SubscriptionsPage() {
           heading="We choose the coffee"
           plans={shelves.roastersChoice}
         >
-          <ol className="mt-stack-lg max-w-prose list-decimal space-y-stack-xs pl-5 text-body-m text-muted-foreground marker:text-muted-foreground">
-            {HOME.subscription.roastersChoiceSteps.map((step) => (
-              <li key={step} className="pl-1">
-                {step}
-              </li>
-            ))}
-          </ol>
+          {/* How a box works, beside the moment it describes: the
+              coffee going into the bag. */}
+          <div className="mt-section-sm grid items-center gap-stack-lg md:grid-cols-[minmax(0,22rem)_1fr] md:gap-16">
+            <Image
+              src={SUBSCRIPTION_PHOTOS.roastersChoiceSteps.src}
+              alt={SUBSCRIPTION_PHOTOS.roastersChoiceSteps.alt}
+              width={SUBSCRIPTION_PHOTOS.roastersChoiceSteps.width}
+              height={SUBSCRIPTION_PHOTOS.roastersChoiceSteps.height}
+              sizes="(min-width: 768px) 22rem, 100vw"
+              data-reveal
+              className="aspect-[4/5] w-full rounded-card object-cover"
+            />
+            <div>
+              <h3 className="text-h4">How a box works</h3>
+              <ol className="mt-stack-md max-w-prose list-decimal space-y-stack-xs pl-5 text-body-m text-muted-foreground marker:text-muted-foreground">
+                {HOME.subscription.roastersChoiceSteps.map((step) => (
+                  <li key={step} className="pl-1">
+                    {step}
+                  </li>
+                ))}
+              </ol>
+            </div>
+          </div>
         </Shelf>
 
         <Shelf
