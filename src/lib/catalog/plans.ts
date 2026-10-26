@@ -1,4 +1,11 @@
 import { byLongestInterval, formatCadence } from "@/lib/shopify/cadence";
+import {
+  bagCountFromHandle,
+  getSubscriptionType,
+  regularCoffeeKey,
+  regularCoffeeTitle,
+  type SubscriptionType,
+} from "./subscription-type";
 import type {
   ProductDetailModel,
   Money,
@@ -32,6 +39,8 @@ export type SubscriptionPlanSummary = {
   bags: number | null;
   perBag: Money | null;
   savingPerDelivery: Money | null;
+  /** Regular or Roaster's Choice (§110); null for anything else. */
+  type: SubscriptionType | null;
 };
 
 type Interval = Pick<SubscriptionOptionModel, "interval" | "intervalCount">;
@@ -75,6 +84,9 @@ export function summarisePlans(
     const intervals = describable(
       product.variants.flatMap((variant) => variant.subscriptionOptions),
     );
+    // The metafield is the source; the handle states the same count
+    // ("roasters-choice-two-bags-…") while the metafield is unreadable.
+    const bags = product.bagsPerDelivery ?? bagCountFromHandle(product.handle);
 
     return {
       handle: product.handle,
@@ -86,9 +98,10 @@ export function summarisePlans(
         (i) => formatCadence(i.interval, i.intervalCount) as string,
       ),
       intervals,
-      bags: product.bagsPerDelivery,
-      perBag: perBagPrice(product.minPrice, product.bagsPerDelivery),
+      bags,
+      perBag: perBagPrice(product.minPrice, bags),
       savingPerDelivery: null as Money | null,
+      type: getSubscriptionType(product),
     };
   });
 
@@ -105,6 +118,76 @@ export function summarisePlans(
   return plans.every((plan) => plan.bags !== null)
     ? plans.toSorted((a, b) => (a.bags ?? 0) - (b.bags ?? 0))
     : plans;
+}
+
+/** The lowest price across a shelf: the "From $17" on the chooser. */
+export function lowestPrice(plans: SubscriptionPlanSummary[]): Money | null {
+  if (plans.length === 0) return null;
+  return plans.reduce((a, b) =>
+    toCents(b.minPrice) < toCents(a.minPrice) ? b : a,
+  ).minPrice;
+}
+
+/**
+ * The plans in their two shelves (§110).
+ *
+ * Roaster's Choice keeps its bag order, with any plan that states no
+ * bag count — the two Drops — after the boxes, in the collection's
+ * order.
+ *
+ * Regular coffees are each two Shopify products, one per cadence.
+ * They are folded into one tile per coffee, linked to the monthly
+ * product, with both cadences and the full price range; the product
+ * page links across to the other schedule. Plans of neither type are
+ * left out rather than guessed into a shelf.
+ */
+export function groupPlans(plans: SubscriptionPlanSummary[]): {
+  roastersChoice: SubscriptionPlanSummary[];
+  regular: SubscriptionPlanSummary[];
+} {
+  const roastersChoice = plans
+    .filter((plan) => plan.type === "roasters-choice")
+    .map((plan, index) => ({ plan, index }))
+    .toSorted(
+      (a, b) =>
+        (a.plan.bags ?? Infinity) - (b.plan.bags ?? Infinity) ||
+        a.index - b.index,
+    )
+    .map(({ plan }) => plan);
+
+  const byCoffee = new Map<string, SubscriptionPlanSummary[]>();
+  for (const plan of plans) {
+    if (plan.type !== "regular") continue;
+    const key = regularCoffeeKey(plan.handle);
+    byCoffee.set(key, [...(byCoffee.get(key) ?? []), plan]);
+  }
+
+  const regular = [...byCoffee.values()].map((siblings) => {
+    const lead =
+      siblings.find((plan) => !plan.handle.includes("-bi-monthly-")) ??
+      siblings[0];
+    const intervals = describable(siblings.flatMap((plan) => plan.intervals));
+    const cheapest = siblings.reduce((a, b) =>
+      toCents(b.minPrice) < toCents(a.minPrice) ? b : a,
+    );
+    const dearest = siblings.reduce((a, b) =>
+      toCents(b.maxPrice) > toCents(a.maxPrice) ? b : a,
+    );
+
+    return {
+      ...lead,
+      title: regularCoffeeTitle(lead.title),
+      image: lead.image ?? siblings.find((plan) => plan.image)?.image ?? null,
+      minPrice: cheapest.minPrice,
+      maxPrice: dearest.maxPrice,
+      intervals,
+      cadences: intervals.map(
+        (i) => formatCadence(i.interval, i.intervalCount) as string,
+      ),
+    };
+  });
+
+  return { roastersChoice, regular };
 }
 
 /**

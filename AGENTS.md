@@ -14,8 +14,9 @@ Full specification: `plan.md`. Where sections conflict, the later one
 wins — §89 supersedes §1, §90 supersedes copy in §7–8, §93 supersedes
 §9.2 and §12.1, §106 supersedes parts of §105, §108 (the Starbucks
 direction) supersedes §106's shapes and weights and §105/§107 on the
-hero, and §109 (review fixes) supersedes §108 on shipping and owns
-the subscription list.
+hero, §109 (review fixes) supersedes §108 on shipping, and §110 owns
+the subscription list: two types, Regular and Roaster's Choice,
+derived in the frontend — never by editing handles or selling plans.
 
 ## Non-negotiables
 

@@ -53,7 +53,7 @@ export const HOME = {
         image: IMAGES.heroRoasterDrop,
         headline: "Roasted fresh in Somerville.",
         body: "We roast, pack and ship it fresh, once or twice a month, so the good coffee never runs out.",
-        cta: { label: "Start a subscription", href: "/subscriptions" },
+        cta: { label: "Start a subscription", href: "/subscriptions#choose" },
       },
       {
         image: IMAGES.heroRoasterInspecting,
@@ -103,18 +103,19 @@ export const HOME = {
 
   subscription: {
     heading: "Coffee subscriptions",
-    /** Roaster's Choice: the customer chooses the bags, the grind and
-     * the schedule; the roasting team chooses the coffee (§109). */
-    steps: [
+    /** How a Roaster's Choice box works: the customer chooses the bags,
+     * the grind and the schedule; the roasting team chooses the coffee
+     * (§109). Shown under that shelf only — a Regular subscriber picks
+     * their coffee, so the last step would be untrue for them (§110). */
+    roastersChoiceSteps: [
       "Choose how many bags",
       "Choose whole bean or ground, and how often",
       "We pick the coffee, roast it, and send it",
     ],
-    /** Factual only, from the Roaster's Choice product descriptions:
-     * the roasting team picks the coffee for every delivery, and the
-     * account page manages subscriptions. Cadences are not named here —
-     * they come from Shopify, beneath the plans (§109). */
-    lede: "Our roasting team picks the coffee for every delivery. Freshly roasted, and managed from your account.",
+    /** True of both kinds (§110): the customer picks the coffee or
+     * the roasters do. Cadences are not named here — they come from
+     * Shopify, on the chooser and under each shelf. */
+    lede: "Pick your coffee, or let us pick for you. Freshly roasted in Somerville and managed from your account.",
     cta: { label: "Start a subscription", href: "/subscriptions" },
   },
 } as const;

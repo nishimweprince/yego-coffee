@@ -1,5 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { cadenceSentence, perBagPrice, summarisePlans } from "./plans";
+import {
+  cadenceSentence,
+  groupPlans,
+  perBagPrice,
+  summarisePlans,
+} from "./plans";
 import type { ProductDetailModel } from "@/lib/shopify/types";
 
 function planProduct(
@@ -168,5 +173,60 @@ describe("cadenceSentence", () => {
 
   it("says nothing when no plan states a cadence", () => {
     expect(cadenceSentence(summarisePlans([planProduct("odd", [])]))).toBeNull();
+  });
+});
+
+describe("groupPlans", () => {
+  const MONTHLY = [{ interval: "MONTH" as const, count: 1 }];
+  const FORTNIGHTLY = [{ interval: "WEEK" as const, count: 2 }];
+
+  function titled(product: ProductDetailModel, title: string) {
+    return { ...product, title };
+  }
+
+  const shelf = summarisePlans([
+    planProduct("bi-monthly-drop", FORTNIGHTLY),
+    titled(
+      planProduct("dark-roast-bi-monthly-subscription", FORTNIGHTLY),
+      "Dark Roast - Bi-Monthly Subscription",
+    ),
+    ...ROASTERS_CHOICE.map((p) => ({ ...p, bagsPerDelivery: null })),
+    titled(
+      planProduct("dark-roast-monthly-subscription", MONTHLY),
+      "Dark Roast - Monthly Subscription",
+    ),
+    planProduct("monthly-drop", MONTHLY),
+    planProduct("dark-roast", []),
+  ]);
+  const { roastersChoice, regular } = groupPlans(shelf);
+
+  it("orders Roaster's Choice by bags read from the handle, Drops after", () => {
+    expect(roastersChoice.map((p) => p.handle)).toEqual([
+      "roasters-choice-one-bag-subscription",
+      "roasters-choice-two-bags-subscription",
+      "roasters-choice-three-bags-subscription",
+      "roasters-choice-four-bags-subscription",
+      "bi-monthly-drop",
+      "monthly-drop",
+    ]);
+    expect(roastersChoice[1].perBag).toEqual({
+      amount: "20.00",
+      currencyCode: "USD",
+    });
+  });
+
+  it("folds a Regular coffee's two products into one tile", () => {
+    expect(regular).toHaveLength(1);
+    expect(regular[0]).toMatchObject({
+      handle: "dark-roast-monthly-subscription",
+      title: "Dark Roast",
+      cadences: ["Once a month", "Every 2 weeks"],
+    });
+  });
+
+  it("leaves out a product of neither type", () => {
+    expect(
+      [...roastersChoice, ...regular].some((p) => p.handle === "dark-roast"),
+    ).toBe(false);
   });
 });

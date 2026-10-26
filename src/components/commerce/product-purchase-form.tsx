@@ -4,7 +4,7 @@ import { useState, useTransition } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { DeliverySelector } from "./delivery-selector";
+import { DeliverySelector, type SiblingSchedule } from "./delivery-selector";
 import { ProductPrice } from "./product-price";
 import { QuantitySelector } from "./quantity-selector";
 import { VariantSelector } from "./variant-selector";
@@ -13,6 +13,7 @@ import { cartChanged, openCart } from "@/lib/cart/events";
 import { track } from "@/lib/analytics/analytics";
 import { formatMoneyCompact } from "@/lib/formatting/money";
 import { perBagPrice } from "@/lib/catalog/plans";
+import { bagCountFromHandle } from "@/lib/catalog/subscription-type";
 import { byLongestInterval } from "@/lib/shopify/cadence";
 import {
   defaultVariant,
@@ -25,8 +26,15 @@ import type { ProductDetailModel } from "@/lib/shopify/types";
 export function ProductPurchaseForm({
   product,
   subscriptionPolicyHref,
+  typeText,
+  siblings,
 }: {
   product: ProductDetailModel;
+  /** The owners' description of this subscription's type (§110),
+   * shown under the price. Null when the product has none. */
+  typeText?: string | null;
+  /** This coffee's other schedule, sold as a sibling product (§110). */
+  siblings?: SiblingSchedule[];
   /** The store's subscription terms, linked wherever a recurring
    * schedule is chosen (§108). Absent when the store has none. */
   subscriptionPolicyHref?: string;
@@ -69,10 +77,10 @@ export function ProductPurchaseForm({
       ? "Not available as a subscription"
       : "Sold out";
   const shownPrice = activePlan ? activePlan.price : variant?.price;
+  // The metafield, or the count the handle and title state (§110).
+  const bags = product.bagsPerDelivery ?? bagCountFromHandle(product.handle);
   const bagPrice =
-    shownPrice && product.bagsPerDelivery && product.bagsPerDelivery > 1
-      ? perBagPrice(shownPrice, product.bagsPerDelivery)
-      : null;
+    shownPrice && bags && bags > 1 ? perBagPrice(shownPrice, bags) : null;
 
   // Shopify caps at whatever it is meaningfully tracking. Yego's store
   // sells past zero and reports negative counts, so this is not a plain
@@ -122,10 +130,18 @@ export function ProductPurchaseForm({
           />
           {bagPrice ? (
             <p className="mt-1 text-body-s text-muted-foreground">
-              {product.bagsPerDelivery} bags, {formatMoneyCompact(bagPrice)} a bag
+              {bags} bags, {formatMoneyCompact(bagPrice)} a bag
             </p>
           ) : null}
         </div>
+      ) : null}
+
+      {/* What kind of subscription this is, in the owners' words,
+          beside the price rather than at the foot of "Details". */}
+      {typeText ? (
+        <p className="border-l-2 border-accent pl-4 text-body-m text-muted-foreground">
+          {typeText}
+        </p>
       ) : null}
 
       <VariantSelector
@@ -138,6 +154,7 @@ export function ProductPurchaseForm({
       {variant ? (
         <DeliverySelector
           options={plans}
+          siblings={siblings}
           oneTimePrice={required ? null : formatMoneyCompact(variant.price)}
           selectedPlanId={activePlanId}
           onSelect={(next) => {
@@ -171,8 +188,9 @@ export function ProductPurchaseForm({
 
         {activePlan ? (
           <p className="mt-stack-sm text-body-s text-muted-foreground">
-            Delivered {activePlan.frequencyLabel.toLowerCase()}, until you
-            change or cancel it.
+            Renews automatically: delivered and charged{" "}
+            {activePlan.frequencyLabel.toLowerCase()} until you cancel. Skip,
+            change or cancel from your account before your next order.
             {subscriptionPolicyHref ? (
               <>
                 {" "}

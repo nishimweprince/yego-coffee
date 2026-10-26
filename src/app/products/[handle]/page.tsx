@@ -10,6 +10,14 @@ import { YegoLine } from "@/components/ui/yego-line";
 import { getReassurances } from "@/lib/content/reassurance";
 import { COLLECTION_HANDLES } from "@/lib/catalog/collections";
 import { roastNote } from "@/lib/catalog/facets";
+import {
+  getSubscriptionType,
+  regularSibling,
+  splitSubscriptionType,
+  SUBSCRIPTION_TYPE_ANCHORS,
+  SUBSCRIPTION_TYPE_LABELS,
+} from "@/lib/catalog/subscription-type";
+import type { SiblingSchedule } from "@/components/commerce/delivery-selector";
 import { env } from "@/lib/env";
 import { breadcrumbJsonLd, productJsonLd } from "@/lib/seo/structured-data";
 import { hasShopifyCredentials } from "@/lib/env";
@@ -58,13 +66,43 @@ export default async function ProductPage({
   const product = await getProduct(handle);
   if (!product) notFound();
 
-  const [coffee, reassurances] = await Promise.all([
+  const type = getSubscriptionType(product);
+
+  const [coffee, reassurances, subscriptions] = await Promise.all([
     getCollection(COLLECTION_HANDLES.coffee),
     getReassurances(),
+    type === "regular"
+      ? getCollection(COLLECTION_HANDLES.subscriptions)
+      : Promise.resolve(null),
   ]);
   const related = (coffee?.products ?? []).filter((p) => p.handle !== handle);
 
-  const roast = roastNote(product);
+  // A Regular coffee's other schedule is its own Shopify product
+  // (§110). Its plans are shown as rows that link across, priced and
+  // labelled from that product's own selling plans.
+  const siblingHandle = subscriptions
+    ? regularSibling(
+        handle,
+        subscriptions.products.map((p) => p.handle),
+      )
+    : null;
+  const sibling = siblingHandle ? await getProduct(siblingHandle) : null;
+  const siblings: SiblingSchedule[] = sibling
+    ? (sibling.variants[0]?.subscriptionOptions ?? []).map((option) => ({
+        href: `/products/${sibling.handle}`,
+        label: option.frequencyLabel,
+        price: option.price,
+        interval: option.interval,
+        intervalCount: option.intervalCount,
+      }))
+    : [];
+
+  // Roaster's Choice is tagged with a roast in Shopify, but the roast
+  // is the roasters' to choose each delivery — so no roast line (§110).
+  const roast = type === "roasters-choice" ? null : roastNote(product);
+  const { text: typeText, detailsHtml } = type
+    ? splitSubscriptionType(product.descriptionHtml)
+    : { text: null, detailsHtml: product.descriptionHtml };
 
   const hero = product.media[0] ?? product.featuredImage;
 
@@ -128,7 +166,17 @@ export default async function ProductPage({
               <PageHeader
                 title={product.title}
                 size="product"
-                breadcrumb={[{ href: "/shop", label: "Shop" }]}
+                breadcrumb={
+                  type
+                    ? [
+                        { href: "/subscriptions", label: "Subscriptions" },
+                        {
+                          href: `/subscriptions#${SUBSCRIPTION_TYPE_ANCHORS[type]}`,
+                          label: SUBSCRIPTION_TYPE_LABELS[type],
+                        },
+                      ]
+                    : [{ href: "/shop", label: "Shop" }]
+                }
               />
 
               {/* Roast is the one fact about a coffee that is not
@@ -145,6 +193,8 @@ export default async function ProductPage({
                 <ProductPurchaseForm
                   product={product}
                   subscriptionPolicyHref={reassurances.cancellation?.href}
+                  typeText={typeText}
+                  siblings={siblings}
                 />
               </div>
 
@@ -162,7 +212,7 @@ export default async function ProductPage({
         </div>
       </section>
 
-      {product.descriptionHtml ? (
+      {detailsHtml ? (
         <section aria-label="Details" className="px-page-x pt-section-md">
           <div className="mx-auto max-w-page">
             <Contour label="Details" />
@@ -172,7 +222,7 @@ export default async function ProductPage({
                 nothing, which is the correct outcome. */}
             <div
               className="mt-stack-lg max-w-prose space-y-stack-md text-body-l text-muted-foreground [&_a]:underline [&_strong]:text-foreground"
-              dangerouslySetInnerHTML={{ __html: product.descriptionHtml }}
+              dangerouslySetInnerHTML={{ __html: detailsHtml }}
             />
           </div>
         </section>

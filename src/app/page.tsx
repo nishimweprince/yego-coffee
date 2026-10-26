@@ -5,10 +5,10 @@ import { HomeLineup } from "@/components/home/home-lineup";
 import { HomeStatement } from "@/components/home/home-statement";
 import { SubscriptionBlock } from "@/components/home/subscription-block";
 import { COLLECTION_HANDLES } from "@/lib/catalog/collections";
-import { summarisePlans } from "@/lib/catalog/plans";
+import { getSubscriptionShelves } from "@/lib/catalog/shelves";
 import { getReassurances } from "@/lib/content/reassurance";
 import { hasShopifyCredentials } from "@/lib/env";
-import { getCollection, getProduct } from "@/lib/shopify/storefront";
+import { getCollection } from "@/lib/shopify/storefront";
 
 /**
  * The homepage — Hero, statement, the coffees, about, the café,
@@ -39,20 +39,11 @@ export default async function HomePage() {
     );
   }
 
-  const [coffee, subscriptions, reassurances] = await Promise.all([
+  const [coffee, shelves, reassurances] = await Promise.all([
     getCollection(COLLECTION_HANDLES.coffee),
-    getCollection(COLLECTION_HANDLES.subscriptions),
+    getSubscriptionShelves(),
     getReassurances(),
   ]);
-
-  // Cadence lives on the variant's allocation, which only the detail
-  // query fetches — so the subscription products are read in full.
-  const planProducts = await Promise.all(
-    (subscriptions?.products ?? []).map((p) => getProduct(p.handle)),
-  );
-  const plans = summarisePlans(
-    planProducts.filter((p): p is NonNullable<typeof p> => p !== null),
-  );
 
   return (
     <main data-hero="slides">
@@ -70,7 +61,7 @@ export default async function HomePage() {
       <CafeBlock />
 
       <SubscriptionBlock
-        plans={plans}
+        shelves={shelves}
         cancellation={reassurances.cancellation}
       />
     </main>

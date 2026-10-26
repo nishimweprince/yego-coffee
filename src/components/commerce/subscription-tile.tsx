@@ -14,7 +14,7 @@ import { cn } from "@/lib/utils";
  * bag standing in front hides the one behind it, as they stand on a
  * shelf. No artwork — the gorilla belongs to the photographs.
  */
-function Bag({ className }: { className?: string }) {
+export function Bag({ className }: { className?: string }) {
   return (
     <svg
       viewBox="0 0 60 92"

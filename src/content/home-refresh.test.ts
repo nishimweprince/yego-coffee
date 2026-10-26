@@ -143,7 +143,9 @@ describe("design refresh — the quiet page", () => {
     const home = read("src/content/home.ts");
     expect(home).not.toContain("/collections/subscriptions");
     expect(
-      HOME.hero.slides.some((slide) => slide.cta.href === "/subscriptions"),
+      HOME.hero.slides.some(
+        (slide) => slide.cta.href === "/subscriptions#choose",
+      ),
     ).toBe(true);
     expect(HOME.subscription.cta.href).toBe("/subscriptions");
   });

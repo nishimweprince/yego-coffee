@@ -1,26 +1,29 @@
 import Link from "next/link";
-import { SubscriptionGrid } from "@/components/commerce/subscription-tile";
+import { SubscriptionChooser } from "@/components/commerce/subscription-chooser";
 import { YegoLine } from "@/components/ui/yego-line";
 import { HOME } from "@/content/home";
 import type { Reassurance } from "@/lib/content/reassurance";
-import type { SubscriptionPlanSummary } from "@/lib/catalog/plans";
+import type { SubscriptionShelves } from "@/lib/catalog/shelves";
 
 /**
- * The subscriptions shelf — the page's closing offer (§108, §109).
+ * The subscriptions offer — the page's closing section (§108, §110).
  *
- * The same row as the coffees above it: heading and link, then the shop
- * grid. The plans are SubscriptionGrid, shared with /subscriptions so
- * the two cannot drift, and every plan, price and cadence on it is
- * Shopify's. The cancellation terms below are the store's own.
+ * Heading and link, then the same two-card chooser /subscriptions
+ * opens with, so a visitor makes the one decision that matters here —
+ * a coffee they choose, or one the roasters choose — and lands on that
+ * shelf. Every plan, price and cadence on it is Shopify's. The
+ * cancellation terms below are the store's own.
  */
 export function SubscriptionBlock({
-  plans,
+  shelves,
   cancellation,
 }: {
-  plans: SubscriptionPlanSummary[];
+  shelves: SubscriptionShelves;
   cancellation: Reassurance | null;
 }) {
-  if (plans.length === 0) return null;
+  if (shelves.regular.length + shelves.roastersChoice.length === 0) {
+    return null;
+  }
 
   return (
     <section
@@ -46,7 +49,22 @@ export function SubscriptionBlock({
           {HOME.subscription.lede}
         </p>
 
-        <SubscriptionGrid plans={plans} className="mt-15" />
+        <SubscriptionChooser
+          hrefBase="/subscriptions"
+          className="mt-15"
+          options={[
+            {
+              type: "regular",
+              text: shelves.typeText.regular,
+              plans: shelves.regular,
+            },
+            {
+              type: "roasters-choice",
+              text: shelves.typeText["roasters-choice"],
+              plans: shelves.roastersChoice,
+            },
+          ]}
+        />
 
         <YegoLine reassurance={cancellation} className="mt-section-sm" />
       </div>

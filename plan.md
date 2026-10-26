@@ -7080,3 +7080,31 @@ A review of the live site found Shopify changes only partly reflected. Decisions
 - **Production must name its domain.** `parseCore` fails a Vercel production build whose `NEXT_PUBLIC_SITE_URL` is localhost.
 - **Link previews and Product JSON-LD use a JPEG rendition** of the featured image (`shareImage`), because store photographs uploaded as HEIC do not render for crawlers.
 
+
+---
+
+# 110. Two subscription types (2026-10-26, owner content update)
+
+The owners added a "Subscription type:" paragraph to each subscription product's description in Shopify. There are two types: **Regular** (the customer chooses one coffee) and **Roaster's Choice** (the roasters choose). The review note `yego-nextjs-ui-content-update.md` asked for Starbucks-style structure to show the difference. This section supersedes §109 on the subscription list being one grid.
+
+- **Presentation only.** No handle, variant, selling plan, price or cart payload changed. The type is derived by `getSubscriptionType` (`src/lib/catalog/subscription-type.ts`). It reads the owners' paragraph first, then falls back to the handle.
+- **The Drops are Roaster's Choice** (owner decision). Monthly Drop and Bi-Monthly Drop have no type paragraph, and their curated, rotating selection is the roasters' choice. No copy is written for them.
+- **/subscriptions** opens with `SubscriptionChooser`: two cards, each with the owners' sentence, the cadences Shopify offers, the lowest price, and a link to the matching shelf. The faces are photographs of the coffees for Regular and the line-drawn bags for Roaster's Choice. Each shelf then sits under a contour naming it. The homepage closes on the same chooser. Hero slide 2 and the announcement bar link to `/subscriptions#choose`.
+- **Regular coffees are one tile each.** Every Regular coffee is two Shopify products, monthly and bi-monthly, and `groupPlans` folds them together. The product page lists the other product's schedule as a row that links across (`SiblingSchedule`). Nothing is added to the cart from that row.
+- **The product page:**
+  - The breadcrumb names the type.
+  - The owners' sentence sits under the price and is removed from Details (`splitSubscriptionType`).
+  - Roaster's Choice shows no roast line: its `medium` tag was wrong for a coffee the roasters pick.
+  - The delivery line reads "Renews automatically: delivered and charged {cadence} until you cancel. Skip, change or cancel from your account before your next order." The owners need to confirm it against the published policy.
+- **Bags per delivery** fall back to the handle (`bagCountFromHandle`) while the `custom.bags_per_delivery` metafield is unreadable through the Storefront API. The metafield returned null on every product on 2026-10-26, so its definition needs Storefront access.
+- **Revalidation.** `POST /api/shopify/webhook` verifies Shopify's HMAC with `SHOPIFY_WEBHOOK_SECRET` and calls `revalidateTag(…, "max")` for product and collection topics. The new paragraphs had been held back by stale-while-revalidate entries. The webhook still has to be registered in Shopify admin.
+- **Deliberately not matched from the note:**
+  - Uppercase or tracked nav.
+  - A cream surface (linen stays retired, §108.4).
+  - Accent-filled buttons (ink stays, §106).
+  - "Curated for you / Your favorites" eyebrows.
+  - A hardcoded "Free shipping over $40" badge. Shipping is quoted from policy (§109).
+- **Open with the owners:**
+  - The Shopify copy says "twice a month", but the plans bill every 2 weeks (§109).
+  - Roaster's Choice One Bag costs $22 against a $17 Regular bag, while its description promises "a better price per bag".
+  - The 5 lb Bag photograph is HEIC and does not render in its tile.

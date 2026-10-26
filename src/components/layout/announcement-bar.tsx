@@ -1,8 +1,8 @@
 import Link from "next/link";
 
 /**
- * The announcement bar. One line stating the subscription thesis,
- * linking straight at the money path. Static by design: no dismissal
+ * The announcement bar. One line naming the two ways to subscribe
+ * (§110), linking straight to the choice between them. Static by design: no dismissal
  * state, no JavaScript, nothing to hydrate.
  */
 export function AnnouncementBar() {
@@ -11,12 +11,12 @@ export function AnnouncementBar() {
       data-surface="mist"
       className="border-b border-border px-page-x py-stack-sm text-center text-body-s text-muted-foreground"
     >
-      Fresh roast on repeat, once or twice a month.{" "}
+      Choose your coffee, or let our roasters choose.{" "}
       <Link
-        href="/subscriptions"
+        href="/subscriptions#choose"
         className="text-accent underline underline-offset-4 hover:text-foreground"
       >
-        Build a subscription
+        Start a subscription
       </Link>
     </p>
   );

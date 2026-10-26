@@ -1,9 +1,25 @@
 "use client";
 
+import Link from "next/link";
 import { formatMoneyCompact } from "@/lib/formatting/money";
+import { byLongestInterval } from "@/lib/shopify/cadence";
 import { cn } from "@/lib/utils";
 import { controlMark, controlVariants } from "@/components/ui/control";
-import type { SubscriptionOptionModel } from "@/lib/shopify/types";
+import type { Money, SubscriptionOptionModel } from "@/lib/shopify/types";
+
+/**
+ * A schedule sold as a different Shopify product — a Regular coffee's
+ * other cadence (§110). Choosing it goes to that product; nothing is
+ * added to the cart from here, so its own plan and price are what
+ * Shopify bills.
+ */
+export type SiblingSchedule = {
+  href: string;
+  label: string;
+  price: Money;
+  interval: SubscriptionOptionModel["interval"];
+  intervalCount: number | null;
+};
 
 /**
  * One time, or on a schedule — or, for a subscription-only product
@@ -30,12 +46,15 @@ import type { SubscriptionOptionModel } from "@/lib/shopify/types";
  */
 export function DeliverySelector({
   options,
+  siblings = [],
   oneTimePrice,
   selectedPlanId,
   onSelect,
   className,
 }: {
   options: SubscriptionOptionModel[];
+  /** The same coffee on another schedule, as its own product (§110). */
+  siblings?: SiblingSchedule[];
   /** Null on a subscription-only product: there is no one-time choice. */
   oneTimePrice: string | null;
   selectedPlanId: string | null;
@@ -44,16 +63,52 @@ export function DeliverySelector({
 }) {
   if (options.length === 0) return null;
 
-  const choices = [
-    ...(oneTimePrice === null
-      ? []
-      : [{ id: null, label: "One time", price: oneTimePrice, savings: null }]),
+  type Choice = {
+    id: string | null;
+    href?: string;
+    label: string;
+    price: string;
+    savings: number | null;
+    interval: SubscriptionOptionModel["interval"];
+    intervalCount: number | null;
+  };
+
+  // The sibling's schedule takes its place among this product's own,
+  // ordered by interval like every other list of plans (§109).
+  const scheduled: Choice[] = byLongestInterval([
     ...options.map((option) => ({
       id: option.sellingPlanId,
       label: option.frequencyLabel,
       price: formatMoneyCompact(option.price),
       savings: option.savingsPercentage,
+      interval: option.interval,
+      intervalCount: option.intervalCount,
     })),
+    ...siblings.map((sibling) => ({
+      id: null,
+      href: sibling.href,
+      label: sibling.label,
+      price: formatMoneyCompact(sibling.price),
+      savings: null,
+      interval: sibling.interval,
+      intervalCount: sibling.intervalCount,
+    })),
+  ]);
+
+  const choices: Choice[] = [
+    ...(oneTimePrice === null
+      ? []
+      : [
+          {
+            id: null,
+            label: "One time",
+            price: oneTimePrice,
+            savings: null,
+            interval: null,
+            intervalCount: null,
+          },
+        ]),
+    ...scheduled,
   ];
 
   return (
@@ -61,6 +116,27 @@ export function DeliverySelector({
       <legend className="label text-muted-foreground">Delivery</legend>
       <div className="mt-stack-sm space-y-2">
         {choices.map((choice) => {
+          if (choice.href) {
+            // A link styled as an unselected row: it moves to the
+            // sibling product, whose page then shows it selected.
+            return (
+              <Link
+                key={choice.href}
+                href={choice.href}
+                className={cn(
+                  controlVariants({ shape: "row", state: "idle" }),
+                  "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring",
+                )}
+              >
+                <span className="flex items-center gap-3">
+                  <span aria-hidden className={controlMark(false)} />
+                  <span className="text-body-m">{choice.label}</span>
+                </span>
+                <span className="type-figure text-price">{choice.price}</span>
+              </Link>
+            );
+          }
+
           const checked = selectedPlanId === choice.id;
           return (
             <label
