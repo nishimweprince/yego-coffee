@@ -36,19 +36,14 @@ export type HeroSlide = {
 
 export const HOME = {
   /**
-   * The hero carousel, one slide per photograph, in the order the
-   * coffee travels: green sacks, the roaster's drop, the check. Every
+   * The hero carousel, one slide per photograph: the roaster's drop,
+   * the check, then the green sacks it all starts from (owner order,
+   * 2026-10-26). The first headline is the page's one <h1>. Every
    * line restates something the site already says elsewhere (the about
    * copy, the statement's principles) — nothing here is new fact.
    */
   hero: {
     slides: [
-      {
-        image: IMAGES.heroSacks,
-        headline: "Grown with purpose, in Rwanda.",
-        body: "Every bag starts as green coffee from Rwanda, where the family's story begins.",
-        cta: { label: "Shop coffee", href: "/shop" },
-      },
       {
         image: IMAGES.heroRoasterDrop,
         headline: "Roasted fresh in Somerville.",
@@ -60,6 +55,12 @@ export const HOME = {
         headline: "Family-owned, four decades in coffee.",
         body: "Fatuma and Francois Tuyishime roast every bag at their Somerville roastery and café.",
         cta: { label: "Read our story", href: "/about" },
+      },
+      {
+        image: IMAGES.heroSacks,
+        headline: "Grown with purpose, in Rwanda.",
+        body: "Every bag starts as green coffee from Rwanda, where the family's story begins.",
+        cta: { label: "Shop coffee", href: "/shop" },
       },
     ] satisfies HeroSlide[],
   },
