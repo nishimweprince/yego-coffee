@@ -26,6 +26,8 @@ Already done in this pass: **linen is gone**. Every page, the announcement bar a
 
 ## 2. Type
 
+> **Superseded on size (2026-11-10, owner feedback).** Every `--text-*` size token was scaled by **0.9** in `globals.css`. The type read oversized next to the photography. The ratios between steps, the weights, line heights and tracking are unchanged; only the absolute sizes below are now 10% smaller (body 14.4px, h1 36px at 1440). Text inputs moved to `text-body-l` (16.2px) so iOS Safari does not zoom on focus. To revert or retune, change the one factor in all fifteen tokens together.
+
 | Role | Starbucks | Ours | Gap |
 |---|---|---|---|
 | Body | 16px / 24px, 400, −0.01em; text colour `rgba(18,18,18,.75)` | 16px / 25.6px, 400, −0.01em; solid ink | Line height 1.6 → 1.5. Body copy should be softer than headings. |

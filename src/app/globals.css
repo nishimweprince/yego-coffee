@@ -50,65 +50,65 @@
        h4         20px  card titles
        lede       18px  regular, grey — the line under a title
      One display-xl per site — the hero slides. */
-  --text-display-xl: clamp(2.75rem, 1.9rem + 2.6vw, 4rem);
+  --text-display-xl: clamp(2.475rem, 1.71rem + 2.34vw, 3.6rem);
   --text-display-xl--line-height: 1.05;
   --text-display-xl--letter-spacing: -0.02em;
 
-  --text-display-l: clamp(2rem, 1.25rem + 2.2vw, 3rem);
+  --text-display-l: clamp(1.8rem, 1.125rem + 1.98vw, 2.7rem);
   --text-display-l--line-height: 1.2;
   --text-display-l--letter-spacing: -0.02em;
 
-  --text-h1: clamp(2rem, 1.6rem + 1vw, 2.5rem);
+  --text-h1: clamp(1.8rem, 1.44rem + 0.9vw, 2.25rem);
   --text-h1--line-height: 1.3;
   --text-h1--letter-spacing: -0.02em;
 
-  --text-h2: clamp(1.75rem, 1.5rem + 0.6vw, 2rem);
+  --text-h2: clamp(1.575rem, 1.35rem + 0.54vw, 1.8rem);
   --text-h2--line-height: 1.2;
   --text-h2--letter-spacing: -0.02em;
 
-  --text-h3: 1.5rem;
+  --text-h3: 1.35rem;
   --text-h3--line-height: 1.2;
   --text-h3--letter-spacing: -0.02em;
 
-  --text-h4: 1.25rem;
+  --text-h4: 1.125rem;
   --text-h4--line-height: 1.2;
   --text-h4--letter-spacing: -0.02em;
 
   /* The lede is the quiet second voice under a title: regular weight,
      grey, a step above body. */
-  --text-lede: clamp(1rem, 0.95rem + 0.3vw, 1.125rem);
+  --text-lede: clamp(0.9rem, 0.855rem + 0.27vw, 1.0125rem);
   --text-lede--line-height: 1.5;
   --text-lede--letter-spacing: -0.01em;
 
-  --text-body-l: 1.125rem;
+  --text-body-l: 1.0125rem;
   --text-body-l--line-height: 1.6;
 
-  --text-body-m: 1rem;
+  --text-body-m: 0.9rem;
   --text-body-m--line-height: 1.5;
 
-  --text-body-s: 0.875rem;
+  --text-body-s: 0.7875rem;
   --text-body-s--line-height: 1.5;
 
-  --text-caption: 0.8125rem;
+  --text-caption: 0.7313rem;
   --text-caption--line-height: 1.45;
 
   /* Label: the small register — eyebrows, meta, roast names, data.
      Sentence case, weight 500, no tracking. */
-  --text-label: 0.8125rem;
+  --text-label: 0.7313rem;
   --text-label--line-height: 1.3;
   --text-label--letter-spacing: 0;
 
-  --text-price: 1.125rem;
+  --text-price: 1.0125rem;
   --text-price--line-height: 1.2;
   --text-price--letter-spacing: 0;
 
   /* The price under a product card. */
-  --text-price-s: 0.875rem;
+  --text-price-s: 0.7875rem;
   --text-price-s--line-height: 1.2;
   --text-price-s--letter-spacing: 0;
 
   /* Button and nav text. */
-  --text-control: 0.9375rem;
+  --text-control: 0.8438rem;
   --text-control--line-height: 1.2;
   --text-control--letter-spacing: -0.01em;
 

@@ -62,8 +62,11 @@ export function controlMark(active: boolean, onInk = false) {
   }`;
 }
 
-/** Text inputs and selects. */
+/**
+ * Text inputs and selects. `text-body-l` keeps the field at 16px or
+ * more: below that, iOS Safari zooms the page on focus.
+ */
 export const inputClassName =
-  "min-h-11 rounded-field border border-border bg-surface-elevated px-4 text-body-m " +
+  "min-h-11 rounded-field border border-border bg-surface-elevated px-4 text-body-l " +
   "transition-colors hover:border-rule focus:border-foreground " +
   "focus:outline-none aria-[invalid=true]:border-destructive";

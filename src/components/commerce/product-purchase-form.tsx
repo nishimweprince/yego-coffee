@@ -139,7 +139,7 @@ export function ProductPurchaseForm({
       {/* What kind of subscription this is, in the owners' words,
           beside the price rather than at the foot of "Details". */}
       {typeText ? (
-        <p className="border-l-2 border-accent pl-4 text-body-m text-muted-foreground">
+        <p className="text-body-m text-muted-foreground">
           {typeText}
         </p>
       ) : null}
