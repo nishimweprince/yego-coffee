@@ -14,6 +14,7 @@ import {
   ORDERS_QUERY,
   ORDER_QUERY,
   SUBSCRIPTIONS_QUERY,
+  SUBSCRIPTION_QUERY,
 } from "./queries";
 import type {
   CustomerAddress,
@@ -58,17 +59,32 @@ export async function getCustomerOverview(): Promise<{
   return { profile, recentOrders: nodes.map(mapOrderSummary) };
 }
 
-export async function getOrders(first = 25): Promise<OrderSummary[] | null> {
+export type OrdersPage = {
+  orders: OrderSummary[];
+  /** Pass back as `after` for the next, older page. */
+  endCursor: string | null;
+  hasNextPage: boolean;
+};
+
+export async function getOrders(
+  first = 20,
+  after: string | null = null,
+): Promise<OrdersPage | null> {
   const data = await customerRequest<Unknown>({
     operation: "CustomerOrders",
     query: ORDERS_QUERY,
-    variables: { first, after: null },
+    variables: { first, after },
   });
   if (!data?.customer) return null;
 
-  const nodes =
-    (((data.customer as Unknown).orders as Unknown)?.nodes ?? []) as unknown[];
-  return nodes.map(mapOrderSummary);
+  const connection = ((data.customer as Unknown).orders ?? {}) as Unknown;
+  const pageInfo = (connection.pageInfo ?? {}) as Unknown;
+  const nodes = (connection.nodes ?? []) as unknown[];
+  return {
+    orders: nodes.map(mapOrderSummary),
+    endCursor: typeof pageInfo.endCursor === "string" ? pageInfo.endCursor : null,
+    hasNextPage: pageInfo.hasNextPage === true,
+  };
 }
 
 export async function getOrder(id: string): Promise<OrderDetail | null> {
@@ -96,13 +112,8 @@ export async function getAddresses(): Promise<CustomerAddress[] | null> {
 }
 
 /**
- * Subscription contracts (§11.5).
- *
- * Expected to be empty for this store: Yego's subscriptions are run by
- * a third-party app and sold as duplicate products, not native selling
- * plans (§92.1, §96.5). An empty list is a real answer here, and the
- * page says so and hands the customer to Shopify's own portal per
- * §11.6 — it is not treated as a failure.
+ * Subscription contracts (§11.5, §111). Seal's plans are native
+ * selling plans, so these are the customer's real contracts.
  */
 export async function getSubscriptions(
   first = 20,
@@ -118,4 +129,20 @@ export async function getSubscriptions(
     (((data.customer as Unknown).subscriptionContracts as Unknown)?.nodes ??
       []) as unknown[];
   return nodes.map(mapSubscription);
+}
+
+/**
+ * One contract. Read through `customer`, so another customer's id
+ * returns nothing and the page 404s (§104.4).
+ */
+export async function getSubscription(
+  id: string,
+): Promise<SubscriptionContract | null> {
+  const data = await customerRequest<Unknown>({
+    operation: "CustomerSubscription",
+    query: SUBSCRIPTION_QUERY,
+    variables: { id },
+  });
+  const contract = (data?.customer as Unknown | undefined)?.subscriptionContract;
+  return contract ? mapSubscription(contract) : null;
 }

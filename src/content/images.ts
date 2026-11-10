@@ -105,6 +105,33 @@ export const IMAGES = {
     width: 1200,
     height: 1600,
   },
+  /* The three coffees together (owner-supplied 2026-11-10, §111). Left
+     to right the labels are the Medium Roast, Gatare and Dark Roast
+     bags, so naming the roasts is true. */
+  bagsThreeRoasts: {
+    src: "/brand/products/lineup-three.jpg",
+    alt: "Yego Medium Roast, Gatare Anaerobic Process and Dark Roast bags side by side",
+    width: 2400,
+    height: 1800,
+  },
+  bagsThreeRoastsClose: {
+    src: "/brand/products/lineup-three-close.jpg",
+    alt: "Three Yego bags, Medium, Gatare and Dark Roast, on a reflective counter",
+    width: 2400,
+    height: 1800,
+  },
+  bagsThreeRoastsPlant: {
+    src: "/brand/products/lineup-three-plant.jpg",
+    alt: "Three Yego coffee bags behind green leaves",
+    width: 2400,
+    height: 1800,
+  },
+  bagsWhiteAndKraft: {
+    src: "/brand/products/lineup-white-and-kraft.jpg",
+    alt: "Yego gorilla bags in front of the larger kraft bags",
+    width: 2400,
+    height: 1800,
+  },
   /* The hero carousel (§108). Supplied by the owners on 2026-10-23.
      The two portrait frames crop hard on a wide screen, so each holds
      its subject: the printed sack, the stream of beans. The sack's

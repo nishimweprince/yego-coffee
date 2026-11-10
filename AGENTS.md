@@ -14,7 +14,9 @@ Full specification: `plan.md`. Where sections conflict, the later one
 wins — §89 supersedes §1, §90 supersedes copy in §7–8, §93 supersedes
 §9.2 and §12.1, §106 supersedes parts of §105, §108 (the Starbucks
 direction) supersedes §106's shapes and weights and §105/§107 on the
-hero, §109 (review fixes) supersedes §108 on shipping, and §110 owns
+hero, §109 (review fixes) supersedes §108 on shipping, §111 supersedes
+§104.6 (subscriptions are native contracts, managed in the account
+area), and §110 owns
 the subscription list: two types, Regular and Roaster's Choice,
 derived in the frontend — never by editing handles or selling plans.
 
@@ -58,8 +60,11 @@ derived in the frontend — never by editing handles or selling plans.
   shipping, cancellation — one line per question, never as decoration.
 - The `.label` register is sentence case. No uppercase, no tracking.
 - Brand photography lives in `src/content/images.ts`; never hard-code a
-  `/brand/` path. Bag photos are editorial only, and alt text never
-  names a coffee the store does not sell (§106).
+  `/brand/` path. Alt text never names a coffee the store does not sell
+  (§106), nor a bag's label name. Product photography lives in
+  `src/content/product-photos.ts` and is applied by `withBrandPhotos`
+  in the Storefront read layer — the studio set leads, Shopify's
+  photos follow (§111).
 - Four radii, by role (§108): `rounded-pill` for buttons and chips,
   `rounded-card` (16px) for editorial photographs, `rounded-tile`
   (8px) for product tiles and the PDP gallery, `rounded-field` (8px)

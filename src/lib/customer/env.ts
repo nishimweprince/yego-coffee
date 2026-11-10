@@ -11,17 +11,71 @@ import { z } from "zod";
  * against stubbed responses is worth.
  */
 
+/**
+ * Shopify's customer account endpoints, all derived from the shop's
+ * numeric id (§111).
+ *
+ * Authentication and the GraphQL API live under different paths —
+ * `/authentication/{id}/oauth/*` and `/{id}/account/customer/api/*` —
+ * so one base URL cannot serve both. §104 joined both onto the same
+ * base, which would have failed on the first real request. Any
+ * shopify.com URL that carries the id is accepted: the hosted account
+ * page the admin shows (`https://shopify.com/55913808064/account`) or
+ * the authentication base.
+ */
+export type CustomerEndpoints = {
+  shopId: string;
+  /** `/oauth/authorize`, `/oauth/token` and `/logout` hang off this. */
+  authBase: string;
+  /** Append `/{version}/graphql`. */
+  apiBase: string;
+  /** Shopify's own hosted account pages, where the subscription app's
+   *  extension lets a customer change what this API cannot. */
+  accountUrl: string;
+};
+
+export function customerEndpoints(value: string): CustomerEndpoints | null {
+  let url: URL;
+  try {
+    url = new URL(value);
+  } catch {
+    return null;
+  }
+  if (url.protocol !== "https:") return null;
+
+  const shopId = /\/(\d{5,})(?:\/|$)/.exec(url.pathname)?.[1];
+  if (!shopId) return null;
+
+  const origin = url.origin;
+  return {
+    shopId,
+    authBase: `${origin}/authentication/${shopId}`,
+    apiBase: `${origin}/${shopId}/account/customer/api`,
+    accountUrl: `${origin}/${shopId}/account`,
+  };
+}
+
 const customerSchema = z.object({
   SHOPIFY_CUSTOMER_ACCOUNT_CLIENT_ID: z.string().min(1),
   /**
-   * The shop's Customer Account API base, e.g.
-   * https://shopify.com/authentication/<shop-id>
-   * Trailing slashes are trimmed so URL building stays predictable.
+   * Any shopify.com customer account URL carrying the shop's numeric
+   * id, e.g. https://shopify.com/55913808064/account
    */
   SHOPIFY_CUSTOMER_ACCOUNT_URL: z
     .string()
     .url()
-    .transform((value) => value.replace(/\/$/, "")),
+    .transform((value, ctx) => {
+      const endpoints = customerEndpoints(value);
+      if (!endpoints) {
+        ctx.addIssue({
+          code: "custom",
+          message:
+            "Expected an https shopify.com URL containing the shop id, e.g. https://shopify.com/55913808064/account",
+        });
+        return z.NEVER;
+      }
+      return endpoints;
+    }),
 });
 
 export type CustomerEnv = z.infer<typeof customerSchema>;
@@ -66,4 +120,14 @@ export function getCustomerEnv(): CustomerEnv {
 /** Test seam. */
 export function resetCustomerEnv(): void {
   cached = null;
+}
+
+/**
+ * Shopify's hosted account page, or null when unconfigured. Needs only
+ * the URL, not the client id, so a page can link to it even before
+ * sign-in works.
+ */
+export function customerAccountPortalUrl(): string | null {
+  const value = process.env.SHOPIFY_CUSTOMER_ACCOUNT_URL;
+  return value ? (customerEndpoints(value)?.accountUrl ?? null) : null;
 }

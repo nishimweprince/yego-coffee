@@ -25,6 +25,8 @@ export type OrderSummary = {
   financialStatus: string | null;
   fulfillmentStatus: string | null;
   total: Money;
+  /** Set when Shopify cancelled the order. */
+  cancelledAt: string | null;
   itemCount: number;
   itemTitles: string[];
 };
@@ -46,6 +48,12 @@ export type OrderDetail = {
   fulfillmentStatus: string | null;
   /** Shopify's hosted order status page — the tracking source of truth. */
   statusPageUrl: string | null;
+  cancelledAt: string | null;
+  /** Shopify's OrderCancelReason, e.g. "CUSTOMER". */
+  cancelReason: string | null;
+  /** Null when nothing has been refunded. */
+  refunded: Money | null;
+  returns: Array<{ name: string; status: string }>;
   total: Money;
   subtotal: Money | null;
   shipping: Money | null;
@@ -77,14 +85,51 @@ export type SubscriptionLine = {
   variantTitle: string | null;
   quantity: number;
   price: Money | null;
+  image: ShopifyImage | null;
 };
+
+/** One upcoming delivery: Shopify bills and ships it as a cycle. */
+export type BillingCycle = {
+  cycleIndex: number;
+  /** When Shopify expects to charge for this delivery. */
+  date: string;
+  skipped: boolean;
+};
+
+/**
+ * Shopify's contract statuses (`SubscriptionContractSubscriptionStatus`).
+ * Anything else arrives as "UNKNOWN" and offers no controls.
+ */
+export type SubscriptionStatus =
+  | "ACTIVE"
+  | "PAUSED"
+  | "FAILED"
+  | "CANCELLED"
+  | "EXPIRED"
+  | "STALE"
+  | "UNKNOWN";
 
 export type SubscriptionContract = {
   id: string;
-  status: string;
+  status: SubscriptionStatus;
   createdAt: string;
   nextBillingDate: string | null;
   /** Generated from the delivery policy, never a plan name (§96.3). */
   cadence: string | null;
   lines: SubscriptionLine[];
+  deliveryPrice: Money | null;
+  /** Shopify's last attempt to charge for this subscription failed. */
+  lastPaymentFailed: boolean;
+  /** Billed cycles are dropped: only deliveries still ahead. */
+  upcoming: BillingCycle[];
+  /**
+   * What Shopify will accept for this status (§111). Derived here so
+   * the page never offers a button the API is bound to refuse.
+   */
+  can: {
+    pause: boolean;
+    resume: boolean;
+    cancel: boolean;
+    skip: boolean;
+  };
 };

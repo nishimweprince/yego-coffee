@@ -74,3 +74,19 @@ export const ShopifyIdSchema = z
   .string()
   .trim()
   .regex(/^gid:\/\/shopify\/[A-Za-z]+\/[A-Za-z0-9_-]+$/, "Invalid id");
+
+/**
+ * A subscription contract id — nothing else is forwarded to the
+ * contract mutations (§111). A gid of another type is refused here
+ * rather than left for Shopify to reject.
+ */
+export const SubscriptionContractIdSchema = z
+  .string()
+  .trim()
+  .regex(/^gid:\/\/shopify\/SubscriptionContract\/\d+$/, "Invalid subscription");
+
+/** A delivery to skip or restore: the contract and its cycle index. */
+export const BillingCycleSchema = z.object({
+  contractId: SubscriptionContractIdSchema,
+  cycleIndex: z.number().int().min(0).max(10_000),
+});

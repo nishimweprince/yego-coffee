@@ -2,6 +2,7 @@ import "server-only";
 
 import { COLLECTION_HANDLES } from "@/lib/catalog/collections";
 import { excludeDuplicates } from "@/lib/catalog/duplicates";
+import { withBrandPhotos, withBrandPhotosAll } from "@/lib/catalog/product-photos";
 import { storefrontRequest } from "./client";
 import {
   mapCollection,
@@ -69,7 +70,9 @@ export async function getProducts(first = 24): Promise<ProductCardModel[]> {
     revalidate: CATALOGUE_REVALIDATE_SECONDS,
   });
 
-  return data.products.edges.map((edge) => mapProductToCard(edge.node));
+  return data.products.edges.map((edge) =>
+    withBrandPhotos(mapProductToCard(edge.node)),
+  );
 }
 
 export type ShopIdentity = {
@@ -102,7 +105,7 @@ export async function getProduct(
     revalidate: CATALOGUE_REVALIDATE_SECONDS,
   });
 
-  return data.product ? mapProductToDetail(data.product) : null;
+  return data.product ? withBrandPhotos(mapProductToDetail(data.product)) : null;
 }
 
 /**
@@ -124,7 +127,9 @@ export async function getCollection(
     revalidate: CATALOGUE_REVALIDATE_SECONDS,
   });
 
-  return data.collection ? mapCollection(data.collection) : null;
+  if (!data.collection) return null;
+  const collection = mapCollection(data.collection);
+  return { ...collection, products: withBrandPhotosAll(collection.products) };
 }
 
 export async function getCollections(first = 20): Promise<CollectionModel[]> {
@@ -193,10 +198,8 @@ export async function getPredictiveSearch(
   const results = mapPredictiveSearch(data);
   return {
     ...results,
-    products: excludeDuplicates(
-      results.products,
-      sets.subscriptions,
-      sets.canonical,
+    products: withBrandPhotosAll(
+      excludeDuplicates(results.products, sets.subscriptions, sets.canonical),
     ),
   };
 }
@@ -221,10 +224,8 @@ export async function getSearchResults(
   ]);
 
   const results = mapSearchResults(data);
-  const products = excludeDuplicates(
-    results.products,
-    sets.subscriptions,
-    sets.canonical,
+  const products = withBrandPhotosAll(
+    excludeDuplicates(results.products, sets.subscriptions, sets.canonical),
   );
 
   return {

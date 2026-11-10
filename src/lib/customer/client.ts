@@ -71,7 +71,7 @@ export async function customerRequest<T>({
   if (!accessToken) return null;
 
   const { SHOPIFY_CUSTOMER_ACCOUNT_URL } = getCustomerEnv();
-  const endpoint = `${SHOPIFY_CUSTOMER_ACCOUNT_URL}/account/customer/api/${API_VERSION}/graphql`;
+  const endpoint = `${SHOPIFY_CUSTOMER_ACCOUNT_URL.apiBase}/${API_VERSION}/graphql`;
 
   const response = await fetch(endpoint, {
     method: "POST",

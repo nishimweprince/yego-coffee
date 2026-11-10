@@ -2,7 +2,8 @@ import "server-only";
 
 import { cookies, headers } from "next/headers";
 import { storefrontRequest } from "./client";
-import { mapCart } from "./mappers/cart";
+import { withCartLinePhoto } from "@/lib/catalog/product-photos";
+import { mapCart as mapCartRaw } from "./mappers/cart";
 import {
   CART_CREATE_MUTATION,
   CART_LINES_ADD_MUTATION,
@@ -19,6 +20,12 @@ import type {
   ApiCartQuery,
 } from "./types.api";
 import type { CartModel } from "./types";
+
+/** The mapped cart, each line showing its product's lead photograph (§111). */
+function mapCart(raw: Parameters<typeof mapCartRaw>[0]): CartModel {
+  const cart = mapCartRaw(raw);
+  return { ...cart, lines: cart.lines.map(withCartLinePhoto) };
+}
 
 /**
  * Cart data layer (plan.md §53, §15.3).

@@ -33,6 +33,12 @@ import {
   ORDER_QUERY,
   PROFILE_UPDATE_MUTATION,
   SUBSCRIPTIONS_QUERY,
+  SUBSCRIPTION_QUERY,
+  SUBSCRIPTION_PAUSE_MUTATION,
+  SUBSCRIPTION_ACTIVATE_MUTATION,
+  SUBSCRIPTION_CANCEL_MUTATION,
+  BILLING_CYCLE_SKIP_MUTATION,
+  BILLING_CYCLE_UNSKIP_MUTATION,
 } from "@/lib/customer/queries";
 
 /**
@@ -77,6 +83,12 @@ const documents: Array<[string, string]> = [
   ["CustomerOrder", ORDER_QUERY],
   ["CustomerAddresses", ADDRESSES_QUERY],
   ["CustomerSubscriptions", SUBSCRIPTIONS_QUERY],
+  ["CustomerSubscription", SUBSCRIPTION_QUERY],
+  ["SubscriptionContractPause", SUBSCRIPTION_PAUSE_MUTATION],
+  ["SubscriptionContractActivate", SUBSCRIPTION_ACTIVATE_MUTATION],
+  ["SubscriptionContractCancel", SUBSCRIPTION_CANCEL_MUTATION],
+  ["SubscriptionBillingCycleSkip", BILLING_CYCLE_SKIP_MUTATION],
+  ["SubscriptionBillingCycleUnskip", BILLING_CYCLE_UNSKIP_MUTATION],
   ["CustomerUpdate", PROFILE_UPDATE_MUTATION],
   ["CustomerAddressCreate", ADDRESS_CREATE_MUTATION],
   ["CustomerAddressUpdate", ADDRESS_UPDATE_MUTATION],

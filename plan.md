@@ -7108,3 +7108,74 @@ The owners added a "Subscription type:" paragraph to each subscription product's
   - The Shopify copy says "twice a month", but the plans bill every 2 weeks (§109).
   - Roaster's Choice One Bag costs $22 against a $17 Regular bag, while its description promises "a better price per bag".
   - The 5 lb Bag photograph is HEIC and does not render in its tile.
+
+---
+
+# 111. Product photography and customer self-service (2026-11-10, owner request)
+
+Supersedes §104.6 on subscriptions, and §106.4 / `images.ts` on the bag photographs being editorial only.
+
+## 111.1 Owner decisions
+
+- **The bag labels are the store's coffees.** Ukuri = Medium Roast, Heritage = Dark Roast, Hobe = Gatare Anaerobic Process (`light-roast`), and the large kraft bag = the 5 lb Bag. The owners confirmed this from the studio set in `Docs/Yego`, 104 frames.
+- **The studio photos lead.** They come first on tiles and galleries, and Shopify's photos follow them. Shopify's set was the same three HEIC phone shots on almost every product, so Medium and Dark looked identical.
+- **All subscription controls, with cancel confirmed first.**
+- **Customer Account URL:** `https://shopify.com/55913808064/account`. The owners will add the client id.
+
+## 111.2 Photography
+
+- **Files:** 23 frames in `public/brand/products/`, re-encoded from the originals (2400px long edge, q82, metadata stripped, 8.4 MB in total).
+- **Coffee photos:** `src/content/product-photos.ts` holds the per-coffee sets. Alt text names the product, never the label. The 5 lb Bag is shown in its Medium-labelled kraft bag, since that bag is sold in Medium and Dark.
+- **Lineup photos:** the lineup frames are in `IMAGES` (`bagsThreeRoasts`, `bagsThreeRoastsClose`, `bagsThreeRoastsPlant`, `bagsWhiteAndKraft`).
+- **Where they are applied:** `withBrandPhotos` (`src/lib/catalog/product-photos.ts`) runs once in `storefront.ts`, on products, collections and search, and `withCartLinePhoto` runs in `cart.ts`. Each one does three things:
+  - sets the featured image to the coffee's lead photo
+  - puts the studio set first in the gallery
+  - drops the HEIC duplicates; any non-HEIC Shopify photo still follows the studio set
+- **No price, title or cart payload changes.**
+- **Covered surfaces:** Medium, Dark, Gatare, the 5 lb Bag, and their Regular subscription siblings.
+- **Not covered:** Roaster's Choice and the Drops keep §110's photos, because the roasters choose that coffee.
+- **Editorial uses:**
+  - The default Open Graph image is the three-coffee lineup.
+  - The empty states for account orders and subscriptions use the lineup frames.
+  - The Regular chooser card now shows each coffee's own bag, by way of the plans.
+
+## 111.3 §104.6 was wrong about subscriptions
+
+The Storefront API reports every subscription plan group with `appName: "Seal Subscriptions"`. That makes them native selling plans, and so native subscription contracts. The Customer Account API reads them and can change them. Built:
+
+- **`/account/subscriptions`:** each contract shows its status, cadence, next delivery, a failed-payment notice and the coffee's photo, and links to its own page.
+- **`/account/subscriptions/[id]`:**
+  - The id is checked as a `SubscriptionContract` gid, then read through `customer`, which is token-scoped. A missing or foreign id returns 404.
+  - The page shows lines, shipping, the upcoming deliveries and controls.
+- **Controls** (`SubscriptionControls` with server actions in `app/account/actions.ts`): pause (`subscriptionContractPause`), resume (`subscriptionContractActivate`), skip and restore each upcoming delivery (`subscriptionBillingCycleSkip/Unskip`, selector `{ index }`), and cancel (`subscriptionContractCancel`, inline confirmation).
+  - The controls follow §11.7: no optimistic UI, and success is reported only when Shopify returns the changed record.
+  - The mapper derives which controls appear from the contract's status: ACTIVE → pause, skip, cancel; PAUSED or FAILED → resume, cancel; anything else → none.
+- **What the API cannot change** — the coffee, the frequency, the address — links to Shopify's hosted account, where Seal's own screens are (§11.6).
+- **The overview** now leads with the next delivery that has not been skipped.
+
+## 111.4 Two bugs found before any live request
+
+1. **Wrong base for the API.** `client.ts` built the GraphQL endpoint on the authentication base. The two live on different paths: `/authentication/{id}/oauth/*` for sign-in and `/{id}/account/customer/api/{v}/graphql` for the API. `env.ts` now derives both, plus the hosted account URL, from the shop id, and accepts either URL form. Covered by `env.test.ts`.
+2. **`intervalCount` is a `Count` object** (`{ count }`) in this API, not an Int. The old subscriptions query would have failed validation. The query now selects `count`, and the mapper accepts either shape.
+
+## 111.5 Orders
+
+- The detail page shows cancellation (date and reason, humanised), a Refunded row, returns with Shopify's status, a status line and a help email.
+- The list is cursor-paginated, 20 at a time, with "Older orders".
+- Status wording moved to `src/lib/customer/format.ts`:
+  - no fulfilment shows "Unfulfilled"
+  - a SUCCESS fulfilment shows "Fulfilled"
+  - a cancelled order shows "Cancelled"
+  - everything else is humanised, never renamed
+- **Not built:**
+  - `orderRequestReturn`. It exists, but its payload and the owners' return policy were not checked.
+  - Reorder. The API has no reorder field, and order lines carry no product handle.
+
+## 111.6 First hour with credentials
+
+Every field and mutation follows shopify.dev (API 2026-07/10). None has been executed yet. After §104.7's steps 1–5:
+
+1. In Admin → Headless → Customer Account API, enable subscription contracts read and write. Set `SHOPIFY_CUSTOMER_ACCOUNT_CLIENT_ID`.
+2. `/account/subscriptions`: confirm contracts appear for a known subscriber. If the list is empty, Seal may own contracts this API cannot see. Fall back to the portal link and record it here.
+3. On a test contract: skip → restore → pause → resume → cancel. Check each in Seal's admin.
+4. Confirm that `upcomingBillingCycles` returns future cycles (the skip list depends on it).

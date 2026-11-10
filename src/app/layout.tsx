@@ -56,11 +56,11 @@ export const metadata: Metadata = {
     title: "Yego Coffee",
     description:
       "Family-owned Rwandan coffee, roasted in Somerville, Massachusetts.",
-    images: [IMAGES.bagsLineup.src],
+    images: [IMAGES.bagsThreeRoasts.src],
   },
   twitter: {
     card: "summary_large_image",
-    images: [IMAGES.bagsLineup.src],
+    images: [IMAGES.bagsThreeRoasts.src],
   },
 };
 

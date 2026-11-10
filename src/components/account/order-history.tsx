@@ -7,6 +7,7 @@ import {
   useTable,
 } from "@tanstack/react-table";
 import { formatMoney } from "@/lib/formatting/money";
+import { orderStatusLabel } from "@/lib/customer/format";
 import type { OrderSummary } from "@/lib/customer/types";
 
 /**
@@ -36,18 +37,6 @@ function formatDate(value: string): string {
         month: "short",
         day: "numeric",
       });
-}
-
-/**
- * Shopify's statuses are SCREAMING_SNAKE enums. They are shown to
- * customers, so they are humanised — but never renamed: "PARTIALLY_
- * FULFILLED" becomes "Partially fulfilled", not "On its way", which
- * would be an invented promise about where a parcel is.
- */
-function humanise(status: string | null): string {
-  if (!status) return "Unknown";
-  const lower = status.replace(/_/g, " ").toLowerCase();
-  return lower.charAt(0).toUpperCase() + lower.slice(1);
 }
 
 const columns = helper.columns([
@@ -111,7 +100,7 @@ export function OrderHistory({ orders }: { orders: OrderSummary[] }) {
                   {formatDate(order.processedAt)}
                 </td>
                 <td className="py-stack-md text-body-m">
-                  {humanise(order.fulfillmentStatus)}
+                  {orderStatusLabel(order)}
                 </td>
                 <td className="py-stack-md text-body-m tabular-nums">
                   {order.itemCount}
@@ -150,7 +139,7 @@ export function OrderHistory({ orders }: { orders: OrderSummary[] }) {
               </div>
               <p className="mt-stack-xs text-body-s text-muted-foreground">
                 {formatDate(order.processedAt)} ·{" "}
-                {humanise(order.fulfillmentStatus)} · {order.itemCount}{" "}
+                {orderStatusLabel(order)} · {order.itemCount}{" "}
                 {order.itemCount === 1 ? "item" : "items"}
               </p>
             </Link>

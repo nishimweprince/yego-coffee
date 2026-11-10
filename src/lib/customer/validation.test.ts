@@ -1,5 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { AddressSchema, ProfileSchema, ShopifyIdSchema } from "./validation";
+import {
+  AddressSchema,
+  BillingCycleSchema,
+  ProfileSchema,
+  ShopifyIdSchema,
+  SubscriptionContractIdSchema,
+} from "./validation";
 
 const valid = {
   address1: "1212 Broadway",
@@ -75,5 +81,30 @@ describe("ShopifyIdSchema", () => {
 
   it("rejects a URL wearing a gid's clothes", () => {
     expect(ShopifyIdSchema.safeParse("https://evil.example/gid").success).toBe(false);
+  });
+});
+
+describe("subscription ids (§111)", () => {
+  it("accepts a contract gid", () => {
+    expect(
+      SubscriptionContractIdSchema.safeParse("gid://shopify/SubscriptionContract/123").success,
+    ).toBe(true);
+  });
+
+  it.each([
+    "gid://shopify/CustomerAddress/123",
+    "gid://shopify/SubscriptionContract/abc",
+    "123",
+    "",
+  ])("refuses %s", (value) => {
+    expect(SubscriptionContractIdSchema.safeParse(value).success).toBe(false);
+  });
+
+  it("requires a whole, non-negative cycle index", () => {
+    const contractId = "gid://shopify/SubscriptionContract/1";
+    expect(BillingCycleSchema.safeParse({ contractId, cycleIndex: 4 }).success).toBe(true);
+    expect(BillingCycleSchema.safeParse({ contractId, cycleIndex: -1 }).success).toBe(false);
+    expect(BillingCycleSchema.safeParse({ contractId, cycleIndex: 1.5 }).success).toBe(false);
+    expect(BillingCycleSchema.safeParse({ contractId, cycleIndex: "4" }).success).toBe(false);
   });
 });

@@ -190,3 +190,82 @@ describe("mapSubscription", () => {
     expect(mapSubscription({ id: "s5" }).status).toBe("UNKNOWN");
   });
 });
+
+describe("mapSubscription — management (§111)", () => {
+  it("reads intervalCount as the API's Count object", () => {
+    const contract = mapSubscription({
+      id: "s6",
+      status: "ACTIVE",
+      deliveryPolicy: { interval: "MONTH", intervalCount: { count: 1 } },
+    });
+    expect(contract.cadence).not.toBeNull();
+  });
+
+  it("keeps only deliveries still ahead, with their skipped flag", () => {
+    const contract = mapSubscription({
+      id: "s7",
+      status: "ACTIVE",
+      upcomingBillingCycles: {
+        nodes: [
+          { cycleIndex: 3, billingAttemptExpectedDate: "2026-11-01T00:00:00Z", skipped: false, status: "BILLED" },
+          { cycleIndex: 4, billingAttemptExpectedDate: "2026-12-01T00:00:00Z", skipped: true, status: "UNBILLED" },
+          { cycleIndex: 5, billingAttemptExpectedDate: "2027-01-01T00:00:00Z", skipped: false, status: "UNBILLED" },
+          { cycleIndex: 6, status: "UNBILLED" },
+        ],
+      },
+    });
+    expect(contract.upcoming).toEqual([
+      { cycleIndex: 4, date: "2026-12-01T00:00:00Z", skipped: true },
+      { cycleIndex: 5, date: "2027-01-01T00:00:00Z", skipped: false },
+    ]);
+  });
+
+  it.each([
+    ["ACTIVE", { pause: true, resume: false, cancel: true, skip: true }],
+    ["PAUSED", { pause: false, resume: true, cancel: true, skip: false }],
+    ["FAILED", { pause: false, resume: true, cancel: true, skip: false }],
+    ["CANCELLED", { pause: false, resume: false, cancel: false, skip: false }],
+    ["EXPIRED", { pause: false, resume: false, cancel: false, skip: false }],
+    ["SOMETHING_NEW", { pause: false, resume: false, cancel: false, skip: false }],
+  ])("%s offers only what Shopify accepts", (status, can) => {
+    expect(mapSubscription({ id: "s8", status }).can).toEqual(can);
+  });
+
+  it("flags a failed last payment", () => {
+    expect(mapSubscription({ id: "s9", lastPaymentStatus: "FAILED" }).lastPaymentFailed).toBe(true);
+    expect(mapSubscription({ id: "s9", lastPaymentStatus: "SUCCEEDED" }).lastPaymentFailed).toBe(false);
+  });
+
+  it("maps a line's image", () => {
+    const contract = mapSubscription({
+      id: "s10",
+      lines: { nodes: [{ id: "l", name: "Dark Roast", image: { url: "https://cdn.shopify.com/x.jpg", altText: null } }] },
+    });
+    expect(contract.lines[0].image?.url).toBe("https://cdn.shopify.com/x.jpg");
+  });
+});
+
+describe("mapOrderDetail — cancellation and refunds (§111)", () => {
+  it("reads cancellation, refunds and returns", () => {
+    const order = mapOrderDetail({
+      id: "o1",
+      cancelledAt: "2026-11-02T00:00:00Z",
+      cancelReason: "CUSTOMER",
+      totalRefunded: { amount: "17.00", currencyCode: "USD" },
+      returns: { nodes: [{ name: "#1001-R1", status: "OPEN" }] },
+    })!;
+    expect(order.cancelledAt).toBe("2026-11-02T00:00:00Z");
+    expect(order.cancelReason).toBe("CUSTOMER");
+    expect(order.refunded).toEqual({ amount: "17.00", currencyCode: "USD" });
+    expect(order.returns).toEqual([{ name: "#1001-R1", status: "OPEN" }]);
+  });
+
+  it("shows no refund row for a zero refund", () => {
+    const order = mapOrderDetail({
+      id: "o2",
+      totalRefunded: { amount: "0.0", currencyCode: "USD" },
+    })!;
+    expect(order.refunded).toBeNull();
+    expect(order.returns).toEqual([]);
+  });
+});

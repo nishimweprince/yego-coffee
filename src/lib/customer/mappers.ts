@@ -5,6 +5,7 @@ import type {
   OrderDetail,
   OrderSummary,
   SubscriptionContract,
+  SubscriptionStatus,
 } from "./types";
 
 /**
@@ -33,6 +34,19 @@ function money(value: unknown): { amount: string; currencyCode: string } | null 
 }
 
 const ZERO = { amount: "0.00", currencyCode: "USD" };
+
+/** A refund of 0.00 is no refund; showing the row would worry someone. */
+function positive(value: ReturnType<typeof money>): ReturnType<typeof money> {
+  return value && Number.parseFloat(value.amount) > 0 ? value : null;
+}
+
+function image(value: unknown) {
+  const i = value as Unknown | null | undefined;
+  const url = str(i?.url);
+  return url
+    ? { url, altText: str(i?.altText), width: null, height: null }
+    : null;
+}
 
 export function mapProfile(raw: unknown): CustomerProfile | null {
   if (!raw || typeof raw !== "object") return null;
@@ -70,6 +84,7 @@ export function mapOrderSummary(raw: unknown): OrderSummary {
     financialStatus: str(o.financialStatus),
     fulfillmentStatus: fulfillmentStatus(o.fulfillments),
     total: money(o.totalPrice) ?? ZERO,
+    cancelledAt: str(o.cancelledAt),
     itemCount: lineNodes.reduce(
       (n, l) => n + (typeof l.quantity === "number" ? l.quantity : 0),
       0,
@@ -91,6 +106,12 @@ export function mapOrderDetail(raw: unknown): OrderDetail | null {
     financialStatus: str(o.financialStatus),
     fulfillmentStatus: str(fulfillmentNodes[0]?.status),
     statusPageUrl: str(o.statusPageUrl),
+    cancelledAt: str(o.cancelledAt),
+    cancelReason: str(o.cancelReason),
+    refunded: positive(money(o.totalRefunded)),
+    returns: (((o.returns as Unknown)?.nodes ?? []) as Unknown[])
+      .map((r) => ({ name: str(r.name) ?? "", status: str(r.status) ?? "" }))
+      .filter((r) => r.status !== ""),
     total: money(o.totalPrice) ?? ZERO,
     subtotal: money(o.subtotal),
     shipping: money(o.totalShipping),
@@ -110,14 +131,7 @@ export function mapOrderDetail(raw: unknown): OrderDetail | null {
       title: str(l.title) ?? "",
       variantTitle: str(l.variantTitle),
       quantity: typeof l.quantity === "number" ? l.quantity : 1,
-      image: l.image
-        ? {
-            url: str((l.image as Unknown).url) ?? "",
-            altText: str((l.image as Unknown).altText),
-            width: null,
-            height: null,
-          }
-        : null,
+      image: image(l.image),
       unitPrice: money(l.price),
       lineTotal: money(l.totalPrice),
     })),
@@ -145,6 +159,33 @@ export function mapAddress(raw: unknown, defaultId: string | null): CustomerAddr
   };
 }
 
+const STATUSES: ReadonlySet<SubscriptionStatus> = new Set([
+  "ACTIVE",
+  "PAUSED",
+  "FAILED",
+  "CANCELLED",
+  "EXPIRED",
+  "STALE",
+]);
+
+function status(value: unknown): SubscriptionStatus {
+  const s = str(value)?.toUpperCase();
+  return s && STATUSES.has(s as SubscriptionStatus)
+    ? (s as SubscriptionStatus)
+    : "UNKNOWN";
+}
+
+/**
+ * `intervalCount` is a `Count` object ({ count }) in this API. A bare
+ * number is accepted too, so a schema that differs from the docs still
+ * reads.
+ */
+function intervalCountOf(value: unknown): number | null {
+  if (typeof value === "number") return value;
+  const count = (value as Unknown | null | undefined)?.count;
+  return typeof count === "number" ? count : null;
+}
+
 export function mapSubscription(raw: unknown): SubscriptionContract {
   const s = (raw ?? {}) as Unknown;
   const policy = (s.deliveryPolicy ?? {}) as Unknown;
@@ -155,12 +196,21 @@ export function mapSubscription(raw: unknown): SubscriptionContract {
     | "MONTH"
     | "YEAR"
     | null;
-  const intervalCount =
-    typeof policy.intervalCount === "number" ? policy.intervalCount : null;
+  const intervalCount = intervalCountOf(policy.intervalCount);
+  const contractStatus = status(s.status);
+
+  const upcoming = (((s.upcomingBillingCycles as Unknown)?.nodes ?? []) as Unknown[])
+    .filter((c) => str(c.status) !== "BILLED")
+    .flatMap((c) => {
+      const date = str(c.billingAttemptExpectedDate);
+      return typeof c.cycleIndex === "number" && date
+        ? [{ cycleIndex: c.cycleIndex, date, skipped: c.skipped === true }]
+        : [];
+    });
 
   return {
     id: str(s.id) ?? "",
-    status: str(s.status) ?? "UNKNOWN",
+    status: contractStatus,
     createdAt: str(s.createdAt) ?? "",
     nextBillingDate: str(s.nextBillingDate),
     // The same rule as everywhere else: cadence comes from the policy
@@ -168,10 +218,25 @@ export function mapSubscription(raw: unknown): SubscriptionContract {
     cadence: formatCadence(interval, intervalCount),
     lines: (((s.lines as Unknown)?.nodes ?? []) as Unknown[]).map((l) => ({
       id: str(l.id) ?? "",
-      name: str(l.name) ?? "",
+      name: str(l.name) ?? str(l.title) ?? "",
       variantTitle: str(l.variantTitle),
       quantity: typeof l.quantity === "number" ? l.quantity : 1,
       price: money(l.currentPrice),
+      image: image(l.image),
     })),
+    deliveryPrice: money(s.deliveryPrice),
+    lastPaymentFailed: str(s.lastPaymentStatus) === "FAILED",
+    upcoming,
+    // Shopify's activate accepts active, paused or failed contracts;
+    // pause and skip only make sense on one that is running.
+    can: {
+      pause: contractStatus === "ACTIVE",
+      resume: contractStatus === "PAUSED" || contractStatus === "FAILED",
+      cancel:
+        contractStatus === "ACTIVE" ||
+        contractStatus === "PAUSED" ||
+        contractStatus === "FAILED",
+      skip: contractStatus === "ACTIVE",
+    },
   };
 }

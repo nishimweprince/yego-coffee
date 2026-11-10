@@ -36,7 +36,7 @@ export function authorizationUrl({
   const { SHOPIFY_CUSTOMER_ACCOUNT_CLIENT_ID, SHOPIFY_CUSTOMER_ACCOUNT_URL } =
     getCustomerEnv();
 
-  const url = new URL(`${SHOPIFY_CUSTOMER_ACCOUNT_URL}/oauth/authorize`);
+  const url = new URL(`${SHOPIFY_CUSTOMER_ACCOUNT_URL.authBase}/oauth/authorize`);
   url.searchParams.set("client_id", SHOPIFY_CUSTOMER_ACCOUNT_CLIENT_ID);
   url.searchParams.set("response_type", "code");
   url.searchParams.set("redirect_uri", callbackUrl());
@@ -70,7 +70,7 @@ type TokenResponse = {
 async function requestTokens(body: URLSearchParams): Promise<CustomerTokens> {
   const { SHOPIFY_CUSTOMER_ACCOUNT_URL } = getCustomerEnv();
 
-  const response = await fetch(`${SHOPIFY_CUSTOMER_ACCOUNT_URL}/oauth/token`, {
+  const response = await fetch(`${SHOPIFY_CUSTOMER_ACCOUNT_URL.authBase}/oauth/token`, {
     method: "POST",
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
     body,
@@ -148,7 +148,7 @@ export async function refreshTokens(
  */
 export function logoutUrl(idToken: string | null): string {
   const { SHOPIFY_CUSTOMER_ACCOUNT_URL } = getCustomerEnv();
-  const url = new URL(`${SHOPIFY_CUSTOMER_ACCOUNT_URL}/logout`);
+  const url = new URL(`${SHOPIFY_CUSTOMER_ACCOUNT_URL.authBase}/logout`);
   if (idToken) url.searchParams.set("id_token_hint", idToken);
   url.searchParams.set(
     "post_logout_redirect_uri",

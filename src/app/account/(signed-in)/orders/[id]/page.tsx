@@ -4,7 +4,9 @@ import Image from "next/image";
 import { AccountNotConfigured } from "@/components/account/not-configured";
 import { Contour } from "@/components/ui/contour";
 import { formatMoney } from "@/lib/formatting/money";
+import { photoForLine } from "@/lib/catalog/product-photos";
 import { getOrder } from "@/lib/customer/account";
+import { formatLongDate, humanise, orderStatusLabel } from "@/lib/customer/format";
 import { hasCustomerAccountCredentials } from "@/lib/customer/env";
 import { requireCustomerSession } from "@/lib/customer/guard";
 
@@ -40,24 +42,38 @@ export default async function OrderPage({
 
       <h1 className="mt-stack-sm text-h1">{order.name}</h1>
       <p className="mt-stack-sm text-body-m text-muted-foreground">
-        {order.processedAt
-          ? new Date(order.processedAt).toLocaleDateString("en-US", {
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-            })
-          : null}
+        {[formatLongDate(order.processedAt), orderStatusLabel(order)]
+          .filter(Boolean)
+          .join(" · ")}
       </p>
+
+      {order.cancelledAt ? (
+        <div className="mt-stack-lg max-w-prose rounded-tile border border-border p-stack-md text-body-m">
+          This order was cancelled
+          {formatLongDate(order.cancelledAt)
+            ? ` on ${formatLongDate(order.cancelledAt)}`
+            : ""}
+          {order.cancelReason
+            ? ` (${humanise(order.cancelReason).toLowerCase()})`
+            : ""}
+          .
+          {order.refunded
+            ? ` ${formatMoney(order.refunded)} has been refunded.`
+            : ""}
+        </div>
+      ) : null}
 
       <Contour label="Items" className="mt-section-sm" />
       <ul className="mt-stack-lg divide-y divide-border border-b border-border">
-        {order.lines.map((line, index) => (
+        {order.lines.map((line, index) => {
+          const photo = photoForLine(line.title, line.image);
+          return (
           <li key={`${line.title}-${index}`} className="flex gap-stack-md py-stack-md">
-            <span className="relative block h-16 w-16 shrink-0 overflow-hidden bg-surface-elevated">
-              {line.image ? (
+            <span className="relative block h-20 w-16 shrink-0 overflow-hidden rounded-tile bg-surface-elevated">
+              {photo ? (
                 <Image
-                  src={line.image.url}
-                  alt={line.image.altText ?? ""}
+                  src={photo.url}
+                  alt=""
                   fill
                   sizes="64px"
                   className="object-cover"
@@ -81,7 +97,8 @@ export default async function OrderPage({
               </p>
             ) : null}
           </li>
-        ))}
+          );
+        })}
       </ul>
 
       <div className="mt-section-sm grid gap-section-sm sm:grid-cols-2">
@@ -110,7 +127,27 @@ export default async function OrderPage({
               <dt>Total</dt>
               <dd className="tabular-nums">{formatMoney(order.total)}</dd>
             </div>
+            {order.refunded ? (
+              <div className="flex justify-between">
+                <dt className="text-muted-foreground">Refunded</dt>
+                <dd className="tabular-nums">−{formatMoney(order.refunded)}</dd>
+              </div>
+            ) : null}
           </dl>
+
+          {order.returns.length > 0 ? (
+            <div className="mt-stack-lg">
+              <h2 className="text-body-m font-medium">Returns</h2>
+              <ul className="mt-stack-xs space-y-0.5 text-body-s text-muted-foreground">
+                {order.returns.map((r, i) => (
+                  <li key={`${r.name}-${i}`}>
+                    {r.name ? `${r.name}: ` : ""}
+                    {humanise(r.status)}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : null}
         </section>
 
         <section>
@@ -164,6 +201,17 @@ export default async function OrderPage({
           ) : null}
         </section>
       </div>
+
+      <p className="mt-section-sm max-w-prose text-body-s text-muted-foreground">
+        Something wrong with this order?{" "}
+        <a
+          href={`mailto:francois@yegocoffee.com?subject=${encodeURIComponent(`Order ${order.name}`)}`}
+          className="text-accent underline-offset-4 hover:underline"
+        >
+          Email the roasters
+        </a>{" "}
+        and include the order number.
+      </p>
     </div>
   );
 }
