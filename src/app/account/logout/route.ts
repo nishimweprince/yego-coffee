@@ -16,16 +16,27 @@ import { clearSession, readTokens } from "@/lib/customer/session";
  *
  * POST only: a GET logout can be triggered by any image tag on any
  * page (§39, CSRF).
+ *
+ * The redirects are **303 See Other**, never NextResponse's default
+ * 307. A 307 tells the browser to repeat the *same POST* at the new
+ * address, so signing out POSTed to Shopify's logout endpoint (which
+ * expects a GET navigation) or to `/` (405). 303 turns the follow-up
+ * into a GET, which is what a form post that ends in a redirect needs.
  */
+const SEE_OTHER = 303;
+
 export async function POST() {
   const tokens = await readTokens();
   await clearSession();
 
   if (!hasCustomerAccountCredentials() || !tokens?.idToken) {
-    return NextResponse.redirect(new URL("/", env.NEXT_PUBLIC_SITE_URL));
+    return NextResponse.redirect(
+      new URL("/", env.NEXT_PUBLIC_SITE_URL),
+      SEE_OTHER,
+    );
   }
 
-  return NextResponse.redirect(logoutUrl(tokens.idToken));
+  return NextResponse.redirect(logoutUrl(tokens.idToken), SEE_OTHER);
 }
 
 /** A GET lands somewhere sensible rather than 405-ing a real person. */

@@ -20,6 +20,11 @@ import type { CustomerTokens } from "./session";
 
 const SCOPES = "openid email customer-account-api:full";
 
+/** The site's root URL with exactly one trailing slash. */
+export function siteRoot(): string {
+  return `${env.NEXT_PUBLIC_SITE_URL.replace(/\/+$/, "")}/`;
+}
+
 export function callbackUrl(): string {
   return `${env.NEXT_PUBLIC_SITE_URL.replace(/\/$/, "")}/account/callback`;
 }
@@ -150,9 +155,9 @@ export function logoutUrl(idToken: string | null): string {
   const { SHOPIFY_CUSTOMER_ACCOUNT_URL } = getCustomerEnv();
   const url = new URL(`${SHOPIFY_CUSTOMER_ACCOUNT_URL.authBase}/logout`);
   if (idToken) url.searchParams.set("id_token_hint", idToken);
-  url.searchParams.set(
-    "post_logout_redirect_uri",
-    env.NEXT_PUBLIC_SITE_URL.replace(/\/$/, ""),
-  );
+  // Shopify matches this against the Logout URI registered in the
+  // Headless channel *exactly*. The site root is registered with its
+  // trailing slash (https://example.com/), so it is sent with one.
+  url.searchParams.set("post_logout_redirect_uri", siteRoot());
   return url.toString();
 }
