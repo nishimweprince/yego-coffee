@@ -2,7 +2,6 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import { AccountNotConfigured } from "@/components/account/not-configured";
-import { Contour } from "@/components/ui/contour";
 import { formatMoney } from "@/lib/formatting/money";
 import { photoForLine } from "@/lib/catalog/product-photos";
 import { getOrder } from "@/lib/customer/account";
@@ -63,7 +62,7 @@ export default async function OrderPage({
         </div>
       ) : null}
 
-      <Contour label="Items" className="mt-section-sm" />
+      <p className="label text-muted-foreground mt-section-sm">Items</p>
       <ul className="mt-stack-lg divide-y divide-border border-b border-border">
         {order.lines.map((line, index) => {
           const photo = photoForLine(line.title, line.image);
@@ -103,7 +102,7 @@ export default async function OrderPage({
 
       <div className="mt-section-sm grid gap-section-sm sm:grid-cols-2">
         <section>
-          <Contour label="Total" />
+          <p className="label text-muted-foreground">Total</p>
           <dl className="mt-stack-lg space-y-stack-xs text-body-m">
             {order.subtotal ? (
               <div className="flex justify-between">
@@ -151,7 +150,7 @@ export default async function OrderPage({
         </section>
 
         <section>
-          <Contour label="Delivery" />
+          <p className="label text-muted-foreground">Delivery</p>
           {order.shippingAddress ? (
             <address className="mt-stack-lg text-body-m not-italic text-muted-foreground">
               {order.shippingAddress.map((line) => (

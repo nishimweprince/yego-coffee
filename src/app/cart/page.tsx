@@ -4,7 +4,6 @@ import { CartLine } from "@/components/commerce/cart-line";
 import { ProductGrid } from "@/components/commerce/product-grid";
 import { StoreUnavailable } from "@/components/commerce/store-unavailable";
 import { buttonVariants } from "@/components/ui/button";
-import { Contour } from "@/components/ui/contour";
 import { YegoLine } from "@/components/ui/yego-line";
 import { COLLECTION_HANDLES } from "@/lib/catalog/collections";
 import { getReassurances } from "@/lib/content/reassurance";
@@ -67,7 +66,7 @@ export default async function CartPage() {
         {lineup.length > 0 ? (
           <section aria-label="The lineup" className="px-page-x pb-section-md">
             <div className="mx-auto max-w-page">
-              <Contour label="The lineup" />
+              <p className="label text-muted-foreground">The lineup</p>
               <ProductGrid
                 products={lineup}
                 priorityCount={2}
@@ -84,10 +83,7 @@ export default async function CartPage() {
     <main className="px-page-x py-section-md">
       <div className="mx-auto max-w-page">
         <h1 className="text-display-l">Cart</h1>
-        <Contour
-          label={`${cart.totalQuantity} ${cart.totalQuantity === 1 ? "item" : "items"}`}
-          className="mt-section-sm"
-        />
+        <p className="label text-muted-foreground mt-section-sm">{`${cart.totalQuantity} ${cart.totalQuantity === 1 ? "item" : "items"}`}</p>
 
         <ul className="divide-y divide-border">
           {cart.lines.map((line) => (

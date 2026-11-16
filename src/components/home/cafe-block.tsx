@@ -1,7 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
-import { Contour } from "@/components/ui/contour";
 import { CAFE } from "@/content/cafe";
 import { HOME } from "@/content/home";
 import { IMAGES } from "@/content/images";
@@ -10,8 +9,7 @@ import { IMAGES } from "@/content/images";
  * The café, as the mirror of the about row (§108).
  *
  * This section's job is to put a real street address in front of
- * someone who might walk there, and the contour rule carries that
- * place name — the one time it appears on the page.
+ * someone who might walk there.
  *
  * Address and directions only. Hours and a menu appear on /cafe once
  * the owners confirm them (§91, src/content/cafe.ts); an outward-facing
@@ -21,9 +19,7 @@ export function CafeBlock() {
   return (
     <section aria-labelledby="cafe-heading" className="px-page-x py-section-sm">
       <div className="mx-auto max-w-page">
-        <Contour label={`${CAFE.locality}, ${CAFE.region}`} />
-
-        <div className="mt-section-sm grid items-center gap-stack-lg md:grid-cols-2 md:gap-12 lg:gap-16">
+        <div className="grid items-center gap-stack-lg md:grid-cols-2 md:gap-12 lg:gap-16">
           <div data-reveal className="md:order-1">
             <h2 id="cafe-heading" className="max-w-[16ch] text-h2">
               {HOME.cafe.heading}

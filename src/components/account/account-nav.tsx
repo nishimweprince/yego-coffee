@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Contour } from "@/components/ui/contour";
 import { cn } from "@/lib/utils";
 
 /**
@@ -65,7 +64,6 @@ export function AccountNav() {
           </button>
         </form>
       </div>
-      <Contour className="mt-stack-md" />
     </nav>
   );
 }

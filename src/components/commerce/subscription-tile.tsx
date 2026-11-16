@@ -90,7 +90,7 @@ export function SubscriptionTile({
               src={photo.src}
               alt={photo.alt}
               fill
-              sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
+              sizes="(min-width: 1024px) 25vw, 50vw"
               className="object-cover transition-transform duration-350 ease-out group-hover:scale-[1.2] group-focus-within:scale-[1.2]"
             />
           </div>
@@ -110,7 +110,7 @@ export function SubscriptionTile({
             image={plan.image}
             title={plan.title}
             zoomOnHover
-            sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
+            sizes="(min-width: 1024px) 25vw, 50vw"
             className="aspect-[316/373] rounded-tile bg-surface-elevated"
           />
         )}
@@ -124,7 +124,7 @@ export function SubscriptionTile({
         <PriceRange
           min={plan.minPrice}
           max={plan.maxPrice}
-          className="mt-2 text-price-s font-bold text-muted-foreground"
+          className="mt-2 text-price-s font-bold text-foreground"
         />
 
         {plan.perBag ? (
@@ -158,7 +158,7 @@ export function SubscriptionGrid({
 
   return (
     <div className={className}>
-      <div className="grid grid-cols-1 gap-x-4 gap-y-8 sm:grid-cols-2 sm:gap-x-8 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-x-4 gap-y-8 sm:gap-x-8 lg:grid-cols-4">
         {plans.map((plan, i) => (
           <SubscriptionTile
             key={plan.handle}

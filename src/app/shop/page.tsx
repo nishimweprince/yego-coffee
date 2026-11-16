@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { cn } from "@/lib/utils";
 import { ProductGrid } from "@/components/commerce/product-grid";
 import { RoastFilter } from "@/components/commerce/roast-filter";
 import { StoreUnavailable } from "@/components/commerce/store-unavailable";
@@ -55,6 +56,9 @@ export default async function ShopPage({
   const roasts = availableRoasts(coffees);
 
   const filtered = selected.length > 0;
+  // "Coffee" only earns a heading when a merch shelf follows it; with
+  // coffee alone it repeated the page title over the same four bags.
+  const hasMerch = Boolean(merch && merch.products.length > 0);
 
   return (
     <main>
@@ -65,8 +69,13 @@ export default async function ShopPage({
             lede="Grown in Rwanda. Roasted in Somerville."
           />
 
-          <div className="mt-section-md flex flex-wrap items-end justify-between gap-stack-md">
-            <h2 data-reveal className="text-h3">Coffee</h2>
+          <div
+            className={cn(
+              "flex flex-wrap items-end gap-stack-md",
+              hasMerch ? "mt-section-md justify-between" : "mt-stack-lg justify-center",
+            )}
+          >
+            {hasMerch ? <h2 data-reveal className="text-h3">Coffee</h2> : null}
             <div className="flex flex-wrap items-center gap-stack-md">
               <RoastFilter options={roasts} selected={selected} />
               {/* A count that never changes is noise. It appears when a
@@ -91,7 +100,7 @@ export default async function ShopPage({
               </Link>
             </div>
           ) : (
-            <div className="mt-15">
+            <div className={hasMerch ? "mt-15" : "mt-stack-lg"}>
               <ProductGrid products={visible} priorityCount={4} />
             </div>
           )}
@@ -102,7 +111,7 @@ export default async function ShopPage({
             <h2 id="merch-heading" data-reveal className="text-h3">
               Merch
             </h2>
-            <div className="mt-15">
+            <div className={hasMerch ? "mt-15" : "mt-stack-lg"}>
               <ProductGrid products={merch.products} priorityCount={0} />
             </div>
         </Section>

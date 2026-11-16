@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { Contour } from "@/components/ui/contour";
 import { env, hasShopifyCredentials } from "@/lib/env";
 import { articleJsonLd } from "@/lib/seo/structured-data";
 import { getArticle } from "@/lib/shopify/storefront";
@@ -86,7 +85,6 @@ export default async function ArticlePage({
           </div>
         ) : null}
 
-        <Contour className="mt-section-sm" />
 
         {/* Authored by the owners in the Shopify admin (§39). */}
         <div

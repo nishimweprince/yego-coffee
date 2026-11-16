@@ -12,11 +12,11 @@ describe("design refresh — homepage structure", () => {
   it("adds HOME.about with the live store's About copy and a story CTA", () => {
     // Verbatim from yegocoffee.com/pages/about-us — never rewritten.
     expect(HOME.about.heading).toBe("About Yego Coffee");
-    expect(HOME.about.paragraphs).toEqual(ABOUT.paragraphs);
+    expect(HOME.about.paragraphs).toEqual([ABOUT.paragraphs[0]]);
     expect(HOME.about.paragraphs[0]).toMatch(/^Yego Coffee is a family owned company based in Somerville/);
     expect(HOME.about.paragraphs[0]).toContain("genocide against the Tutsi");
-    expect(HOME.about.paragraphs[1]).toMatch(/^Coffee business has been part of Tuyishime's family for over four decades\./);
-    expect(HOME.about.cta.label).toBe("Read our story");
+    expect(ABOUT.paragraphs[1]).toMatch(/^Coffee business has been part of Tuyishime's family for over four decades\./);
+    expect(HOME.about.cta.label).toBe("More about us");
     expect(HOME.about.cta.href).toBe("/about");
   });
 
@@ -25,7 +25,7 @@ describe("design refresh — homepage structure", () => {
     expect(PRIMARY_NAV.map((link) => link.label)).toEqual([
       "Shop",
       "Subscriptions",
-      "Our story",
+      "About Us",
       "Café",
     ]);
     expect(PRIMARY_NAV.map((link) => link.href)).toEqual([
@@ -128,9 +128,8 @@ describe("design refresh — the quiet page", () => {
     const count = (needle: string) =>
       files.reduce((n, source) => n + (source.match(needle) ? 1 : 0), 0);
     expect(count("<YegoLine")).toBe(2);
-    // The contour is allowed twice per page; the home page now uses it
-    // once, on the café's place name (§107).
-    expect(count("<Contour")).toBe(1);
+    // The contour rule is retired (2026-11-16).
+    expect(count("<Contour")).toBe(0);
   });
 
   it("drops the decorative eyebrow from every home section", () => {

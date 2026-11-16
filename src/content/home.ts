@@ -55,7 +55,7 @@ export const HOME = {
         image: IMAGES.heroRoasterInspecting,
         headline: "Family-owned, four decades in coffee.",
         body: "Fatuma and Francois Tuyishime roast every bag at their Somerville roastery and café.",
-        cta: { label: "Read our story", href: "/about" },
+        cta: { label: "More about us", href: "/about" },
       },
       {
         image: IMAGES.heroSacks,
@@ -66,30 +66,22 @@ export const HOME = {
     ] satisfies HeroSlide[],
   },
 
-  /** The live store's About copy, verbatim (see content/about.ts). */
+  /** The live store's About copy, verbatim (see content/about.ts).
+   * The homepage carries the first paragraph only; the second is on
+   * /about, one click away. Whole paragraphs, never trimmed words. */
   about: {
     heading: ABOUT.heading,
-    paragraphs: ABOUT.paragraphs,
-    cta: { label: "Read our story", href: "/about" },
+    paragraphs: [ABOUT.paragraphs[0]],
+    cta: { label: "More about us", href: "/about" },
   },
 
-  /** The centred line under the hero (§108), as a shop opens its
-   * catalogue with one sentence and one button. */
+  /** The line under the hero: what the shop sells, in plain words,
+   * and the way in. Facts only — Rwandan coffee, the Somerville
+   * roastery, whole bean or ground, shipping within the United States. */
   statement: {
-    headline: "Yego means yes.",
-    lede: "A family's answer to rebuilding after loss. Now, a promise in every bag.",
+    headline: "Rwandan coffee, roasted in Somerville.",
+    lede: "Whole bean or ground, shipped fresh across the United States.",
     cta: { label: "Shop coffee", href: "/shop" },
-    body: [
-      "A word of affirmation.",
-      "A family's answer to rebuilding after loss.",
-      "Now, a promise in every bag.",
-    ],
-    principles: [
-      "Grown with purpose, in Rwanda",
-      "Roasted with care, in Somerville",
-      "Family-owned, four decades in coffee",
-      "Community before commodity",
-    ],
   },
 
   lineup: {

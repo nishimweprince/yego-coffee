@@ -2,13 +2,12 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
-import { Contour } from "@/components/ui/contour";
 import { BRAND } from "@/content/brand";
 import { ABOUT } from "@/content/about";
 import { IMAGES } from "@/content/images";
 
 export const metadata: Metadata = {
-  title: "Our story",
+  title: "About Us",
   description:
     "Yego Coffee is family-owned: Rwandan farms, a Somerville roastery, and four decades in coffee.",
 };
@@ -87,7 +86,7 @@ export default function AboutPage() {
 
       <section className="px-page-x py-section-sm">
         <div className="mx-auto max-w-page">
-          <Contour label="The facts" />
+          <p className="label text-muted-foreground">The facts</p>
           <dl className="mt-stack-lg grid gap-x-8 gap-y-stack-lg sm:grid-cols-2">
             <div>
               <dt className="label text-muted-foreground">Owners</dt>

@@ -4,7 +4,6 @@ import { notFound } from "next/navigation";
 import { AccountNotConfigured } from "@/components/account/not-configured";
 import { SubscriptionControls } from "@/components/account/subscription-controls";
 import { SubscriptionStatusLabel } from "@/components/account/subscription-status";
-import { Contour } from "@/components/ui/contour";
 import { photoForLine } from "@/lib/catalog/product-photos";
 import { formatMoney } from "@/lib/formatting/money";
 import { getSubscription } from "@/lib/customer/account";
@@ -119,7 +118,7 @@ export default async function SubscriptionPage({
             ) : null}
           </dl>
 
-          <Contour label="In each delivery" className="mt-section-sm" />
+          <p className="label text-muted-foreground mt-section-sm">In each delivery</p>
           <ul className="mt-stack-lg divide-y divide-border border-b border-border">
             {contract.lines.map((line) => (
               <li key={line.id} className="flex justify-between gap-stack-md py-stack-sm">

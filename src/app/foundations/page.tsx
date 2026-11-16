@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Button } from "@/components/ui/button";
-import { Contour } from "@/components/ui/contour";
 import { hasShopifyCredentials } from "@/lib/env";
 
 export const metadata: Metadata = {
@@ -56,7 +55,7 @@ export default function FoundationsPage() {
       </header>
 
       <section className="mx-auto mt-section-md max-w-page">
-        <Contour label="Colour" />
+        <p className="label text-muted-foreground">Colour</p>
         <div className="mt-stack-lg grid grid-cols-2 gap-px bg-border sm:grid-cols-3 lg:grid-cols-6">
           {palette.map((swatch) => (
             <div key={swatch.token} className="bg-surface-elevated p-4">
@@ -82,7 +81,7 @@ export default function FoundationsPage() {
       </section>
 
       <section className="mx-auto mt-section-md max-w-page">
-        <Contour label="Type" />
+        <p className="label text-muted-foreground">Type</p>
         <p className="mt-stack-lg max-w-prose text-body-m text-muted-foreground">
           DM Sans throughout. Headings sit at weight 500 and are capped at
           4.5rem; the small register is sentence case at weight 500. The
@@ -111,7 +110,7 @@ export default function FoundationsPage() {
       </section>
 
       <section className="mx-auto mt-section-md max-w-page">
-        <Contour label="Surface" />
+        <p className="label text-muted-foreground">Surface</p>
         <p className="mt-stack-lg max-w-prose text-body-m text-muted-foreground">
           Inversion is a surface context you nest, not a document-level dark
           mode. Semantic tokens reassign on{" "}
@@ -140,14 +139,13 @@ export default function FoundationsPage() {
                   Shop coffee
                 </Button>
               </div>
-              <Contour label="Contour" className="mt-stack-lg" />
             </div>
           ))}
         </div>
       </section>
 
       <section className="mx-auto mt-section-md max-w-page">
-        <Contour label="Primitives" />
+        <p className="label text-muted-foreground">Primitives</p>
 
         <div className="mt-stack-lg space-y-8">
           <div>
@@ -182,7 +180,7 @@ export default function FoundationsPage() {
       </section>
 
       <section className="mx-auto mt-section-md max-w-page">
-        <Contour label="System" />
+        <p className="label text-muted-foreground">System</p>
         <dl className="mt-stack-lg grid gap-px bg-border sm:grid-cols-3">
           <div className="bg-surface-elevated p-5">
             <dt className="label text-muted-foreground">Direction</dt>

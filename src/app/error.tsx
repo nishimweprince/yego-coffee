@@ -3,7 +3,6 @@
 import { useEffect } from "react";
 import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
-import { Contour } from "@/components/ui/contour";
 
 /**
  * The error boundary (plan.md §37).
@@ -33,7 +32,7 @@ export default function Error({
     <main className="px-page-x py-section-lg">
       <div className="mx-auto max-w-prose">
         <h1 className="text-display-l">Something went wrong.</h1>
-        <Contour label="Error" className="mt-section-sm" />
+        <p className="label text-muted-foreground mt-section-sm">Error</p>
         <p className="mt-section-sm max-w-prose text-body-l text-muted-foreground">
           This is on us, not on you. Trying again often works. The
           problem is usually a moment&apos;s trouble reaching our

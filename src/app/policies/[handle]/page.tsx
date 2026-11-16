@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Contour } from "@/components/ui/contour";
 import { hasShopifyCredentials } from "@/lib/env";
 import { splitPolicySections } from "@/lib/shopify/policies";
 import { getPolicies } from "@/lib/shopify/storefront";
@@ -37,7 +36,6 @@ export default async function PolicyPage({
           </Link>
         </nav>
         <h1 className="mt-stack-sm text-h1">{policy.title}</h1>
-        <Contour className="mt-section-sm" />
         {/* Shopify's own policy text, unaltered: this is what the
             customer agrees to at checkout, and paraphrasing it here
             would create two versions of a legal document. Bodies that

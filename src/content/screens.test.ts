@@ -166,23 +166,13 @@ describe("screens — one ground, one recipe (§105)", () => {
   });
 });
 
-describe("screens — the contour leads its content", () => {
-  it("defaults to a leading label", () => {
-    // A trailing label above a section puts the words a full container
-    // away from what they name — on the product page "DETAILS" sat
-    // ~700px right of the text it headed.
-    const contour = read("src/components/ui/contour.tsx");
-    expect(contour).toContain('align = "start"');
-  });
-
-  it("keeps trailing labels only where they sign off", () => {
-    // The footer's sign-off repeated the address beneath it and was cut
-    // (§107). With the quiz gone (§108) no trailing label is left.
-    expect(read("src/components/layout/site-footer.tsx")).not.toContain("<Contour");
-    const trailing = [...walk("src/app"), ...walk("src/components")].filter(
-      (file) => /<Contour[^>]*align="end"/.test(read(file)),
+describe("screens — the contour rule is retired", () => {
+  it("is not used anywhere", () => {
+    // 2026-11-16, owner feedback: the double rule read as a glitch.
+    const users = [...walk("src/app"), ...walk("src/components")].filter(
+      (file) => /<Contour\b|ui\/contour/.test(read(file)),
     );
-    expect(trailing).toEqual([]);
+    expect(users).toEqual([]);
   });
 });
 
@@ -220,10 +210,12 @@ describe("screens — no linen (§108.4)", () => {
 });
 
 describe("screens — Starbucks parity (§108.5)", () => {
-  it("lays the shelf out one, two, then four across", () => {
+  it("lays the shelf out two, then four across", () => {
+    // Two across on a phone (2026-11-16): one-up, four coffees took
+    // four screens of scrolling.
     const grid = read("src/components/commerce/product-grid.tsx");
-    expect(grid).toContain("grid-cols-1");
-    expect(grid).toContain("sm:grid-cols-2");
+    expect(grid).toContain("grid-cols-2");
+    expect(grid).not.toContain("grid-cols-1");
     expect(grid).toContain("lg:grid-cols-4");
   });
 

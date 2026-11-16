@@ -6,8 +6,8 @@
    One typeface, one accent, one light ground (§108). The page is
    near-white paper from top to bottom, with no tinted bands; the only
    dark surfaces are the footer and the photographic hero. Everything
-   else is separated by whitespace and, at most twice per page, the
-   contour rule.
+   else is separated by whitespace and, where a boundary needs one,
+   a single hairline.
    ============================================================ */
 
 @theme {
@@ -76,39 +76,44 @@
 
   /* The lede is the quiet second voice under a title: regular weight,
      grey, a step above body. */
-  --text-lede: clamp(0.9rem, 0.855rem + 0.27vw, 1.0125rem);
+  /* Reading sizes (lede down to control) are back at full scale
+     (2026-11-16): at 0.9 the body ran 14.4px and small text 12.6px,
+     too small to read comfortably. Headings and display keep the
+     owners' 0.9 scale (2026-11-10), which answered type reading
+     oversized next to the photography. */
+  --text-lede: clamp(1rem, 0.95rem + 0.3vw, 1.125rem);
   --text-lede--line-height: 1.5;
   --text-lede--letter-spacing: -0.01em;
 
-  --text-body-l: 1.0125rem;
+  --text-body-l: 1.125rem;
   --text-body-l--line-height: 1.6;
 
-  --text-body-m: 0.9rem;
+  --text-body-m: 1rem;
   --text-body-m--line-height: 1.5;
 
-  --text-body-s: 0.7875rem;
+  --text-body-s: 0.875rem;
   --text-body-s--line-height: 1.5;
 
-  --text-caption: 0.7313rem;
+  --text-caption: 0.8125rem;
   --text-caption--line-height: 1.45;
 
   /* Label: the small register — eyebrows, meta, roast names, data.
      Sentence case, weight 500, no tracking. */
-  --text-label: 0.7313rem;
+  --text-label: 0.8125rem;
   --text-label--line-height: 1.3;
   --text-label--letter-spacing: 0;
 
-  --text-price: 1.0125rem;
+  --text-price: 1.125rem;
   --text-price--line-height: 1.2;
   --text-price--letter-spacing: 0;
 
   /* The price under a product card. */
-  --text-price-s: 0.7875rem;
+  --text-price-s: 0.875rem;
   --text-price-s--line-height: 1.2;
   --text-price-s--letter-spacing: 0;
 
   /* Button and nav text. */
-  --text-control: 0.8438rem;
+  --text-control: 0.9375rem;
   --text-control--line-height: 1.2;
   --text-control--letter-spacing: -0.01em;
 
@@ -171,10 +176,10 @@
   --surface: var(--color-paper);
   --surface-elevated: var(--color-white);
   --muted: color-mix(in srgb, var(--color-ink) 4%, var(--color-white));
-  /* 82% ink: secondary text was 64% (~4.2:1, under WCAG AA) and read
-     washed out on the near-white page. Now ~9:1 — still a step below
+  /* 86% ink: secondary text was 64% (~4.2:1, under WCAG AA) and read
+     washed out on the near-white page. Now ~11:1 — still a step below
      ink, so hierarchy holds. */
-  --muted-foreground: color-mix(in srgb, var(--color-ink) 82%, var(--color-paper));
+  --muted-foreground: color-mix(in srgb, var(--color-ink) 86%, var(--color-paper));
   --border: color-mix(in srgb, var(--color-ink) 10%, var(--color-paper));
   --rule: color-mix(in srgb, var(--color-ink) 28%, var(--color-paper));
   --accent: var(--color-roast);
@@ -463,67 +468,6 @@ html[data-chrome-solid] body:has(main[data-hero="slides"]) [data-chrome] {
   }
 
   /* ----------------------------------------------------------
-     The contour rule — the signature line.
-
-     Rwanda is the land of a thousand hills; its coffee grows on
-     terraces. A section boundary is drawn as a topographic
-     contour rather than a single hairline: two strokes, unequal,
-     the way elevation reads on a map.
-
-     At most twice per page, and only where it marks a true
-     transition. The label slot carries something verified — a
-     place, a section name. It never carries an invented altitude
-     or sequence number.
-     ---------------------------------------------------------- */
-  .contour {
-    display: flex;
-    align-items: center;
-    gap: 1.25rem;
-    width: 100%;
-  }
-
-  .contour__lines {
-    flex: 1 1 auto;
-    display: flex;
-    flex-direction: column;
-    gap: 3px;
-    min-width: 0;
-  }
-
-  .contour__lines::before,
-  .contour__lines::after {
-    content: "";
-    display: block;
-    height: 1px;
-    background-color: var(--rule);
-  }
-
-  .contour__lines::before {
-    opacity: 0.9;
-  }
-
-  .contour__lines::after {
-    width: 62%;
-    opacity: 0.45;
-  }
-
-  /* The short stroke tapers away from the label, so the pair always
-     reads as elevation falling off from the named point. */
-  .contour:has(.contour__label:first-child) .contour__lines::after {
-    margin-inline-start: auto;
-  }
-
-  .contour__label {
-    flex: 0 0 auto;
-    font-family: var(--font-utility);
-    font-size: var(--text-label);
-    line-height: var(--text-label--line-height);
-    letter-spacing: var(--text-label--letter-spacing);
-    font-weight: 500;
-    color: var(--muted-foreground);
-  }
-
-  /* ----------------------------------------------------------
      The hero scrim.
 
      A full-screen carousel needs the words to hold against whichever
@@ -627,6 +571,11 @@ html[data-chrome-solid] body:has(main[data-hero="slides"]) [data-chrome] {
   /* The same soft shadow behind the slide's words, for light frames. */
   .hero-slide__copy {
     text-shadow: 0 2px 16px color-mix(in srgb, var(--color-ink) 60%, transparent);
+  }
+
+  /* The button is a solid pill; a shadow behind its label smudges it. */
+  .hero-slide__copy a {
+    text-shadow: none;
   }
 
   .hero-slide[data-active] .hero-slide__copy > * {

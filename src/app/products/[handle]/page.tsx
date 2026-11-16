@@ -4,7 +4,6 @@ import { ProductPurchaseForm } from "@/components/commerce/product-purchase-form
 import { ProductGallery } from "@/components/product/product-gallery";
 import { StoreUnavailable } from "@/components/commerce/store-unavailable";
 import { RelatedProducts } from "@/components/product/related-products";
-import { Contour } from "@/components/ui/contour";
 import { PageHeader } from "@/components/ui/page-header";
 import { YegoLine } from "@/components/ui/yego-line";
 import { getReassurances } from "@/lib/content/reassurance";
@@ -189,7 +188,20 @@ export default async function ProductPage({
                 </p>
               ) : null}
 
-              <div className="mt-stack-md">
+              {/* The description sits with the name, where a shop puts
+                  it, instead of in a "Details" section below the fold
+                  that held one sentence. Authored by the store owner in
+                  Shopify admin, not by site visitors (§39). Shopify's
+                  rich-text editor leaves <meta> fragments inline
+                  (§96.4); they render as nothing. */}
+              {detailsHtml ? (
+                <div
+                  className="mt-stack-md max-w-prose space-y-stack-sm text-body-m text-muted-foreground [&_a]:underline [&_strong]:text-foreground"
+                  dangerouslySetInnerHTML={{ __html: detailsHtml }}
+                />
+              ) : null}
+
+              <div className="mt-stack-lg">
                 <ProductPurchaseForm
                   product={product}
                   subscriptionPolicyHref={reassurances.cancellation?.href}
@@ -211,22 +223,6 @@ export default async function ProductPage({
           </div>
         </div>
       </section>
-
-      {detailsHtml ? (
-        <section aria-label="Details" className="px-page-x pt-section-md">
-          <div className="mx-auto max-w-page">
-            <Contour label="Details" />
-            {/* Authored by the store owner in Shopify admin, not by
-                site visitors (§39). Shopify's rich-text editor leaves
-                <meta> fragments inline (§96.4); they render as
-                nothing, which is the correct outcome. */}
-            <div
-              className="mt-stack-lg max-w-prose space-y-stack-md text-body-l text-muted-foreground [&_a]:underline [&_strong]:text-foreground"
-              dangerouslySetInnerHTML={{ __html: detailsHtml }}
-            />
-          </div>
-        </section>
-      ) : null}
 
       <RelatedProducts products={related} />
     </main>

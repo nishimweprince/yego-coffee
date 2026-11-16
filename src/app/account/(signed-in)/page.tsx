@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { AccountNotConfigured } from "@/components/account/not-configured";
-import { Contour } from "@/components/ui/contour";
 import { formatMoney } from "@/lib/formatting/money";
 import { getCustomerOverview, getSubscriptions } from "@/lib/customer/account";
 import { formatLongDate } from "@/lib/customer/format";
@@ -45,7 +44,7 @@ export default async function AccountPage() {
 
       <div className="mt-section-md grid gap-section-sm sm:grid-cols-2 lg:grid-cols-3">
         <section>
-          <Contour label="Next delivery" />
+          <p className="label text-muted-foreground">Next delivery</p>
           {next && nextDate ? (
             <div className="mt-stack-lg">
               <p className="text-h4">{nextDate}</p>
@@ -76,7 +75,7 @@ export default async function AccountPage() {
         </section>
 
         <section>
-          <Contour label="Recent order" />
+          <p className="label text-muted-foreground">Recent order</p>
           {latest ? (
             <div className="mt-stack-lg">
               <p className="text-h4">{latest.name}</p>
@@ -102,7 +101,7 @@ export default async function AccountPage() {
         </section>
 
         <section>
-          <Contour label="Your details" />
+          <p className="label text-muted-foreground">Your details</p>
           <div className="mt-stack-lg space-y-stack-xs text-body-m">
             {profile.email ? <p>{profile.email}</p> : null}
             {profile.phone ? (

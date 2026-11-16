@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
-import { Contour } from "@/components/ui/contour";
 import { StoreUnavailable } from "@/components/commerce/store-unavailable";
 import { hasShopifyCredentials } from "@/lib/env";
 import { getArticles } from "@/lib/shopify/storefront";
@@ -98,7 +97,7 @@ export default async function JournalPage() {
 
             {rest.length > 0 ? (
               <>
-                <Contour label="Earlier" className="mt-section-lg" />
+                <p className="label text-muted-foreground mt-section-lg">Earlier</p>
                 <div className="mt-section-sm grid gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
                   {rest.map((article) => (
                     <article key={article.id}>

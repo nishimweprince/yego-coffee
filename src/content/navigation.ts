@@ -18,7 +18,7 @@ export type NavLink = {
 /**
  * Primary destinations, header and mobile menu.
  *
- * Four items: Shop, Subscriptions, Our story, Café. The quiz was
+ * Four items: Shop, Subscriptions, About Us, Café. The quiz was
  * removed at the client's request (§108); /quiz redirects to /shop.
  * Search, Account and Cart are utilities rendered as icons; Contact
  * lives in the footer.
@@ -26,7 +26,7 @@ export type NavLink = {
 export const PRIMARY_NAV: NavLink[] = [
   { href: "/shop", label: "Shop" },
   { href: "/subscriptions", label: "Subscriptions" },
-  { href: "/about", label: "Our story" },
+  { href: "/about", label: "About Us" },
   { href: "/cafe", label: "Café" },
 ];
 
@@ -67,9 +67,10 @@ export const FOOTER_GROUPS: NavGroup[] = [
   {
     label: "About",
     links: [
-      { href: "/about", label: "Our story" },
+      { href: "/about", label: "About Us" },
       { href: "/cafe", label: "Café" },
-      { href: "/journal", label: "Journal" },
+      // No Journal link: it holds one post from 2023. The route stays
+      // live; it returns here once there is a second entry.
       { href: "/contact", label: "Contact" },
     ],
   },

@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { Contour } from "@/components/ui/contour";
 
 /**
  * Shown when the Customer Account API is not configured (§100.5).
@@ -13,7 +12,6 @@ export function AccountNotConfigured() {
   return (
     <div>
       <h1 className="text-display-l">Accounts aren&apos;t available yet.</h1>
-      <Contour className="mt-section-sm" />
       <p className="mt-section-sm max-w-prose text-body-l text-muted-foreground">
         Customer accounts are not switched on for this store yet. Your
         orders are safe. Order confirmation emails carry a link to

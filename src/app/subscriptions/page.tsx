@@ -3,7 +3,6 @@ import Image from "next/image";
 import { StoreUnavailable } from "@/components/commerce/store-unavailable";
 import { SubscriptionChooser } from "@/components/commerce/subscription-chooser";
 import { SubscriptionGrid } from "@/components/commerce/subscription-tile";
-import { Contour } from "@/components/ui/contour";
 import { PageHeader } from "@/components/ui/page-header";
 import { Section } from "@/components/ui/section";
 import { YegoLine } from "@/components/ui/yego-line";
@@ -46,7 +45,7 @@ function Shelf({
       aria-labelledby={`${id}-heading`}
       className="mt-section-md scroll-mt-30"
     >
-      <Contour label={SUBSCRIPTION_TYPE_LABELS[type]} />
+      <p className="label text-muted-foreground">{SUBSCRIPTION_TYPE_LABELS[type]}</p>
       <h2 id={`${id}-heading`} data-reveal className="mt-stack-lg text-h3">
         {heading}
       </h2>

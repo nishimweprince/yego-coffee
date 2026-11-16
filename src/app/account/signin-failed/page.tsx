@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
-import { Contour } from "@/components/ui/contour";
 
 export const metadata: Metadata = {
   title: "Sign-in didn't complete",
@@ -21,7 +20,6 @@ export default function SignInFailedPage() {
     <main className="px-page-x py-section-lg">
       <div className="mx-auto max-w-prose">
         <h1 className="text-display-l">Sign-in didn&apos;t complete.</h1>
-        <Contour className="mt-section-sm" />
         <p className="mt-section-sm max-w-prose text-body-l text-muted-foreground">
           The link may have expired, or the sign-in may have been
           interrupted. Starting again usually works.

@@ -9,7 +9,7 @@ vi.mock("next/navigation", () => ({
 describe("PrimaryNav", () => {
   it("renders the four primary destinations", () => {
     render(<PrimaryNav />);
-    for (const label of ["Shop", "Subscriptions", "Our story", "Café"]) {
+    for (const label of ["Shop", "Subscriptions", "About Us", "Café"]) {
       expect(
         screen.getByRole("link", { name: label }),
       ).toBeInTheDocument();
@@ -23,7 +23,7 @@ describe("PrimaryNav", () => {
 
   it("marks only the current destination with aria-current", () => {
     render(<PrimaryNav />);
-    expect(screen.getByRole("link", { name: "Our story" })).toHaveAttribute(
+    expect(screen.getByRole("link", { name: "About Us" })).toHaveAttribute(
       "aria-current",
       "page",
     );

@@ -3,7 +3,6 @@ import Link from "next/link";
 import { AccountNotConfigured } from "@/components/account/not-configured";
 import { SubscriptionStatusLabel } from "@/components/account/subscription-status";
 import { buttonVariants } from "@/components/ui/button";
-import { Contour } from "@/components/ui/contour";
 import { IMAGES } from "@/content/images";
 import { photoForLine } from "@/lib/catalog/product-photos";
 import { formatMoney } from "@/lib/formatting/money";
@@ -55,7 +54,6 @@ export default async function SubscriptionsPage() {
 
       {contracts.length === 0 ? (
         <>
-          <Contour className="mt-section-sm" />
           <div className="mt-section-sm grid items-center gap-stack-lg md:grid-cols-[minmax(0,1fr)_minmax(0,26rem)] md:gap-16">
             <div>
               <p className="max-w-prose text-body-l">
@@ -96,7 +94,7 @@ export default async function SubscriptionsPage() {
         </>
       ) : (
         <>
-          <Contour label={`${active} active`} className="mt-section-sm" />
+          <p className="label text-muted-foreground mt-section-sm">{`${active} active`}</p>
           <ul className="mt-section-sm grid gap-stack-lg md:grid-cols-2">
             {sorted.map((contract) => (
               <li key={contract.id}>

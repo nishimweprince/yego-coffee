@@ -53,9 +53,11 @@ derived in the frontend — never by editing handles or selling plans.
   paper (#fbfaf8) everywhere, announcement bar and panels included.
   `soil` appears on the footer and the hero carousel only. No tinted
   bands: linen read as template beige and was removed (§108.4).
-- The contour rule (`<Contour />`) is the signature device, at most
-  twice per page. Its label carries something true — a section name, a
-  real place. Never invented sequence numbers. The Yego line
+- The contour rule was retired (2026-11-16, owner feedback): its
+  double line read as a rendering glitch. Sections are separated by
+  whitespace; where a section needs a name, it is a plain `.label`
+  line carrying something true — never invented sequence numbers.
+  Do not bring the double rule back. The Yego line
   (`<YegoLine />`) answers a question a customer actually asks —
   shipping, cancellation — one line per question, never as decoration.
 - The `.label` register is sentence case. No uppercase, no tracking.

@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
-import { Contour } from "@/components/ui/contour";
 
 /**
  * 404 (plan.md §48).
@@ -14,7 +13,7 @@ export default function NotFound() {
     <main className="px-page-x py-section-lg">
       <div className="mx-auto max-w-prose">
         <h1 className="text-display-l">This page doesn&apos;t exist.</h1>
-        <Contour label="404" className="mt-section-sm" />
+        <p className="label text-muted-foreground mt-section-sm">404</p>
         <p className="mt-section-sm max-w-prose text-body-l text-muted-foreground">
           It may have moved, or the link may be old. Yego roasts a small
           lineup: everything we sell is a click away.

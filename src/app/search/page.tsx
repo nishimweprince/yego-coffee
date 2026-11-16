@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ProductGrid } from "@/components/commerce/product-grid";
 import { StoreUnavailable } from "@/components/commerce/store-unavailable";
-import { Contour } from "@/components/ui/contour";
 import { hasShopifyCredentials } from "@/lib/env";
 import { getSearchResults } from "@/lib/shopify/storefront";
 
@@ -50,12 +49,9 @@ export default async function SearchPage({
           </p>
         ) : (
           <>
-            <Contour
-              label={`${results.totalCount} ${
+            <p className="label text-muted-foreground mt-stack-lg">{`${results.totalCount} ${
                 results.totalCount === 1 ? "result" : "results"
-              }`}
-              className="mt-stack-lg"
-            />
+              }`}</p>
 
             {results.products.length === 0 ? (
               /* §48's empty state: say what to do next, not just that

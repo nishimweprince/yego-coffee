@@ -1,6 +1,5 @@
 import { AccountNotConfigured } from "@/components/account/not-configured";
 import { AddressBook } from "@/components/account/address-book";
-import { Contour } from "@/components/ui/contour";
 import { getAddresses } from "@/lib/customer/account";
 import { hasCustomerAccountCredentials } from "@/lib/customer/env";
 import { requireCustomerSession } from "@/lib/customer/guard";
@@ -16,10 +15,7 @@ export default async function AddressesPage() {
   return (
     <div>
       <h1 className="text-h1">Addresses</h1>
-      <Contour
-        label={`${addresses.length} saved`}
-        className="mt-section-sm"
-      />
+      <p className="label text-muted-foreground mt-section-sm">{`${addresses.length} saved`}</p>
       <div className="mt-section-sm">
         <AddressBook addresses={addresses} />
       </div>

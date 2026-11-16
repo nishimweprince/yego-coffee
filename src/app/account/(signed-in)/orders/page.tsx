@@ -3,7 +3,6 @@ import Link from "next/link";
 import { AccountNotConfigured } from "@/components/account/not-configured";
 import { OrderHistory } from "@/components/account/order-history";
 import { buttonVariants } from "@/components/ui/button";
-import { Contour } from "@/components/ui/contour";
 import { IMAGES } from "@/content/images";
 import { getOrders } from "@/lib/customer/account";
 import { hasCustomerAccountCredentials } from "@/lib/customer/env";
@@ -40,7 +39,6 @@ export default async function OrdersPage({
     return (
       <div>
         <h1 className="text-h1">Orders</h1>
-        <Contour className="mt-section-sm" />
         <div className="mt-section-sm grid items-center gap-stack-lg md:grid-cols-[minmax(0,1fr)_minmax(0,26rem)] md:gap-16">
           <div>
             <p className="text-body-l">No orders yet.</p>
@@ -68,10 +66,7 @@ export default async function OrdersPage({
   return (
     <div>
       <h1 className="text-h1">Orders</h1>
-      <Contour
-        label={after ? "Older orders" : "Most recent first"}
-        className="mt-section-sm"
-      />
+      <p className="label text-muted-foreground mt-section-sm">{after ? "Older orders" : "Most recent first"}</p>
       <div className="mt-section-sm">
         <OrderHistory orders={orders} />
       </div>

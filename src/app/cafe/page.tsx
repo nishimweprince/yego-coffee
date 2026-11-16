@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
-import { Contour } from "@/components/ui/contour";
 import { PageHeader } from "@/components/ui/page-header";
 import { BRAND } from "@/content/brand";
 import { CAFE } from "@/content/cafe";
@@ -97,9 +96,7 @@ export default function CafePage() {
 
       <section aria-labelledby="cafe-visit" className="px-page-x py-section-sm">
         <div className="mx-auto max-w-page">
-          <Contour label="Somerville" />
-
-          <div className="mt-section-sm grid items-center gap-stack-lg md:grid-cols-2 md:gap-12 lg:gap-16">
+          <div className="grid items-center gap-stack-lg md:grid-cols-2 md:gap-12 lg:gap-16">
             <Image
               {...IMAGES.basket}
               alt={IMAGES.basket.alt}

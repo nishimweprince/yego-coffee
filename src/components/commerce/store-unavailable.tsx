@@ -1,4 +1,3 @@
-import { Contour } from "@/components/ui/contour";
 
 /**
  * Shown when Storefront credentials are absent or Shopify is
@@ -17,7 +16,7 @@ export function StoreUnavailable({ detail }: { detail?: string }) {
         This is a configuration or connection problem on our side, not
         something you did. Please try again shortly.
       </p>
-      <Contour label="Status" className="mt-stack-lg" />
+      <p className="label text-muted-foreground mt-stack-lg">Status</p>
       {detail ? (
         <p className="mt-stack-md font-mono text-caption text-muted-foreground">
           {detail}

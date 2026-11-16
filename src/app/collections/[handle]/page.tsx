@@ -4,7 +4,6 @@ import { Section } from "@/components/ui/section";
 import { notFound } from "next/navigation";
 import { ProductGrid } from "@/components/commerce/product-grid";
 import { StoreUnavailable } from "@/components/commerce/store-unavailable";
-import { Contour } from "@/components/ui/contour";
 import { hasShopifyCredentials } from "@/lib/env";
 import { getCollection } from "@/lib/shopify/storefront";
 
@@ -54,12 +53,9 @@ export default async function CollectionPage({
           breadcrumb={[{ href: "/shop", label: "Shop" }]}
         />
 
-        <Contour
-          label={`${collection.products.length} ${
+        <p className="label text-muted-foreground mt-stack-lg">{`${collection.products.length} ${
             collection.products.length === 1 ? "item" : "items"
-          }`}
-          className="mt-stack-lg"
-        />
+          }`}</p>
 
         <div className="mt-section-sm">
           <ProductGrid products={collection.products} />

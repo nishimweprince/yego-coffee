@@ -57,7 +57,7 @@ export function ProductCard({
           title={product.title}
           priority={priority}
           zoomOnHover
-          sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
+          sizes="(min-width: 1024px) 25vw, 50vw"
           className="aspect-[316/373] rounded-tile bg-surface-elevated"
         />
       </Link>
@@ -78,7 +78,7 @@ export function ProductCard({
         <PriceRange
           min={product.minPrice}
           max={product.maxPrice}
-          className="mt-2 text-price-s font-bold text-muted-foreground"
+          className="mt-2 text-price-s font-bold text-foreground"
         />
       </div>
     </article>
