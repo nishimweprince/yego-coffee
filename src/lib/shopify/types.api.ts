@@ -227,3 +227,30 @@ export type ApiArticle = {
 };
 
 export type ApiArticlesQuery = { articles: { nodes: ApiArticle[] } };
+
+// ---------------------------------------------------------------------
+// Admin API — newsletter signups only (src/lib/shopify/admin.ts).
+// ---------------------------------------------------------------------
+
+export type ApiAdminUserError = { field: string[] | null; message: string };
+
+export type ApiNewsletterCustomerCreate = {
+  customerCreate: {
+    customer: { id: string } | null;
+    userErrors: ApiAdminUserError[];
+  } | null;
+};
+
+export type ApiNewsletterCustomerByEmail = {
+  customerByIdentifier: {
+    id: string;
+    emailMarketingConsent: { marketingState: string } | null;
+  } | null;
+};
+
+export type ApiNewsletterConsentUpdate = {
+  customerEmailMarketingConsentUpdate: {
+    customer: { id: string } | null;
+    userErrors: ApiAdminUserError[];
+  } | null;
+};

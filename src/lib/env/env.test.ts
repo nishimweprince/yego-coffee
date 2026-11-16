@@ -2,6 +2,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import {
   getAnalyticsEnv,
   getShopifyEnv,
+  hasNewsletter,
   hasShopifyCredentials,
   parseCore,
   resetShopifyEnvCache,
@@ -127,5 +128,25 @@ describe("parseCore", () => {
     expect(() =>
       parseCore({ NODE_ENV: "production", VERCEL_ENV: "preview" }),
     ).not.toThrow();
+  });
+});
+
+describe("hasNewsletter", () => {
+  it("is off without the admin token, so the footer form is not rendered", () => {
+    for (const [k, v] of Object.entries(VALID)) vi.stubEnv(k, v);
+    vi.stubEnv("SHOPIFY_ADMIN_ACCESS_TOKEN", "");
+    expect(hasNewsletter()).toBe(false);
+  });
+
+  it("is on with Storefront credentials and the admin token", () => {
+    for (const [k, v] of Object.entries(VALID)) vi.stubEnv(k, v);
+    vi.stubEnv("SHOPIFY_ADMIN_ACCESS_TOKEN", "shpat_admin");
+    expect(hasNewsletter()).toBe(true);
+  });
+
+  it("is off when Shopify itself is not configured", () => {
+    vi.stubEnv("NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN", "");
+    vi.stubEnv("SHOPIFY_ADMIN_ACCESS_TOKEN", "shpat_admin");
+    expect(hasNewsletter()).toBe(false);
   });
 });

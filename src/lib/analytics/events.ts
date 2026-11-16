@@ -31,7 +31,9 @@ export type AnalyticsEvent =
   | { name: "search_no_results"; query: string }
   | { name: "search_filter_applied"; filter: string; value: string }
   // Café
-  | { name: "cafe_directions_clicked" };
+  | { name: "cafe_directions_clicked" }
+  // Newsletter — never the address itself (§33)
+  | { name: "newsletter_subscribed" };
 
 export type AnalyticsEventName = AnalyticsEvent["name"];
 

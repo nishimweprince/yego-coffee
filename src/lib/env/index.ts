@@ -177,3 +177,50 @@ export function getAnalyticsEnv(): AnalyticsEnv {
   }
   return result.data;
 }
+
+/**
+ * The newsletter's Shopify Admin token — optional, like analytics.
+ *
+ * Signups are written to Shopify as customers subscribed to email
+ * marketing (Admin API `customerCreate`), and the owners send with
+ * Shopify Messaging. Without the token the footer form is not rendered
+ * at all: a form that posts nowhere is worse than its absence.
+ *
+ * Server-only. Never prefix it with NEXT_PUBLIC_.
+ */
+const newsletterSchema = z.object({
+  SHOPIFY_ADMIN_ACCESS_TOKEN: z.string().min(1),
+});
+
+export type NewsletterEnv = ShopifyEnv & z.infer<typeof newsletterSchema>;
+
+/** Throws when the newsletter is not configured. */
+export function getNewsletterEnv(): NewsletterEnv {
+  const result = newsletterSchema.safeParse({
+    SHOPIFY_ADMIN_ACCESS_TOKEN: blankToUndefined(
+      process.env.SHOPIFY_ADMIN_ACCESS_TOKEN,
+    ),
+  });
+  if (!result.success) {
+    throw new Error(
+      [
+        "The newsletter is not configured: SHOPIFY_ADMIN_ACCESS_TOKEN is missing.",
+        "Create it in Shopify admin → Settings → Apps and sales channels →",
+        "Develop apps, with the write_customers and read_customers scopes.",
+      ].join("\n"),
+    );
+  }
+  return { ...getShopifyEnv(), ...result.data };
+}
+
+/** True when the newsletter can post somewhere. For rendering decisions only. */
+export function hasNewsletter(): boolean {
+  return (
+    hasShopifyCredentials() &&
+    newsletterSchema.safeParse({
+      SHOPIFY_ADMIN_ACCESS_TOKEN: blankToUndefined(
+        process.env.SHOPIFY_ADMIN_ACCESS_TOKEN,
+      ),
+    }).success
+  );
+}
