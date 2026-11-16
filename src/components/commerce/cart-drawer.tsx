@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { createPortal } from "react-dom";
 import { usePathname } from "next/navigation";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBagShopping } from "@fortawesome/free-solid-svg-icons/faBagShopping";
@@ -30,6 +31,11 @@ import type { CartModel } from "@/lib/shopify/types";
  * Every page load needs the count; almost none of them need the lines,
  * the images and the checkout URL, so the full cart is only fetched
  * once the customer opens the drawer.
+ *
+ * The drawer is portalled to <body>. Its trigger lives in the sticky
+ * header — a stacking context, and on the homepage a floating wrapper
+ * whose colour tokens are inverted over the hero — so a fixed panel
+ * rendered in place could be painted under the page's own content.
  */
 export function CartDrawer() {
   const pathname = usePathname();
@@ -158,7 +164,7 @@ export function CartDrawer() {
         ) : null}
       </a>
 
-      {open ? (
+      {open && typeof document !== "undefined" ? createPortal(
         <div className="fixed inset-0 z-[60]">
           <button
             type="button"
@@ -251,7 +257,8 @@ export function CartDrawer() {
               </div>
             ) : null}
           </div>
-        </div>
+        </div>,
+        document.body,
       ) : null}
     </>
   );

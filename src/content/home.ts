@@ -25,6 +25,7 @@
  * says the brand has no customers.
  */
 
+import { ABOUT } from "@/content/about";
 import { IMAGES, type BrandImage } from "@/content/images";
 
 export type HeroSlide = {
@@ -65,12 +66,10 @@ export const HOME = {
     ] satisfies HeroSlide[],
   },
 
+  /** The live store's About copy, verbatim (see content/about.ts). */
   about: {
-    heading: "Family coffee, from Rwanda to Somerville.",
-    paragraphs: [
-      "Yego Coffee is family-owned by Fatuma and Francois Tuyishime. Yego is Kinyarwanda for yes, the family's answer as they rebuilt around coffee.",
-      "The family roast in Somerville, Massachusetts, and ship across the United States from their roastery and cafe.",
-    ],
+    heading: ABOUT.heading,
+    paragraphs: ABOUT.paragraphs,
     cta: { label: "Read our story", href: "/about" },
   },
 

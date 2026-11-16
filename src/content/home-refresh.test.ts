@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
+import { ABOUT } from "@/content/about";
 import { HOME } from "@/content/home";
 import { PRIMARY_NAV, UTILITY_NAV } from "@/content/navigation";
 
@@ -8,12 +9,13 @@ const root = process.cwd();
 const read = (rel: string) => readFileSync(join(root, rel), "utf8");
 
 describe("design refresh — homepage structure", () => {
-  it("adds HOME.about with a heading, two paragraphs and a story CTA", () => {
-    expect(HOME.about.heading).toContain("Somerville");
-    expect(HOME.about.paragraphs).toHaveLength(2);
-    for (const paragraph of HOME.about.paragraphs) {
-      expect(paragraph.length).toBeGreaterThan(0);
-    }
+  it("adds HOME.about with the live store's About copy and a story CTA", () => {
+    // Verbatim from yegocoffee.com/pages/about-us — never rewritten.
+    expect(HOME.about.heading).toBe("About Yego Coffee");
+    expect(HOME.about.paragraphs).toEqual(ABOUT.paragraphs);
+    expect(HOME.about.paragraphs[0]).toMatch(/^Yego Coffee is a family owned company based in Somerville/);
+    expect(HOME.about.paragraphs[0]).toContain("genocide against the Tutsi");
+    expect(HOME.about.paragraphs[1]).toMatch(/^Coffee business has been part of Tuyishime's family for over four decades\./);
     expect(HOME.about.cta.label).toBe("Read our story");
     expect(HOME.about.cta.href).toBe("/about");
   });

@@ -14,7 +14,7 @@ export function HomeStatement() {
   return (
     <section
       aria-labelledby="home-statement-heading"
-      className="px-page-x pt-section-md pb-section-sm text-center"
+      className="px-page-x py-section-sm text-center"
     >
       <div className="mx-auto max-w-3xl">
         <h2 id="home-statement-heading" data-reveal className="text-display-l">

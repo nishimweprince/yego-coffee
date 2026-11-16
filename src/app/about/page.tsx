@@ -4,9 +4,7 @@ import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
 import { Contour } from "@/components/ui/contour";
 import { BRAND } from "@/content/brand";
-import { HOME } from "@/content/home";
-import { hasShopifyCredentials } from "@/lib/env";
-import { getPage } from "@/lib/shopify/storefront";
+import { ABOUT } from "@/content/about";
 import { IMAGES } from "@/content/images";
 
 export const metadata: Metadata = {
@@ -18,21 +16,16 @@ export const metadata: Metadata = {
 /**
  * Our story (plan.md §6, §88).
  *
- * The narrative is Francois's own, read from the store's `who-are-we`
- * page rather than rewritten here. §71 forbids inventing brand
- * content, and the owners' account of their own family is not
- * something to improve on. §88's confirmed facts frame it; nothing
- * else is added.
- *
- * If the page is ever deleted in the admin, the confirmed facts still
- * stand on their own.
+ * The words are the owners' own, carried over verbatim from the live
+ * store's About page (content/about.ts) — §71 forbids inventing brand
+ * content, and their account of their own family is not something to
+ * improve on. It used to be read from the Shopify `who-are-we` page,
+ * but that body is an older draft the live site never shows.
  */
-export default async function AboutPage() {
-  const story = hasShopifyCredentials() ? await getPage("who-are-we") : null;
-
+export default function AboutPage() {
   return (
     <main>
-      <section className="px-page-x py-section-md">
+      <section className="px-page-x pt-section-xs pb-section-sm">
         <div className="mx-auto grid max-w-page items-center gap-stack-lg lg:grid-cols-2 lg:gap-16">
           <figure>
             <Image
@@ -47,41 +40,21 @@ export default async function AboutPage() {
             </figcaption>
           </figure>
           <div>
-            <h1 className="text-display-l">
-              {HOME.statement.headline}
-            </h1>
-            <div className="mt-stack-lg max-w-prose space-y-stack-xs text-lede text-muted-foreground">
-              {HOME.statement.body.map((line) => (
-                <p key={line}>{line}</p>
+            <h1 className="text-display-l">{ABOUT.heading}</h1>
+            <div className="mt-stack-lg max-w-prose space-y-stack-md text-body-l text-muted-foreground">
+              {ABOUT.paragraphs.map((paragraph) => (
+                <p key={paragraph}>{paragraph}</p>
               ))}
             </div>
           </div>
         </div>
       </section>
 
-      {/* The owners' own account, on its own ground and at a reading
-          measure. It ran the full container before, at line lengths
-          well past what anyone reads comfortably, under a rule
-          labelled with the Shopify page's title — which is a decorative
-          eyebrow, not a transition. The words are the section; they do
-          not need announcing. */}
-      {story?.bodyHtml ? (
-        <section
-          aria-label="Our story"
-          className="px-page-x py-section-md"
-        >
-          <div
-            className="mx-auto max-w-prose space-y-stack-md text-body-l [&_a]:underline [&_strong]:text-foreground"
-            dangerouslySetInnerHTML={{ __html: story.bodyHtml }}
-          />
-        </section>
-      ) : null}
-
       {/* The roastery, shown rather than described: three photographs,
           unequal on purpose so they read as a set and not a grid of
           cards. One caption, because the machine's name is printed on
           it; the others need none. */}
-      <section aria-label="The roastery" className="px-page-x py-section-md">
+      <section aria-label="The roastery" className="px-page-x py-section-sm">
         <div className="mx-auto grid max-w-page grid-cols-2 gap-stack-md lg:grid-cols-12 lg:gap-stack-lg">
           <figure className="col-span-2 lg:col-span-5">
             <Image
@@ -100,7 +73,7 @@ export default async function AboutPage() {
             alt={IMAGES.roasterBeans.alt}
             sizes="(min-width: 1024px) 32vw, 50vw"
             loading="lazy"
-            className="aspect-[3/4] w-full rounded-card object-cover lg:col-span-4 lg:mt-section-sm"
+            className="aspect-[3/4] w-full rounded-card object-cover lg:col-span-4 lg:mt-section-xs"
           />
           <Image
             {...IMAGES.basket}
@@ -112,10 +85,10 @@ export default async function AboutPage() {
         </div>
       </section>
 
-      <section className="px-page-x py-section-md">
+      <section className="px-page-x py-section-sm">
         <div className="mx-auto max-w-page">
           <Contour label="The facts" />
-          <dl className="mt-section-sm grid gap-x-8 gap-y-stack-lg sm:grid-cols-2">
+          <dl className="mt-stack-lg grid gap-x-8 gap-y-stack-lg sm:grid-cols-2">
             <div>
               <dt className="label text-muted-foreground">Owners</dt>
               <dd className="mt-stack-xs text-body-l">{BRAND.owners}</dd>

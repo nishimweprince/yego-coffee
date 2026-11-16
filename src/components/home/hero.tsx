@@ -42,7 +42,7 @@ export function Hero() {
               aria-roledescription="slide"
               aria-label={`${index + 1} of ${slides.length}`}
               data-hero-slide
-              className="hero-scrim absolute inset-0 isolate flex flex-col justify-end"
+              className="hero-scrim absolute inset-0 isolate flex flex-col justify-center"
             >
               <Image
                 src={slide.image.src}
@@ -54,7 +54,7 @@ export function Hero() {
                 style={{ objectPosition: slide.image.focus }}
               />
 
-              <div className="hero-slide__copy relative z-10 px-page-x pt-40 pb-28 sm:pb-32">
+              <div className="hero-slide__copy relative z-10 px-page-x pt-32 pb-28 lg:pt-36">
                 <div className="mx-auto w-full max-w-page">
                   <Heading className="max-w-[15ch] text-display-xl">
                     {slide.headline}
