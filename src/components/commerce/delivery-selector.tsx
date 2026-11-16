@@ -114,7 +114,7 @@ export function DeliverySelector({
   return (
     <fieldset className={cn(className)}>
       <legend className="label text-muted-foreground">Delivery</legend>
-      <div className="mt-stack-sm space-y-2">
+      <div className="mt-2 space-y-2">
         {choices.map((choice) => {
           if (choice.href) {
             // A link styled as an unselected row: it moves to the

@@ -119,7 +119,7 @@ export function ProductPurchaseForm({
   }
 
   return (
-    <div className="space-y-stack-lg">
+    <div className="space-y-stack-md">
       {variant ? (
         <div>
           <ProductPrice
@@ -134,14 +134,6 @@ export function ProductPurchaseForm({
             </p>
           ) : null}
         </div>
-      ) : null}
-
-      {/* What kind of subscription this is, in the owners' words,
-          beside the price rather than at the foot of "Details". */}
-      {typeText ? (
-        <p className="text-body-m text-muted-foreground">
-          {typeText}
-        </p>
       ) : null}
 
       <VariantSelector
@@ -211,6 +203,13 @@ export function ProductPurchaseForm({
           ) : null}
         </div>
       </div>
+
+      {/* What kind of subscription this is, in the owners' words —
+          directly under the button, so the button itself is on the
+          first screen (2026-11-16). */}
+      {typeText ? (
+        <p className="text-body-m text-muted-foreground">{typeText}</p>
+      ) : null}
 
       {/* The buy bar. On a phone the price and the button scroll away
           behind the description, the specification and the rest of the

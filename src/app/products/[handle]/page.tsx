@@ -144,7 +144,7 @@ export default async function ProductPage({
       />
       {/* The opening (§108): the gallery and the decision side by side
           on the page's own ground — no tinted band. */}
-      <section className="px-page-x py-section-sm">
+      <section className="px-page-x pt-stack-lg pb-section-sm">
         <div className="mx-auto max-w-page">
           {/* The gallery is the column that sticks, not the buy column.
               The other way round left the picture ending half a screen
@@ -161,7 +161,7 @@ export default async function ProductPage({
               <ProductGallery images={gallery} title={product.title} />
             </div>
 
-            <div className="lg:pt-stack-sm">
+            <div>
               <PageHeader
                 title={product.title}
                 size="product"
@@ -188,10 +188,20 @@ export default async function ProductPage({
                 </p>
               ) : null}
 
-              {/* The description sits with the name, where a shop puts
-                  it, instead of in a "Details" section below the fold
-                  that held one sentence. Authored by the store owner in
-                  Shopify admin, not by site visitors (§39). Shopify's
+              <div className="mt-stack-md">
+                <ProductPurchaseForm
+                  product={product}
+                  subscriptionPolicyHref={reassurances.cancellation?.href}
+                  typeText={typeText}
+                  siblings={siblings}
+                />
+              </div>
+
+              {/* The description sits in the buy column, under the
+                  button: in a "Details" section below the fold it held
+                  one sentence, and above the price it pushed Add to
+                  cart off the first screen (2026-11-16). Authored by
+                  the store owner in Shopify admin, not by site visitors (§39). Shopify's
                   rich-text editor leaves <meta> fragments inline
                   (§96.4); they render as nothing. */}
               {detailsHtml ? (
@@ -201,23 +211,13 @@ export default async function ProductPage({
                 />
               ) : null}
 
-              <div className="mt-stack-lg">
-                <ProductPurchaseForm
-                  product={product}
-                  subscriptionPolicyHref={reassurances.cancellation?.href}
-                  typeText={typeText}
-                  siblings={siblings}
-                />
-              </div>
-
-              {/* The question that stops a first order, answered beside
-                  the button rather than below the description where it
-                  had scrolled out of sight. Just the one: cancellation
+              {/* The question that stops a first order, answered in the
+                  buy column rather than in a section below it. Just the one: cancellation
                   terms belong where a recurring charge is actually
                   chosen, and the delivery line links them. */}
               <YegoLine
                 reassurance={reassurances.shipping}
-                className="mt-section-sm"
+                className="mt-stack-lg"
               />
             </div>
           </div>
