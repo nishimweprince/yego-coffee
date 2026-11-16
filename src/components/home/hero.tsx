@@ -56,7 +56,7 @@ export function Hero() {
 
               <div className="hero-slide__copy relative z-10 px-page-x pt-32 pb-28 lg:pt-36">
                 <div className="mx-auto w-full max-w-page">
-                  <Heading className="max-w-[15ch] text-display-xl">
+                  <Heading className="max-w-[15ch] text-display-xl font-extrabold">
                     {slide.headline}
                   </Heading>
 

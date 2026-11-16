@@ -171,7 +171,10 @@
   --surface: var(--color-paper);
   --surface-elevated: var(--color-white);
   --muted: color-mix(in srgb, var(--color-ink) 4%, var(--color-white));
-  --muted-foreground: color-mix(in srgb, var(--color-ink) 64%, var(--color-paper));
+  /* 82% ink: secondary text was 64% (~4.2:1, under WCAG AA) and read
+     washed out on the near-white page. Now ~9:1 — still a step below
+     ink, so hierarchy holds. */
+  --muted-foreground: color-mix(in srgb, var(--color-ink) 82%, var(--color-paper));
   --border: color-mix(in srgb, var(--color-ink) 10%, var(--color-paper));
   --rule: color-mix(in srgb, var(--color-ink) 28%, var(--color-paper));
   --accent: var(--color-roast);
@@ -262,6 +265,20 @@ html:not([data-chrome-solid]) body:has(main[data-hero="slides"]) [data-chrome] >
   --ring: var(--color-paper);
   background-color: transparent;
   color: var(--color-paper);
+}
+
+/* Over a photograph, thin muted type disappears into bright frames.
+   The floating chrome's words go full-strength paper, bold, with a
+   soft shadow that only shows where the picture is light. Panels that
+   open from the bar (the mobile menu, search) carry their own surface
+   and are left alone, or their links would turn paper on paper. */
+html:not([data-chrome-solid])
+  body:has(main[data-hero="slides"])
+  [data-chrome]
+  :is(p, a, button):not([data-chrome] > header [data-surface] *, [data-chrome] [role="dialog"] *) {
+  color: var(--color-paper);
+  font-weight: 700;
+  text-shadow: 0 1px 8px color-mix(in srgb, var(--color-ink) 55%, transparent);
 }
 
 /* Over the hero every colour in the bar is paper, so the announcement's
@@ -527,18 +544,19 @@ html[data-chrome-solid] body:has(main[data-hero="slides"]) [data-chrome] {
          nav links over a bright frame, not just a dark one. */
       linear-gradient(
         to bottom,
-        color-mix(in srgb, var(--background) 72%, transparent) 0%,
-        color-mix(in srgb, var(--background) 35%, transparent) 14%,
-        transparent 28%
+        color-mix(in srgb, var(--background) 90%, transparent) 0%,
+        color-mix(in srgb, var(--background) 70%, transparent) 12%,
+        color-mix(in srgb, var(--background) 30%, transparent) 26%,
+        transparent 40%
       ),
       /* The words sit in the vertical centre: an even wash through the
          middle, a touch heavier at the foot for the slide controls. */
       linear-gradient(
         to top,
-        color-mix(in srgb, var(--background) 70%, transparent) 0%,
-        color-mix(in srgb, var(--background) 45%, transparent) 25%,
-        color-mix(in srgb, var(--background) 45%, transparent) 75%,
-        color-mix(in srgb, var(--background) 25%, transparent) 100%
+        color-mix(in srgb, var(--background) 75%, transparent) 0%,
+        color-mix(in srgb, var(--background) 55%, transparent) 25%,
+        color-mix(in srgb, var(--background) 55%, transparent) 75%,
+        color-mix(in srgb, var(--background) 35%, transparent) 100%
       );
   }
 
@@ -604,6 +622,11 @@ html[data-chrome-solid] body:has(main[data-hero="slides"]) [data-chrome] {
 
   .hero-slide[data-active] .hero-slide__image {
     transform: none;
+  }
+
+  /* The same soft shadow behind the slide's words, for light frames. */
+  .hero-slide__copy {
+    text-shadow: 0 2px 16px color-mix(in srgb, var(--color-ink) 60%, transparent);
   }
 
   .hero-slide[data-active] .hero-slide__copy > * {
