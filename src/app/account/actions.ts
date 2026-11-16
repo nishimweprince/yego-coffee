@@ -2,6 +2,8 @@
 
 import { revalidatePath } from "next/cache";
 import { customerRequest } from "@/lib/customer/client";
+import { confirmsContractChange } from "@/lib/customer/mappers";
+import type { SubscriptionStatus } from "@/lib/customer/types";
 import {
   ADDRESS_CREATE_MUTATION,
   ADDRESS_DELETE_MUTATION,
@@ -236,22 +238,27 @@ type ContractMutation = {
   operation: string;
   query: string;
   key: string;
+  /** The status Shopify must report back before this counts as done. */
+  expect: SubscriptionStatus;
 };
 
 const PAUSE: ContractMutation = {
   operation: "SubscriptionContractPause",
   query: SUBSCRIPTION_PAUSE_MUTATION,
   key: "subscriptionContractPause",
+  expect: "PAUSED",
 };
 const RESUME: ContractMutation = {
   operation: "SubscriptionContractActivate",
   query: SUBSCRIPTION_ACTIVATE_MUTATION,
   key: "subscriptionContractActivate",
+  expect: "ACTIVE",
 };
 const CANCEL: ContractMutation = {
   operation: "SubscriptionContractCancel",
   query: SUBSCRIPTION_CANCEL_MUTATION,
   key: "subscriptionContractCancel",
+  expect: "CANCELLED",
 };
 
 function refreshAccount() {
@@ -281,8 +288,13 @@ async function changeContract(
     const userError = userErrorsOf(data, mutation.key);
     if (userError) return userError;
 
-    const payload = data[mutation.key] as { contract?: unknown } | undefined;
-    if (!payload?.contract) return SUBSCRIPTION_FAILED;
+    if (!confirmsContractChange(data[mutation.key], id.data, mutation.expect)) {
+      console.error(
+        `${mutation.operation}: Shopify did not confirm ${mutation.expect}`,
+        { contractId: id.data, payload: data[mutation.key] },
+      );
+      return SUBSCRIPTION_FAILED;
+    }
 
     refreshAccount();
     return { ok: true };

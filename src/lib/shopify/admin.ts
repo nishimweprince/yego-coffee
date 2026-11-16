@@ -1,6 +1,7 @@
 import "server-only";
 
 import { getNewsletterEnv } from "@/lib/env";
+import { clearAdminToken, getAdminToken } from "./admin-token";
 import { ShopifyGraphQLError, ShopifyRequestError } from "./errors";
 import type {
   ApiAdminUserError,
@@ -32,15 +33,24 @@ async function adminRequest<T>(
   const env = getNewsletterEnv();
   const endpoint = `https://${env.NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN}/admin/api/${env.NEXT_PUBLIC_SHOPIFY_STOREFRONT_API_VERSION}/graphql.json`;
 
-  const response = await fetch(endpoint, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "X-Shopify-Access-Token": env.SHOPIFY_ADMIN_ACCESS_TOKEN,
-    },
-    body: JSON.stringify({ query, variables }),
-    cache: "no-store",
-  });
+  const post = async () =>
+    fetch(endpoint, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Shopify-Access-Token": await getAdminToken(),
+      },
+      body: JSON.stringify({ query, variables }),
+      cache: "no-store",
+    });
+
+  let response = await post();
+  if (response.status === 401) {
+    // Revoked or expired early (an app reinstall does this): exchange
+    // the credentials once more and retry once.
+    clearAdminToken();
+    response = await post();
+  }
 
   if (!response.ok) {
     const body = await response.text().catch(() => "");

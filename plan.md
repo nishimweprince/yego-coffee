@@ -3095,7 +3095,7 @@ Keep lightweight.
 Homepage/footer:
 
 ```text
-Coffee notes, new releases, no noise.
+Join our newsletter.
 ```
 
 React Hook Form + Zod.

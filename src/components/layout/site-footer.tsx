@@ -24,23 +24,14 @@ export function SiteFooter() {
         {hasNewsletter() ? (
           <section
             aria-labelledby="newsletter-heading"
-            className="mb-stack-lg grid gap-stack-md border-b border-border pb-stack-lg md:grid-cols-2 md:items-end md:gap-12"
+            className="mb-stack-lg border-b border-border pb-stack-lg"
           >
-            <div>
+            <div className="flex max-w-xl flex-col gap-stack-md">
               <h2 id="newsletter-heading" className="text-h3 font-bold">
-                Coffee notes, new releases, no noise.
+                Join our newsletter.
               </h2>
-              <p className="mt-stack-xs text-body-s text-muted-foreground">
-                Unsubscribe any time.{" "}
-                <Link
-                  href="/policies"
-                  className="underline underline-offset-4 hover:text-foreground"
-                >
-                  Privacy
-                </Link>
-              </p>
+              <NewsletterForm />
             </div>
-            <NewsletterForm />
           </section>
         ) : null}
 

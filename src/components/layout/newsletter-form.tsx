@@ -78,7 +78,7 @@ export function NewsletterForm() {
           disabled={isSubmitting}
           className={buttonVariants({ size: "md", className: "shrink-0" })}
         >
-          {isSubmitting ? "Subscribing…" : "Subscribe"}
+          {isSubmitting ? "Joining..." : "Join"}
         </button>
       </div>
 

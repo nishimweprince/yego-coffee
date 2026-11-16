@@ -240,3 +240,25 @@ export function mapSubscription(raw: unknown): SubscriptionContract {
     },
   };
 }
+
+/**
+ * Whether a contract mutation really did what was asked (§111.3).
+ *
+ * A payload that merely contains a contract is not proof: Shopify
+ * could return a different contract, or the same one in its old state
+ * (a cancel that lost a race with a billing attempt, say). Success
+ * means the requested contract, now in the requested status. Anything
+ * else is reported as "nothing changed" and the customer is told to
+ * try again or email.
+ */
+export function confirmsContractChange(
+  payload: unknown,
+  contractId: string,
+  expected: SubscriptionStatus,
+): boolean {
+  if (!payload || typeof payload !== "object") return false;
+  const contract = (payload as { contract?: unknown }).contract;
+  if (!contract || typeof contract !== "object") return false;
+  const { id, status } = contract as { id?: unknown; status?: unknown };
+  return id === contractId && status === expected;
+}

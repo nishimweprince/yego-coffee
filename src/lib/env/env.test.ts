@@ -132,21 +132,24 @@ describe("parseCore", () => {
 });
 
 describe("hasNewsletter", () => {
-  it("is off without the admin token, so the footer form is not rendered", () => {
+  it("is off without the admin app credentials, so the footer form is not rendered", () => {
     for (const [k, v] of Object.entries(VALID)) vi.stubEnv(k, v);
-    vi.stubEnv("SHOPIFY_ADMIN_ACCESS_TOKEN", "");
+    vi.stubEnv("SHOPIFY_ADMIN_CLIENT_ID", "client_id");
+    vi.stubEnv("SHOPIFY_ADMIN_CLIENT_SECRET", "");
     expect(hasNewsletter()).toBe(false);
   });
 
-  it("is on with Storefront credentials and the admin token", () => {
+  it("is on with Storefront credentials and the admin app credentials", () => {
     for (const [k, v] of Object.entries(VALID)) vi.stubEnv(k, v);
-    vi.stubEnv("SHOPIFY_ADMIN_ACCESS_TOKEN", "shpat_admin");
+    vi.stubEnv("SHOPIFY_ADMIN_CLIENT_ID", "client_id");
+    vi.stubEnv("SHOPIFY_ADMIN_CLIENT_SECRET", "client_secret");
     expect(hasNewsletter()).toBe(true);
   });
 
   it("is off when Shopify itself is not configured", () => {
     vi.stubEnv("NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN", "");
-    vi.stubEnv("SHOPIFY_ADMIN_ACCESS_TOKEN", "shpat_admin");
+    vi.stubEnv("SHOPIFY_ADMIN_CLIENT_ID", "client_id");
+    vi.stubEnv("SHOPIFY_ADMIN_CLIENT_SECRET", "client_secret");
     expect(hasNewsletter()).toBe(false);
   });
 });

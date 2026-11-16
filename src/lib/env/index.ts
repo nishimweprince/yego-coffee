@@ -179,34 +179,45 @@ export function getAnalyticsEnv(): AnalyticsEnv {
 }
 
 /**
- * The newsletter's Shopify Admin token — optional, like analytics.
+ * The newsletter's Shopify Admin credentials — optional, like analytics.
  *
  * Signups are written to Shopify as customers subscribed to email
  * marketing (Admin API `customerCreate`), and the owners send with
- * Shopify Messaging. Without the token the footer form is not rendered
- * at all: a form that posts nowhere is worse than its absence.
+ * Shopify Messaging. Without these the footer form is not rendered at
+ * all: a form that posts nowhere is worse than its absence.
  *
- * Server-only. Never prefix it with NEXT_PUBLIC_.
+ * The Headless channel's tokens are Storefront-only and cannot do
+ * this. The credentials belong to a Dev Dashboard app installed on
+ * the store with `read_customers` and `write_customers`; the server
+ * trades them for a short-lived Admin token (`src/lib/shopify/admin-token.ts`).
+ *
+ * Server-only. Never prefix either with NEXT_PUBLIC_.
  */
 const newsletterSchema = z.object({
-  SHOPIFY_ADMIN_ACCESS_TOKEN: z.string().min(1),
+  SHOPIFY_ADMIN_CLIENT_ID: z.string().min(1),
+  SHOPIFY_ADMIN_CLIENT_SECRET: z.string().min(1),
 });
 
 export type NewsletterEnv = ShopifyEnv & z.infer<typeof newsletterSchema>;
 
-/** Throws when the newsletter is not configured. */
-export function getNewsletterEnv(): NewsletterEnv {
-  const result = newsletterSchema.safeParse({
-    SHOPIFY_ADMIN_ACCESS_TOKEN: blankToUndefined(
-      process.env.SHOPIFY_ADMIN_ACCESS_TOKEN,
+function readNewsletter() {
+  return newsletterSchema.safeParse({
+    SHOPIFY_ADMIN_CLIENT_ID: blankToUndefined(process.env.SHOPIFY_ADMIN_CLIENT_ID),
+    SHOPIFY_ADMIN_CLIENT_SECRET: blankToUndefined(
+      process.env.SHOPIFY_ADMIN_CLIENT_SECRET,
     ),
   });
+}
+
+/** Throws when the newsletter is not configured. */
+export function getNewsletterEnv(): NewsletterEnv {
+  const result = readNewsletter();
   if (!result.success) {
     throw new Error(
       [
-        "The newsletter is not configured: SHOPIFY_ADMIN_ACCESS_TOKEN is missing.",
-        "Create it in Shopify admin → Settings → Apps and sales channels →",
-        "Develop apps, with the write_customers and read_customers scopes.",
+        "The newsletter is not configured: SHOPIFY_ADMIN_CLIENT_ID and",
+        "SHOPIFY_ADMIN_CLIENT_SECRET are required. Copy them from the Dev",
+        "Dashboard app (Settings), installed with read_customers and write_customers.",
       ].join("\n"),
     );
   }
@@ -215,12 +226,5 @@ export function getNewsletterEnv(): NewsletterEnv {
 
 /** True when the newsletter can post somewhere. For rendering decisions only. */
 export function hasNewsletter(): boolean {
-  return (
-    hasShopifyCredentials() &&
-    newsletterSchema.safeParse({
-      SHOPIFY_ADMIN_ACCESS_TOKEN: blankToUndefined(
-        process.env.SHOPIFY_ADMIN_ACCESS_TOKEN,
-      ),
-    }).success
-  );
+  return hasShopifyCredentials() && readNewsletter().success;
 }

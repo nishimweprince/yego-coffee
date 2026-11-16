@@ -232,6 +232,14 @@ export type ApiArticlesQuery = { articles: { nodes: ApiArticle[] } };
 // Admin API — newsletter signups only (src/lib/shopify/admin.ts).
 // ---------------------------------------------------------------------
 
+/** `POST /admin/oauth/access_token` with `grant_type=client_credentials`. */
+export type ApiAdminAccessToken = {
+  access_token: string;
+  scope?: string;
+  /** Seconds until the token expires (about 24 hours). */
+  expires_in?: number;
+};
+
 export type ApiAdminUserError = { field: string[] | null; message: string };
 
 export type ApiNewsletterCustomerCreate = {

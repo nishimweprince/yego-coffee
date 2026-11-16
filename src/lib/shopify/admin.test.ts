@@ -3,8 +3,27 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 vi.mock("server-only", () => ({}));
 
 import { subscribeToEmailMarketing } from "./admin";
+import { clearAdminToken } from "./admin-token";
 
+const TOKEN_URL = "https://yego.myshopify.com/admin/oauth/access_token";
+
+/** GraphQL replies, queued per test. */
 const fetchMock = vi.fn();
+/** Token exchange replies; defaults to a fresh day-long token. */
+const tokenMock = vi.fn();
+
+function tokenReply(token = "shpat_fresh", expiresIn = 86399) {
+  return Promise.resolve(
+    new Response(JSON.stringify({ access_token: token, expires_in: expiresIn }), {
+      status: 200,
+      headers: { "Content-Type": "application/json" },
+    }),
+  );
+}
+
+function route(url: string, init: RequestInit) {
+  return url === TOKEN_URL ? tokenMock(url, init) : fetchMock(url, init);
+}
 
 function reply(data: unknown) {
   return Promise.resolve(
@@ -27,18 +46,22 @@ beforeEach(() => {
   vi.stubEnv("NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN", "yego.myshopify.com");
   vi.stubEnv("NEXT_PUBLIC_SHOPIFY_STOREFRONT_API_VERSION", "2026-07");
   vi.stubEnv("SHOPIFY_STOREFRONT_ACCESS_TOKEN", "public_token");
-  vi.stubEnv("SHOPIFY_ADMIN_ACCESS_TOKEN", "shpat_admin");
-  vi.stubGlobal("fetch", fetchMock);
+  vi.stubEnv("SHOPIFY_ADMIN_CLIENT_ID", "client_id");
+  vi.stubEnv("SHOPIFY_ADMIN_CLIENT_SECRET", "client_secret");
+  tokenMock.mockImplementation(() => tokenReply());
+  vi.stubGlobal("fetch", vi.fn(route));
+  clearAdminToken();
 });
 
 afterEach(() => {
   vi.unstubAllEnvs();
   vi.unstubAllGlobals();
   fetchMock.mockReset();
+  tokenMock.mockReset();
 });
 
 describe("subscribeToEmailMarketing", () => {
-  it("creates a subscribed customer on the Admin API with the admin token", async () => {
+  it("creates a subscribed customer on the Admin API with an exchanged token", async () => {
     fetchMock.mockReturnValueOnce(
       reply({ customerCreate: { customer: { id: "gid://1" }, userErrors: [] } }),
     );
@@ -48,7 +71,7 @@ describe("subscribeToEmailMarketing", () => {
     const [url, init] = fetchMock.mock.calls[0] as [string, RequestInit];
     expect(url).toBe("https://yego.myshopify.com/admin/api/2026-07/graphql.json");
     expect((init.headers as Record<string, string>)["X-Shopify-Access-Token"]).toBe(
-      "shpat_admin",
+      "shpat_fresh",
     );
     expect(sent(0).variables).toEqual({
       input: {
@@ -128,10 +151,78 @@ describe("subscribeToEmailMarketing", () => {
     await expect(subscribeToEmailMarketing("a@b.co")).rejects.toThrow(/Email is invalid/);
   });
 
-  it("refuses to run without the admin token", async () => {
-    vi.stubEnv("SHOPIFY_ADMIN_ACCESS_TOKEN", "");
+  it("refuses to run without the app credentials", async () => {
+    vi.stubEnv("SHOPIFY_ADMIN_CLIENT_SECRET", "");
     await expect(subscribeToEmailMarketing("a@b.co")).rejects.toThrow(
-      /SHOPIFY_ADMIN_ACCESS_TOKEN/,
+      /SHOPIFY_ADMIN_CLIENT_SECRET/,
+    );
+    expect(tokenMock).not.toHaveBeenCalled();
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+});
+
+describe("Admin token", () => {
+  const created = () =>
+    reply({ customerCreate: { customer: { id: "gid://1" }, userErrors: [] } });
+
+  it("exchanges the client credentials with the client_credentials grant", async () => {
+    fetchMock.mockReturnValueOnce(created());
+    await subscribeToEmailMarketing("a@b.co");
+
+    const [, init] = tokenMock.mock.calls[0] as [string, RequestInit];
+    const body = new URLSearchParams(String(init.body));
+    expect(body.get("grant_type")).toBe("client_credentials");
+    expect(body.get("client_id")).toBe("client_id");
+    expect(body.get("client_secret")).toBe("client_secret");
+  });
+
+  it("reuses the token until it is close to expiring", async () => {
+    fetchMock.mockReturnValueOnce(created()).mockReturnValueOnce(created());
+    await subscribeToEmailMarketing("a@b.co");
+    await subscribeToEmailMarketing("c@d.co");
+    expect(tokenMock).toHaveBeenCalledTimes(1);
+  });
+
+  it("shares one exchange between concurrent signups", async () => {
+    fetchMock.mockReturnValueOnce(created()).mockReturnValueOnce(created());
+    await Promise.all([
+      subscribeToEmailMarketing("a@b.co"),
+      subscribeToEmailMarketing("c@d.co"),
+    ]);
+    expect(tokenMock).toHaveBeenCalledTimes(1);
+  });
+
+  it("renews a token that expires within five minutes", async () => {
+    tokenMock
+      .mockImplementationOnce(() => tokenReply("shpat_short", 60))
+      .mockImplementationOnce(() => tokenReply("shpat_next"));
+    fetchMock.mockReturnValueOnce(created()).mockReturnValueOnce(created());
+    await subscribeToEmailMarketing("a@b.co");
+    await subscribeToEmailMarketing("c@d.co");
+    expect(tokenMock).toHaveBeenCalledTimes(2);
+  });
+
+  it("exchanges again and retries once when Shopify rejects the token", async () => {
+    tokenMock
+      .mockImplementationOnce(() => tokenReply("shpat_revoked"))
+      .mockImplementationOnce(() => tokenReply("shpat_new"));
+    fetchMock
+      .mockReturnValueOnce(Promise.resolve(new Response("Unauthorized", { status: 401 })))
+      .mockReturnValueOnce(created());
+
+    await expect(subscribeToEmailMarketing("a@b.co")).resolves.toBe("subscribed");
+    const [, retry] = fetchMock.mock.calls[1] as [string, RequestInit];
+    expect((retry.headers as Record<string, string>)["X-Shopify-Access-Token"]).toBe(
+      "shpat_new",
+    );
+  });
+
+  it("fails clearly when the exchange is refused", async () => {
+    tokenMock.mockImplementationOnce(() =>
+      Promise.resolve(new Response('{"error":"invalid_client"}', { status: 400 })),
+    );
+    await expect(subscribeToEmailMarketing("a@b.co")).rejects.toThrow(
+      /AdminAccessToken.*400.*invalid_client/,
     );
     expect(fetchMock).not.toHaveBeenCalled();
   });

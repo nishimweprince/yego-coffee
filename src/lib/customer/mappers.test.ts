@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  confirmsContractChange,
   mapAddress,
   mapOrderDetail,
   mapOrderSummary,
@@ -267,5 +268,36 @@ describe("mapOrderDetail — cancellation and refunds (§111)", () => {
     })!;
     expect(order.refunded).toBeNull();
     expect(order.returns).toEqual([]);
+  });
+});
+
+describe("confirmsContractChange", () => {
+  const id = "gid://shopify/SubscriptionContract/1";
+
+  it("accepts the requested contract in the requested status", () => {
+    expect(
+      confirmsContractChange({ contract: { id, status: "CANCELLED" } }, id, "CANCELLED"),
+    ).toBe(true);
+  });
+
+  it("rejects the contract still in its old state", () => {
+    expect(
+      confirmsContractChange({ contract: { id, status: "ACTIVE" } }, id, "CANCELLED"),
+    ).toBe(false);
+  });
+
+  it("rejects a different contract", () => {
+    expect(
+      confirmsContractChange(
+        { contract: { id: "gid://shopify/SubscriptionContract/2", status: "CANCELLED" } },
+        id,
+        "CANCELLED",
+      ),
+    ).toBe(false);
+  });
+
+  it("rejects a payload without a contract", () => {
+    expect(confirmsContractChange({ contract: null }, id, "CANCELLED")).toBe(false);
+    expect(confirmsContractChange(undefined, id, "CANCELLED")).toBe(false);
   });
 });
